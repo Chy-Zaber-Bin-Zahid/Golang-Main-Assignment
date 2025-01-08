@@ -12,7 +12,7 @@ type GetProperty struct {
 }
 
 type Property struct {
-	Amenities Amenities `json:"Amenities"`
+	// Amenities Amenities `json:"Amenities"`
 	FeatureImage string `json:"FeatureImage"`
 	Price float64 `json:"Price"`
 	PropertyName string `json:"PropertyName"`
@@ -49,7 +49,7 @@ func (c *GetProperty) Get() {
 		}
 	}
 	modifiedUrl := strings.ReplaceAll(apiKey, "!REPLACE!", allIDs)
-	productChan := make(chan string)
+	// productChan := make(chan string)
 	errChan := make(chan error)
 	go func() {
 		req, err := http.NewRequest("GET", modifiedUrl, nil)
@@ -59,13 +59,13 @@ func (c *GetProperty) Get() {
 		}
 		req.Header.Set("Accept-Language", "en-US")
 		req.Header.Set("Origin", "rentbyowner.com")
-		client := &http.Client{}
-		response, err := client.Do(req)
-		if err != nil {
-			errChan <- err
-			return
-		}
-		var data Property
+		// client := &http.Client{}
+		// response, err := client.Do(req)
+		// if err != nil {
+		// 	errChan <- err
+		// 	return
+		// }
+		// var data Property
 
 	}()
 	c.TplName = "index.html"
