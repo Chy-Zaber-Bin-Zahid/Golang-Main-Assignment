@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rental Card</title>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-4 grid grid-cols-2 gap-4">
+    <div class="max-w-md bg-white rounded-xl overflow-hidden shadow-lg">
+        <div class="relative">
+            <img src="https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af" 
+                 alt="Mountain Cottage Kitchen" 
+                 class="w-full h-64 object-cover">
+            <div class="absolute top-4 right-4 flex gap-2">
+                <button class="pt-[6px] px-2 bg-white rounded-full shadow-md hover:bg-gray-100">
+                    <i class="ph ph-heart text-gray-700"></i>
+                </button>
+            </div>
+            <div class="absolute bottom-4 left-4 bg-white px-3 py-1 rounded-lg shadow-md">
+                <span class="text-sm font-medium">From $30,640</span>
+                <i class="ph ph-info ml-1 text-gray-500"></i>
+            </div>
+        </div>
+        <div class="p-4">
+            <div class="flex items-center mb-2">
+                <div class="bg-blue-700 text-white px-2 py-1 rounded flex items-center">
+                    <i class="ph ph-star-fill mr-1"></i>
+                    <span class="font-medium">10.0</span>
+                </div>
+                <span class="text-gray-600 text-sm ml-2">(444 Reviews)</span>
+                <span class="ml-auto text-gray-600">Apartment</span>
+            </div>
+            <h2 class="text-lg font-semibold mb-2 text-gray-800">
+                Mountain Cottage Serenity Surrounded by Majestic Forests 5 mi...
+            </h2>
+            <div class="flex flex-wrap gap-2 mb-3">
+                <span class="flex items-center text-sm text-gray-600">
+                    <i class="ph ph-balcony mr-1"></i>
+                    Balcony/Terrace
+                </span>
+                <span class="flex items-center text-sm text-gray-600">
+                    <i class="ph ph-bed mr-1"></i>
+                    Bedding/Linens
+                </span>
+                <span class="flex items-center text-sm text-gray-600">
+                    <i class="ph ph-baby mr-1"></i>
+                    Child Friendly
+                </span>
+            </div>
+            <div class="text-sm text-gray-600 mb-4">
+                Big Bear Lake • Lake Arrowhead
+            </div>
+            <button class="w-full bg-emerald-500 text-white py-3 rounded-lg font-medium hover:bg-emerald-600 transition-colors">
+                View Availability
+            </button>
+        </div>
+    </div>
+</body>
+</html>
