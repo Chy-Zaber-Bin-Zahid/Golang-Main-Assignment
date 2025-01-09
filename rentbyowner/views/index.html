@@ -11,61 +11,56 @@
     </script>
     <script src="/static/js/script.js" defer></script>
 </head>
-<body class="p-4 grid grid-cols-2 gap-4">
+<body class="p-4 grid grid-cols-4 gap-4">
     <!-- Tiles -->
-    <div class="max-w-md bg-white rounded-lg overflow-hidden shadow-lg hidden">
-        <div class="relative">
-            <img src="https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af" 
-                 alt="Mountain Cottage Kitchen" 
-                 class="w-full h-64 object-cover">
-            <div class="absolute top-4 right-4 flex gap-2">
-                <button class="relative pt-[5px] pb-[1px] px-2 rounded-full overflow-hidden">
-                    <i class="ph ph-heart text-white text-xl z-50 relative"></i>
-                    <div class="bg-black opacity-20 absolute w-full h-full top-0 left-0" ></div>
-                </button>
-            </div>
-            <div class="absolute bottom-2 left-2 bg-[#f5f5f5] px-2 py-[2px] pb-0 rounded-[5px] flex items-center justify-center">
-                <span class="text-[15px] font-medium">From $30,640</span>
-                <i class="ph ph-info ml-1 text-xl"></i>
-            </div>
-        </div>
-        <div class="px-4 py-2 pb-3 flex flex-col gap-1">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center justify-center">
-                    <div class="flex items-center">
-                        <span class="text-blue-700 font-medium">10.0</span>
-                    </div>
-                    <span class="text-gray-600 text-[12px] ml-2 font-semibold">(444 Reviews)</span>
+    <div id="tiles">
+        <!-- <div class="max-w-md bg-white rounded-lg overflow-hidden shadow-lg">
+            <div class="relative">
+                <img src="" 
+                     alt="" 
+                     class="w-full h-64 object-cover">
+                <div class="absolute top-4 right-4 flex gap-2">
+                    <button class="relative pt-[5px] pb-[1px] px-2 rounded-full overflow-hidden">
+                        <i class="ph ph-heart text-white text-xl z-50 relative"></i>
+                        <div class="bg-black opacity-20 absolute w-full h-full top-0 left-0" ></div>
+                    </button>
                 </div>
-                <span class="ml-auto text-[12px] text-gray-700">Apartment</span>
+                <div class="absolute bottom-2 left-2 bg-[#f5f5f5] px-2 py-[2px] pb-0 rounded-[5px] flex items-center justify-center">
+                    <span class="text-[15px] font-medium"></span>
+                    <i class="ph ph-info ml-1 text-xl"></i>
+                </div>
             </div>
-            <h2 class="text-md font-semibold text-gray-800 truncate">
-                Mountain Cottage Serenity Surrounded by Majestic Forests 5
-            </h2>
-            <div class="flex flex-wrap gap-2 text-[12px] text-gray-800">
-                <span class="flex items-center">
-                    Balcony/Terrace
-                </span>
-                <span class="flex items-center">
-                    Bedding/Linens
-                </span>
-                <span class="flex items-center">
-                    Child Friendly
-                </span>
+            <div class="px-4 py-2 pb-3 flex flex-col gap-1">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center justify-center">
+                        <div class="flex items-center">
+                            <span class="text-blue-700 font-medium"></span>
+                        </div>
+                        <span class="text-gray-600 text-[12px] ml-2 font-semibold"></span>
+                    </div>
+                    <span class="ml-auto text-[12px] text-gray-700"></span>
+                </div>
+                <h2 class="text-md font-semibold text-gray-800 truncate">
+    
+                </h2>
+                <div class="flex flex-wrap gap-2 text-[12px] text-gray-800">
+                    <span class="flex items-center">
+                    </span>
+                </div>
+                <div class="text-[12px] text-blue-700">
+                    Big Bear Lake > Lake Arrowhead
+                </div>
+                <div class="flex justify-between items-center gap-2">
+                    <h1>Logo</h1>
+                    <button class="text-md max-w-[250px] w-full font-semibold bg-emerald-500 text-white py-2 rounded font-medium hover:bg-emerald-600 transition-colors">
+                        View Availability
+                    </button>
+                </div>
             </div>
-            <div class="text-[12px] text-gray-800">
-                Big Bear Lake • Lake Arrowhead
-            </div>
-            <div class="flex justify-between items-center gap-2">
-                <h1>Logo</h1>
-                <button class="text-md max-w-[250px] w-full font-semibold bg-emerald-500 text-white py-2 rounded font-medium hover:bg-emerald-600 transition-colors">
-                    View Availability
-                </button>
-            </div>
-        </div>
+        </div> -->
     </div>
     <!-- Shimmer -->
-    <div class="max-w-md bg-white rounded-lg overflow-hidden shadow-lg flex flex-col">
+    <div id="shimmer" class="max-w-md bg-white rounded-lg overflow-hidden shadow-lg flex flex-col hidden">
         <div class="animate-pulse">
             <div class="w-full h-64 bg-gray-200"></div>
         </div>
