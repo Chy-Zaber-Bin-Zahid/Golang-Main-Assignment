@@ -29,13 +29,7 @@ type Items struct {
 }
 
 func (c *GetProperty) Get() {
-	getItemIDsController := &UseLocationSlug{}
-    itemIDs, err := getItemIDsController.Get()
-	if err != nil {
-		log.Println("Error fetching location slug: " + err.Error())
-	} else if itemIDs == nil {
-		log.Println("ItemIDs is empty")
-	}
+	itemIDs := c.Ctx.Input.GetData("item_ids").([]string)
 	apiKey, err := beego.AppConfig.String("API_PROPERTY")
 	if err != nil {
 		log.Println("Error reading API_PROPERTY: " + err.Error())
@@ -43,12 +37,13 @@ func (c *GetProperty) Get() {
 	var allIDs string
 	for i, id := range itemIDs {
 		if i == len(itemIDs)-1 {
-			allIDs += id
+			allIDs += string(id)
 		} else {
-			allIDs += id + ","
+			allIDs += string(id) + ","
 		}
 	}
 	modifiedUrl := strings.ReplaceAll(apiKey, "!REPLACE!", allIDs)
+	log.Println(modifiedUrl)
 	// productChan := make(chan string)
 	errChan := make(chan error)
 	go func() {
@@ -68,7 +63,9 @@ func (c *GetProperty) Get() {
 		// var data Property
 
 	}()
+	
 	c.TplName = "index.html"
+	c.Render()
 }
 
 

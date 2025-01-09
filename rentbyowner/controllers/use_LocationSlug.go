@@ -20,16 +20,8 @@ type Result struct {
 	Result ItemIDs `json:"Result"`
 }
 
-func (c *UseLocationSlug) Get() ([]string, error) {
-	getLocationSlugController := &GetLocationSlug{}
-    locationSlug, err := getLocationSlugController.Get()
-	if err != nil {
-		log.Println("Error fetching location slug: " + err.Error())
-		return nil, err
-	} else if locationSlug == "" {
-		log.Println("LocationSlug is empty")
-		return nil, err
-	}
+func (c *UseLocationSlug) UseLocation() {
+	locationSlug := c.Ctx.Input.GetData("location_slug").(string)
 	apiUrl, err := beego.AppConfig.String("API_ITEM_IDS")
 	if err != nil {
 		log.Println("Error reading API_ITEM_IDS: " + err.Error())
@@ -60,8 +52,12 @@ func (c *UseLocationSlug) Get() ([]string, error) {
 	}()
 	select {
 		case itemIds := <-itemIdsChan:
-			return itemIds, nil
+			c.Ctx.Input.SetData("item_ids", itemIds)
+			propertyController := &GetProperty{}
+			propertyController.Controller = c.Controller
+			propertyController.Get()
+			c.StopRun()
 		case err := <-errChan:
-			return nil, err
+			log.Println("Error fetching item IDs: " + err.Error())
 	}
 }
