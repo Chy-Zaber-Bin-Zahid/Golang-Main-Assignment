@@ -43,6 +43,7 @@ func (c *UseLocationSlug) UseLocation() {
 			errChan <- err
 			return
 		}
+		defer response.Body.Close()
 		var data Result
 		if err := json.NewDecoder(response.Body).Decode(&data); err != nil {
 			errChan <- err

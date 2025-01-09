@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 	"strings"
@@ -11,20 +12,30 @@ type GetProperty struct {
 	beego.Controller
 }
 
+type Amenities struct {
+    Amenities map[string]string `json:"Amenities"`
+}
+
+type Counts struct {
+    Reviews   int `json:"Reviews,omitempty"`
+}
+
 type Property struct {
-	// Amenities Amenities `json:"Amenities"`
-	FeatureImage string `json:"FeatureImage"`
-	Price float64 `json:"Price"`
-	PropertyName string `json:"PropertyName"`
-	PropertyType string `json:"PropertyType"`
-	
+    Amenities     map[string]string `json:"Amenities"`
+    FeatureImage  string            `json:"FeatureImage"`
+    Price         float64           `json:"Price"`
+    PropertyName  string            `json:"PropertyName"`
+    PropertyType  string            `json:"PropertyType"`
+    Counts        Counts            `json:"Counts"`
+    ReviewScore   float64           `json:"ReviewScore"`
+    StarRating    int               `json:"StarRating,omitempty"`
 }
 
 type Item struct {
     Property  Property `json:"Property"`
 }
 
-type Items struct {
+type Response struct {
     Items []Item `json:"Items"`
 }
 
@@ -43,8 +54,7 @@ func (c *GetProperty) Get() {
 		}
 	}
 	modifiedUrl := strings.ReplaceAll(apiKey, "!REPLACE!", allIDs)
-	log.Println(modifiedUrl)
-	// productChan := make(chan string)
+	productChan := make(chan []Item)
 	errChan := make(chan error)
 	go func() {
 		req, err := http.NewRequest("GET", modifiedUrl, nil)
@@ -54,20 +64,26 @@ func (c *GetProperty) Get() {
 		}
 		req.Header.Set("Accept-Language", "en-US")
 		req.Header.Set("Origin", "rentbyowner.com")
-		// client := &http.Client{}
-		// response, err := client.Do(req)
-		// if err != nil {
-		// 	errChan <- err
-		// 	return
-		// }
-		// var data Property
-
+		client := &http.Client{}
+		response, err := client.Do(req)
+		if err != nil {
+			errChan <- err
+			return
+		}
+		defer response.Body.Close()
+		var data Response
+		if err := json.NewDecoder(response.Body).Decode(&data); err != nil {
+			errChan <- err
+			return
+		}
+		productChan <- data.Items
 	}()
-	
+	select {
+		case items := <-productChan:
+			c.Data["json"] = items
+		case err := <-errChan:
+			log.Println("Error fetching property: " + err.Error())
 	c.TplName = "index.html"
 	c.Render()
+	}
 }
-
-
-
-
