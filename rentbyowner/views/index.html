@@ -6,9 +6,14 @@
     <title>Rental Card</title>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        window.properties = "{{ .Properties }}";
+    </script>
+    <script src="/static/js/script.js" defer></script>
 </head>
 <body class="p-4 grid grid-cols-2 gap-4">
-    <div class="max-w-md bg-white rounded-lg overflow-hidden shadow-lg">
+    <!-- Tiles -->
+    <div class="max-w-md bg-white rounded-lg overflow-hidden shadow-lg hidden">
         <div class="relative">
             <img src="https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af" 
                  alt="Mountain Cottage Kitchen" 
@@ -59,8 +64,7 @@
             </div>
         </div>
     </div>
-
-
+    <!-- Shimmer -->
     <div class="max-w-md bg-white rounded-lg overflow-hidden shadow-lg flex flex-col">
         <div class="animate-pulse">
             <div class="w-full h-64 bg-gray-200"></div>

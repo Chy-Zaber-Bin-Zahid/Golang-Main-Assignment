@@ -79,11 +79,15 @@ func (c *GetProperty) Get() {
 		productChan <- data.Items
 	}()
 	select {
-		case items := <-productChan:
-			c.Data["json"] = items
+		case property := <-productChan:
+			jsonData, _ := json.Marshal(property)
+			c.Data["Properties"] = string(jsonData)
+			c.TplName = "index.html"
+			c.Render()
 		case err := <-errChan:
 			log.Println("Error fetching property: " + err.Error())
-	c.TplName = "index.html"
-	c.Render()
-	}
+			c.Ctx.Output.SetStatus(http.StatusInternalServerError)
+			c.Data["json"] = map[string]string{"error": err.Error()}
+			c.ServeJSON()
+		}
 }
