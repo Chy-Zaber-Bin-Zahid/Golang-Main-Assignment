@@ -6,78 +6,14 @@
     <title>Rental Card</title>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        window.properties = "{{ .Properties }}";
-    </script>
-    <script src="../static/js/scripts.js" defer></script>
+    <script src="../static/js/script.js" defer></script>
 </head>
 <body>
     <!-- Tiles -->
     <div id="tiles" class="p-4 grid grid-cols-4 gap-4 hidden">
-        <!-- <div class="max-w-md bg-white rounded-lg overflow-hidden shadow-lg">
-            <div class="relative">
-                <img src="" 
-                     alt="" 
-                     class="w-full h-64 object-cover">
-                <div class="absolute top-4 right-4 flex gap-2">
-                    <button class="relative pt-[5px] pb-[1px] px-2 rounded-full overflow-hidden">
-                        <i class="ph ph-heart text-white text-xl z-50 relative"></i>
-                        <div class="bg-black opacity-20 absolute w-full h-full top-0 left-0" ></div>
-                    </button>
-                </div>
-                <div class="absolute bottom-2 left-2 bg-[#f5f5f5] px-2 py-[2px] pb-0 rounded-[5px] flex items-center justify-center">
-                    <span class="text-[15px] font-medium"></span>
-                    <i class="ph ph-info ml-1 text-xl"></i>
-                </div>
-            </div>
-            <div class="px-4 py-2 pb-3 flex flex-col gap-1">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center justify-center">
-                        <div class="flex items-center">
-                            <span class="text-blue-700 font-medium"></span>
-                        </div>
-                        <span class="text-gray-600 text-[12px] ml-2 font-semibold"></span>
-                    </div>
-                    <span class="ml-auto text-[12px] text-gray-700"></span>
-                </div>
-                <h2 class="text-md font-semibold text-gray-800 truncate">
-    
-                </h2>
-                <div class="flex flex-wrap gap-2 text-[12px] text-gray-800">
-                    <span class="flex items-center">
-                    </span>
-                </div>
-                <div class="text-[12px] text-blue-700">
-                    Big Bear Lake > Lake Arrowhead
-                </div>
-                <div class="flex justify-between items-center gap-2">
-                    <h1>Logo</h1>
-                    <button class="text-md max-w-[250px] w-full font-semibold bg-emerald-500 text-white py-2 rounded font-medium hover:bg-emerald-600 transition-colors">
-                        View Availability
-                    </button>
-                </div>
-            </div>
-        </div> -->
     </div>
     <!-- Shimmer -->
      <div id="shimmer" class="grid grid-cols-4 p-4 gap-4">
-        <div class="max-w-md bg-white rounded-lg overflow-hidden shadow-lg flex flex-col">
-            <div class="animate-pulse">
-                <div class="w-full h-64 bg-gray-200"></div>
-            </div>
-            <div class="px-4 py-3 flex flex-col gap-3 flex-grow">
-                <div class="flex-1 flex flex-col gap-3">
-                    <div class="w-full h-4 bg-gray-200 animate-pulse"></div>
-                    <div class="w-full h-4 bg-gray-200 animate-pulse"></div>
-                    <div class="w-full h-4 bg-gray-200 animate-pulse"></div>
-                </div>
-                <div class="flex justify-between items-center gap-2 h-full flex-1">
-                    <div></div>
-                    <div class="max-w-[210px] w-full h-[50px] bg-gray-200 animate-pulse"></div>
-                </div>
-            </div>
-        </div>
      </div>
-
 </body>
 </html>

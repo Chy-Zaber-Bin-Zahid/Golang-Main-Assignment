@@ -39,15 +39,17 @@ type Response struct {
     Items []Item `json:"Items"`
 }
 
-func (c *GetProperty) Get() {
-	itemIDs := c.Ctx.Input.GetData("item_ids").([]string)
+func (c *GetProperty) GetPropertyData() {
+	itemIDs := c.Ctx.Input.Param(":itemIds")
+	log.Println(itemIDs)
 	apiKey, err := beego.AppConfig.String("API_PROPERTY")
 	if err != nil {
 		log.Println("Error reading API_PROPERTY: " + err.Error())
 	}
+	itemIDsNew := strings.Split(itemIDs, ",")
 	var allIDs string
-	for i, id := range itemIDs {
-		if i == len(itemIDs)-1 {
+	for i, id := range itemIDsNew {
+		if i == len(itemIDsNew)-1 {
 			allIDs += string(id)
 		} else {
 			allIDs += string(id) + ","
@@ -80,16 +82,8 @@ func (c *GetProperty) Get() {
 	}()
 	select {
 		case property := <-productChan:
-			jsonData, err := json.Marshal(property)
-			if err != nil {
-				c.Ctx.Output.SetStatus(http.StatusInternalServerError)
-				c.Data["json"] = map[string]string{"error": err.Error()}
-				c.ServeJSON()
-				return
-			}
-			c.Data["Properties"] = string(jsonData)
-			c.TplName = "index.html"
-			c.Render()
+			c.Data["json"] = property
+			c.ServeJSON()
 		case err := <-errChan:
 			log.Println("Error fetching property: " + err.Error())
 			c.Ctx.Output.SetStatus(http.StatusInternalServerError)

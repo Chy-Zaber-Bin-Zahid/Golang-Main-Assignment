@@ -21,7 +21,7 @@ type GeoInfo struct {
 }
 
 func (c *GetLocationSlug) GetLocation() {
-	search := c.GetString("search")
+	search := c.Ctx.Input.Param(":keyword")
 	apiUrl, err := beego.AppConfig.String("API_LOCATION_SLUG")
 	if err != nil {
 		log.Println("Error reading API_LOCATION_SLUG: " + err.Error())
@@ -46,11 +46,8 @@ func (c *GetLocationSlug) GetLocation() {
     }()
 	select {
 	case locationSlug := <-locationSlugChan:
-		c.Ctx.Input.SetData("location_slug", locationSlug)
-		useLocationSlugController := &UseLocationSlug{}
-		useLocationSlugController.Controller = c.Controller
-		useLocationSlugController.UseLocation()
-		c.StopRun()
+		c.Data["json"] = locationSlug
+		c.ServeJSON()
 	case err := <-errChan:
 		log.Println("Error fetching location slug: " + err.Error())
 	}

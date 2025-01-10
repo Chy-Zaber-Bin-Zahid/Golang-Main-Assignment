@@ -21,7 +21,7 @@ type Result struct {
 }
 
 func (c *UseLocationSlug) UseLocation() {
-	locationSlug := c.Ctx.Input.GetData("location_slug").(string)
+	locationSlug := c.Ctx.Input.Param(":locationSlug")
 	apiUrl, err := beego.AppConfig.String("API_ITEM_IDS")
 	if err != nil {
 		log.Println("Error reading API_ITEM_IDS: " + err.Error())
@@ -53,11 +53,8 @@ func (c *UseLocationSlug) UseLocation() {
 	}()
 	select {
 		case itemIds := <-itemIdsChan:
-			c.Ctx.Input.SetData("item_ids", itemIds)
-			propertyController := &GetProperty{}
-			propertyController.Controller = c.Controller
-			propertyController.Get()
-			c.StopRun()
+			c.Data["json"] = itemIds
+			c.ServeJSON()
 		case err := <-errChan:
 			log.Println("Error fetching item IDs: " + err.Error())
 	}

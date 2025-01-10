@@ -183,9 +183,102 @@ class Property {
     }
 }
 
-const dataProperty = JSON.parse(window.properties)
+class Shimmer {
+    // Function to create a single item
+    render() {
+    // Create the main div
+    const mainDiv = document.createElement('div');
+    mainDiv.className = 'max-w-md bg-white rounded-lg overflow-hidden shadow-lg flex flex-col';
 
-for (let i = 0; i < dataProperty.length; i++) {
-    const tile = new Property(dataProperty[i].Property);
-    tile.render()
+    // Create the animated pulse div
+    const pulseDiv = document.createElement('div');
+    pulseDiv.className = 'animate-pulse';
+    const pulseInnerDiv = document.createElement('div');
+    pulseInnerDiv.className = 'w-full h-64 bg-gray-200';
+    pulseDiv.appendChild(pulseInnerDiv);
+
+    // Create the content div
+    const contentDiv = document.createElement('div');
+    contentDiv.className = 'px-4 py-3 flex flex-col gap-3 flex-grow';
+
+    // Create the flex-1 div
+    const flex1Div = document.createElement('div');
+    flex1Div.className = 'flex-1 flex flex-col gap-3';
+    for (let i = 0; i < 3; i++) {
+        const innerDiv = document.createElement('div');
+        innerDiv.className = 'w-full h-4 bg-gray-200 animate-pulse';
+        flex1Div.appendChild(innerDiv);
+    }
+
+    // Create the justify-between div
+    const justifyBetweenDiv = document.createElement('div');
+    justifyBetweenDiv.className = 'flex justify-between items-center gap-2 h-full flex-1';
+    const innerDiv1 = document.createElement('div');
+    const innerDiv2 = document.createElement('div');
+    innerDiv2.className = 'max-w-[210px] w-full h-[50px] bg-gray-200 animate-pulse';
+    justifyBetweenDiv.appendChild(innerDiv1);
+    justifyBetweenDiv.appendChild(innerDiv2);
+
+    // Append all elements to the content div
+    contentDiv.appendChild(flex1Div);
+    contentDiv.appendChild(justifyBetweenDiv);
+
+    // Append pulseDiv and contentDiv to the mainDiv
+    mainDiv.appendChild(pulseDiv);
+    mainDiv.appendChild(contentDiv);
+    const shimmer = document.getElementById('shimmer');
+    shimmer.appendChild(mainDiv);
+    }
+}
+
+function shimmerFunc() {
+    for (let i = 0; i < 12; i++) {
+        const shimmer = new Shimmer();
+        shimmer.render()
+    }
+}
+
+// const dataProperty = JSON.parse(window.properties)
+
+
+function getQueryParamByName(name) {
+    // Get the URLSearchParams object from the current URL
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    // Get the value of the specified query parameter
+    return urlParams.get(name);
+}
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    shimmerFunc()
+    const searchValue = getQueryParamByName('search');
+    fetchData(searchValue);
+});
+
+async function fetchData(searchValue) {
+    try {
+        console.log("hello2")
+        const responseFirstApi = await fetch(`/api/v1/keyword/${searchValue}`);
+        if (!responseFirstApi.ok) {
+            throw new Error('Network responseFirstApi was not ok ' + responseFirstApi.statusText);
+        }
+        const locations = await responseFirstApi.json();
+        const responseSecondApi = await fetch(`/api/v1/locationSlug/${locations}`);
+        if (!responseSecondApi.ok) {
+            throw new Error('Network responseSecondApi was not ok ' + responseSecondApi.statusText);
+        }
+        const itemIds = await responseSecondApi.json();
+        const queryString = itemIds.join(',');
+        const responseThirdApi = await fetch(`/api/v1/itemIds/${queryString}`);
+        if (!responseThirdApi.ok) {
+            throw new Error('Network responseThirdApi was not ok ' + responseThirdApi.statusText);
+        }
+        const propertyData = await responseThirdApi.json();
+        for (let i = 0; i < propertyData.length; i++) {
+            const tile = new Property(propertyData[i].Property);
+            tile.render()
+        }
+    } catch (error) {
+        console.error('There has been a problem with your fetch operation:', error);
+    }
 }
