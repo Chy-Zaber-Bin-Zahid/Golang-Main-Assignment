@@ -73,10 +73,30 @@ class Property {
         const leftInnerDiv = document.createElement('div');
         leftInnerDiv.className = 'flex items-center';
 
+        // Create the star
+        if (this.property.StarRating) {
+            const starDiv = document.createElement('div')
+            starDiv.classList = 'pr-2 border-r-2 border-gray-500 mr-2 flex justify-center items-center gap-1'
+            for (let i = 0; i < this.property.StarRating; i++) {
+                const star = document.createElement('i')
+                star.className = 'ph-fill ph-star text-amber-300 text-[12px] pb-[3px]'
+                starDiv.appendChild(star)
+            }
+            leftInnerDiv.appendChild(starDiv);
+        }
+
+        // Create like icon
+        const likeDiv = document.createElement('div')
+        likeDiv.classList = `flex justify-center items-center p-1 text-white text-xs rounded-full ${!this.property.Counts.Reviews ? 'bg-gray-400' : 'bg-blue-700'} mr-1`
+        const like = document.createElement('i')
+        like.classList = 'ph-fill ph-thumbs-up'
+        likeDiv.appendChild(like)
+        leftInnerDiv.appendChild(likeDiv);
+        
         // Create the blue text span
         if (this.property.Counts.Reviews){
             const blueTextSpan = document.createElement('span');
-            blueTextSpan.className = 'text-blue-700 font-medium mr-2';
+            blueTextSpan.className = 'text-blue-700 font-medium mr-1';
             blueTextSpan.textContent = this.property.ReviewScore
             leftInnerDiv.appendChild(blueTextSpan);
         }
