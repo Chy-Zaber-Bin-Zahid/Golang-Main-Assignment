@@ -9,11 +9,11 @@
     <script>
         window.properties = "{{ .Properties }}";
     </script>
-    <script src="/static/js/script.js" defer></script>
+    <script src="../static/js/scripts.js" defer></script>
 </head>
-<body class="p-4 grid grid-cols-4 gap-4">
+<body>
     <!-- Tiles -->
-    <div id="tiles">
+    <div id="tiles" class="p-4 grid grid-cols-4 gap-4 hidden">
         <!-- <div class="max-w-md bg-white rounded-lg overflow-hidden shadow-lg">
             <div class="relative">
                 <img src="" 
@@ -60,21 +60,24 @@
         </div> -->
     </div>
     <!-- Shimmer -->
-    <div id="shimmer" class="max-w-md bg-white rounded-lg overflow-hidden shadow-lg flex flex-col hidden">
-        <div class="animate-pulse">
-            <div class="w-full h-64 bg-gray-200"></div>
-        </div>
-        <div class="px-4 py-3 flex flex-col gap-3 flex-grow">
-            <div class="flex-1 flex flex-col gap-3">
-                <div class="w-full h-4 bg-gray-200 animate-pulse"></div>
-                <div class="w-full h-4 bg-gray-200 animate-pulse"></div>
-                <div class="w-full h-4 bg-gray-200 animate-pulse"></div>
+     <div id="shimmer" class="grid grid-cols-4 p-4 gap-4">
+        <div class="max-w-md bg-white rounded-lg overflow-hidden shadow-lg flex flex-col">
+            <div class="animate-pulse">
+                <div class="w-full h-64 bg-gray-200"></div>
             </div>
-            <div class="flex justify-between items-center gap-2 h-full flex-1">
-                <div></div>
-                <div class="max-w-[250px] w-full h-full bg-gray-200 animate-pulse"></div>
+            <div class="px-4 py-3 flex flex-col gap-3 flex-grow">
+                <div class="flex-1 flex flex-col gap-3">
+                    <div class="w-full h-4 bg-gray-200 animate-pulse"></div>
+                    <div class="w-full h-4 bg-gray-200 animate-pulse"></div>
+                    <div class="w-full h-4 bg-gray-200 animate-pulse"></div>
+                </div>
+                <div class="flex justify-between items-center gap-2 h-full flex-1">
+                    <div></div>
+                    <div class="max-w-[210px] w-full h-[50px] bg-gray-200 animate-pulse"></div>
+                </div>
             </div>
         </div>
-    </div>
+     </div>
+
 </body>
 </html>

@@ -80,7 +80,13 @@ func (c *GetProperty) Get() {
 	}()
 	select {
 		case property := <-productChan:
-			jsonData, _ := json.Marshal(property)
+			jsonData, err := json.Marshal(property)
+			if err != nil {
+				c.Ctx.Output.SetStatus(http.StatusInternalServerError)
+				c.Data["json"] = map[string]string{"error": err.Error()}
+				c.ServeJSON()
+				return
+			}
 			c.Data["Properties"] = string(jsonData)
 			c.TplName = "index.html"
 			c.Render()
