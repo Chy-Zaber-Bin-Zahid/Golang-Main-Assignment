@@ -9,11 +9,47 @@
     <script src="../static/js/script.js" defer></script>
 </head>
 <body>
-    <!-- Tiles -->
-    <div id="tiles" class="p-4 grid grid-cols-4 max-[1530px]:grid-cols-3 max-[1170px]:grid-cols-2 max-[740px]:grid-cols-1 gap-4 hidden">
+    <div class="max-w-[1990px] mx-auto">
+        <section class="px-4 py-4 flex justify-between items-center">
+            <!-- Filter Buttons -->
+            <div class="flex gap-2 text-blue-800 text-[13px] font-semibold">
+                <button class="px-4 py-2 rounded-[10px] border border-gray-200 hover:border-blue-800 hover:text-white hover:bg-blue-800 duration-300 transition-all shadow-md">
+                    Dates
+                </button>
+                <button class="px-4 py-2 rounded-[10px] border border-gray-200 hover:border-blue-800 hover:text-white hover:bg-blue-800 duration-300 transition-all shadow-md">
+                    Price
+                </button>
+                <button class="px-4 py-2 rounded-[10px] border border-gray-200 hover:border-blue-800 hover:text-white hover:bg-blue-800 duration-300 transition-all shadow-md">
+                    Guests
+                </button>
+                <button class="px-4 py-2 rounded-[10px] border border-gray-200 hover:border-blue-800 hover:text-white hover:bg-blue-800 duration-300 transition-all shadow-md">
+                    More Filters
+                </button>
+            </div>
+            <!-- Sort Dropdown -->
+            <div class="flex items-center gap-2">
+                <span class="text-blue-800 font-semibold">Sort by</span>
+                <div class="relative">
+                    <select class="appearance-none pl-2 pr-16 py-3 border-2 border-blue-800 text-sm text-blue-800 font-semibold bg-white focus:outline-none focus:border-blue-800">
+                        <option>Most Popular</option>
+                        <option>Low to High</option>
+                        <option>High to Low</option>
+                        <option>Top Rated</option>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                        <svg class="fill-current h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                            <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Tiles -->
+        <section id="tiles" class="p-4 grid grid-cols-4 max-[1530px]:grid-cols-3 max-[1170px]:grid-cols-2 max-[740px]:grid-cols-1 gap-4 hidden">
+        </section>
+        <!-- Shimmer -->
+        <section id="shimmer" class="grid grid-cols-4 max-[1530px]:grid-cols-3 max-[1170px]:grid-cols-2 max-[740px]:grid-cols-1 p-4 gap-4">
+        </section>
     </div>
-    <!-- Shimmer -->
-     <div id="shimmer" class="grid grid-cols-4 max-[1530px]:grid-cols-3 max-[1170px]:grid-cols-2 max-[740px]:grid-cols-1 p-4 gap-4">
-     </div>
 </body>
 </html>
