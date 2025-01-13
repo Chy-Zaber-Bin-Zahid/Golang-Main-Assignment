@@ -269,8 +269,6 @@ function shimmerFunc() {
     }
 }
 
-// const dataProperty = JSON.parse(window.properties)
-
 
 function getQueryParamByName(name) {
     // Get the URLSearchParams object from the current URL
@@ -281,13 +279,18 @@ function getQueryParamByName(name) {
 }
 
 document.addEventListener('DOMContentLoaded', (event) => {
-    shimmerFunc()
+    // shimmerFunc()
     const searchValue = getQueryParamByName('search');
-    fetchData(searchValue);
+    fetchData(searchValue, "");
 });
 
-async function fetchData(searchValue) {
+async function fetchData(searchValue, selectedValue) {
     try {
+        const container = document.getElementById('tiles');
+        container.innerHTML = '';
+        document.getElementById('shimmer').classList.remove('hidden');
+        document.getElementById('tiles').classList.add('hidden');
+        shimmerFunc()
         const responseFirstApi = await fetch(`/api/v1/keyword/${searchValue}`);
         if (!responseFirstApi.ok) {
             throw new Error('Network responseFirstApi was not ok ' + responseFirstApi.statusText);
@@ -304,6 +307,15 @@ async function fetchData(searchValue) {
             throw new Error('Network responseThirdApi was not ok ' + responseThirdApi.statusText);
         }
         const propertyData = await responseThirdApi.json();
+        if (selectedValue === "Lowest Price") {
+            propertyData.sort((a, b) => a.Property.Price - b.Property.Price);
+        } else if (selectedValue === "Highest Price"){
+            propertyData.sort((a, b) => b.Property.Price - a.Property.Price);
+        } else if (selectedValue === "Highest Rating"){
+            propertyData.sort((a, b) => b.Property.ReviewScore - a.Property.ReviewScore);
+        } else if (selectedValue === "Lowest Rating"){
+            propertyData.sort((a, b) => a.Property.ReviewScore - b.Property.ReviewScore);
+        } 
         for (let i = 0; i < propertyData.length; i++) {
             const tile = new Property(propertyData[i].Property);
             tile.render()
@@ -313,3 +325,9 @@ async function fetchData(searchValue) {
         console.error('There has been a problem with your fetch operation:', error);
     }
 }
+
+const selectElement = document.getElementById('sortOptions');
+selectElement.addEventListener('change', function() {
+    const searchValue = getQueryParamByName('search');
+    fetchData(searchValue, selectElement.value)
+});

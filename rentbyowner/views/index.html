@@ -30,11 +30,12 @@
             <div class="flex items-center gap-2">
                 <span class="text-blue-800 font-semibold">Sort by</span>
                 <div class="relative">
-                    <select class="appearance-none pl-2 pr-16 py-3 border-2 border-blue-800 text-sm text-blue-800 font-semibold bg-white focus:outline-none focus:border-blue-800">
-                        <option>Most Popular</option>
-                        <option>Low to High</option>
-                        <option>High to Low</option>
-                        <option>Top Rated</option>
+                    <select id="sortOptions" class="appearance-none pl-2 pr-16 py-3 border-2 border-blue-800 font-semibold text-blue-800 text-sm bg-white focus:outline-none focus:border-blue-800">
+                        <option class="font-semibold text-gray-600">Most Popular</option>
+                        <option class="font-semibold text-gray-600">Highest Price</option>
+                        <option class="font-semibold text-gray-600">Lowest Price</option>
+                        <option class="font-semibold text-gray-600">Highest Rating</option>
+                        <option class="font-semibold text-gray-600">Lowest Rating</option>
                     </select>
                     <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                         <svg class="fill-current h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
