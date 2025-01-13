@@ -36,3 +36,7 @@ go mod tidy
 ```
 bee run
 ```
+**Open Browser And Go To This URL:**
+```
+http://localhost:8080/refine?search=Dhaka
+```
