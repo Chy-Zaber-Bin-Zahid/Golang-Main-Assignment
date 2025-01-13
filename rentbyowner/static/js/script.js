@@ -286,6 +286,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 async function fetchData(searchValue, selectedValue) {
     try {
+        const sortLocalCheck = localStorage.getItem('filter');
+        if (sortLocalCheck) {
+            selectedValue = localStorage.getItem('filter')
+        } else {
+            localStorage.setItem('filter', 'Most Popular')
+            selectedValue = 'Most Popular'
+        }
         const container = document.getElementById('tiles');
         container.innerHTML = '';
         document.getElementById('shimmer').classList.remove('hidden');
@@ -327,7 +334,11 @@ async function fetchData(searchValue, selectedValue) {
 }
 
 const selectElement = document.getElementById('sortOptions');
+if (localStorage.getItem('filter')) {
+    selectElement.value = localStorage.getItem('filter')
+}
 selectElement.addEventListener('change', function() {
     const searchValue = getQueryParamByName('search');
+    localStorage.setItem('filter', selectElement.value)
     fetchData(searchValue, selectElement.value)
 });
