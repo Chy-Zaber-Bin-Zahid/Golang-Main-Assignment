@@ -4,25 +4,188 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rental Card</title>
+    <link href="/path/to/hotel-datepicker.css" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/path/to/fecha.js"></script>
+    <script src="/path/to/hotel-datepicker.min.js"></script>
     <script src="../static/js/script.js" defer></script>
 </head>
 <body>
+    <div id="blueOverlay-main" class="hidden">
+        <div id="blueOverlay" class="fixed inset-0 bg-blue-800 bg-opacity-60 flex items-center justify-center z-20"></div>
+        <!-- Modal Content -->
+        <div id="modal-dates" class="bg-white rounded-lg max-w-[700px] w-full z-30 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 shadow-xl hidden">
+            <button id="modal-cross" class="absolute right-4 top-4 text-gray-500 hover:text-gray-700">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            <div class="p-6 pb-0">
+                <h2 class="text-xl font-semibold text-center">When do you want to travel?</h2>
+            </div>
+            <!-- Calendar Container -->
+            <div class="p-6">
+                <input type="text" id="datepicker" class="hidden">
+            </div>
+            <div class="px-6 pb-6">
+                <button class="w-full bg-emerald-500 text-white py-3 rounded-lg font-semibold hover:bg-emerald-600 transition-colors">
+                    Continue
+                    <span class="text-sm font-normal ml-1">6 Nights</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="modal-filter" class="bg-white rounded-lg w-full max-w-[600px] p-4 z-30 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 shadow-xl hidden">
+            <div class="overflow-y-auto h-[700px]">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-semibold text-center flex-1">Filters</h2>
+                    <button class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-3">Type of property</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <span class="text-emerald-400">
+                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+                                    </svg>
+                                </span>
+                                <div>
+                                    <div class="flex items-center gap-1">
+                                        Pet-friendly only 
+                                        <a href="#" class="text-emerald-400 text-sm">(Learn More)</a>
+                                    </div>
+                                    <p class="text-sm text-gray-500">Show only pet-friendly properties</p>
+                                </div>
+                            </div>
+                            <input type="checkbox" class="w-5 h-5 rounded border-gray-300">
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <span class="text-emerald-400">
+                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+                                    </svg>
+                                </span>
+                                <div>
+                                    <div class="flex items-center gap-1">
+                                        Eco-friendly only 
+                                        <a href="#" class="text-emerald-400 text-sm">(Learn More)</a>
+                                    </div>
+                                    <p class="text-sm text-gray-500">Show only eco-friendly properties</p>
+                                </div>
+                            </div>
+                            <input type="checkbox" class="w-5 h-5 rounded border-gray-300">
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-1">Select a date</h3>
+                    <p class="text-sm text-gray-500 mb-2">When do you want to travel?</p>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="text-sm text-gray-500">Check-in</label>
+                            <button class="w-full mt-1 px-4 py-2 border rounded-md flex items-center justify-between">
+                                Mar 25
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div>
+                            <label class="text-sm text-gray-500">Check-out</label>
+                            <button class="w-full mt-1 px-4 py-2 border rounded-md flex items-center justify-between">
+                                Mar 31
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-3">Guests</h3>
+                    <div class="flex items-center gap-4">
+                        <button class="w-10 h-10 rounded-md bg-emerald-400 text-white flex items-center justify-center text-xl">-</button>
+                        <span class="text-xl">0</span>
+                        <button class="w-10 h-10 rounded-md bg-emerald-400 text-white flex items-center justify-center text-xl">+</button>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-1">Price range</h3>
+                    <p class="text-sm text-gray-500 mb-4">Select an average nightly price</p>
+                    <!-- <div class="h-2 bg-gray-200 rounded-full mb-4 relative">
+                        <div class="absolute h-full bg-emerald-400 left-1/4 right-1/4 rounded-full"></div>
+                        <div class="absolute w-4 h-4 bg-white border-2 border-emerald-400 rounded-full -left-2 top-1/2 transform -translate-y-1/2"></div>
+                        <div class="absolute w-4 h-4 bg-white border-2 border-emerald-400 rounded-full -right-2 top-1/2 transform -translate-y-1/2"></div>
+                    </div> -->
+                    <div class="flex items-center gap-4">
+                        <div class="flex-1">
+                            <input type="text" value="₹ 37499" class="w-full px-4 py-2 border rounded-md">
+                        </div>
+                        <span class="text-gray-400">-</span>
+                        <div class="flex-1">
+                            <input type="text" value="₹ 122527" class="w-full px-4 py-2 border rounded-md">
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-1">Amenities</h3>
+                    <p class="text-sm text-gray-500 mb-3">Choose the amenities that are most important</p>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="flex items-center gap-2">
+                            <input type="checkbox" class="w-4 h-4 rounded border-gray-300">
+                            <span class="text-sm">Air Conditioner</span>
+                        </label>
+                        <label class="flex items-center gap-2">
+                            <input type="checkbox" class="w-4 h-4 rounded border-gray-300">
+                            <span class="text-sm">Balcony/terrace</span>
+                        </label>
+                        <label class="flex items-center gap-2">
+                            <input type="checkbox" class="w-4 h-4 rounded border-gray-300">
+                            <span class="text-sm">Bedding/linens</span>
+                        </label>
+                        <label class="flex items-center gap-2">
+                            <input type="checkbox" class="w-4 h-4 rounded border-gray-300">
+                            <span class="text-sm">Breakfast</span>
+                        </label>
+                        <label class="flex items-center gap-2">
+                            <input type="checkbox" class="w-4 h-4 rounded border-gray-300">
+                            <span class="text-sm">Child Friendly</span>
+                        </label>
+                        <label class="flex items-center gap-2">
+                            <input type="checkbox" class="w-4 h-4 rounded border-gray-300">
+                            <span class="text-sm">Hot Tub</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="flex gap-3">
+                <button class="flex-1 px-4 py-2 border rounded-md hover:bg-gray-50">Clear</button>
+                <button class="flex-1 px-4 py-2 bg-emerald-400 text-white rounded-md hover:bg-emerald-500">Search</button>
+            </div>
+        </div>
+    </div>
     <div class="max-w-[1990px] mx-auto">
         <section class="px-4 py-4 flex justify-between items-center">
             <!-- Filter Buttons -->
             <div class="flex gap-2 text-blue-800 text-[13px] font-semibold">
-                <button class="px-4 py-2 rounded-[10px] border border-gray-200 hover:border-blue-800 hover:text-white hover:bg-blue-800 duration-300 transition-all shadow-md">
+                <button id="dates" class="px-4 py-2 rounded-[10px] border border-gray-200 hover:border-blue-800 hover:text-white hover:bg-blue-800 duration-300 transition-all shadow-md">
                     Dates
                 </button>
-                <button class="px-4 py-2 rounded-[10px] border border-gray-200 hover:border-blue-800 hover:text-white hover:bg-blue-800 duration-300 transition-all shadow-md">
+                <button class="filter px-4 py-2 rounded-[10px] border border-gray-200 hover:border-blue-800 hover:text-white hover:bg-blue-800 duration-300 transition-all shadow-md">
                     Price
                 </button>
-                <button class="px-4 py-2 rounded-[10px] border border-gray-200 hover:border-blue-800 hover:text-white hover:bg-blue-800 duration-300 transition-all shadow-md">
+                <button class="filter px-4 py-2 rounded-[10px] border border-gray-200 hover:border-blue-800 hover:text-white hover:bg-blue-800 duration-300 transition-all shadow-md">
                     Guests
                 </button>
-                <button class="px-4 py-2 rounded-[10px] border border-gray-200 hover:border-blue-800 hover:text-white hover:bg-blue-800 duration-300 transition-all shadow-md">
+                <button class="filter px-4 py-2 rounded-[10px] border border-gray-200 hover:border-blue-800 hover:text-white hover:bg-blue-800 duration-300 transition-all shadow-md">
                     More Filters
                 </button>
             </div>
@@ -30,7 +193,7 @@
             <div class="flex items-center gap-2">
                 <span class="text-blue-800 font-semibold">Sort by</span>
                 <div class="relative">
-                    <select id="sortOptions" class="appearance-none pl-2 pr-16 py-3 border-2 border-blue-800 font-semibold text-blue-800 text-sm bg-white focus:outline-none focus:border-blue-800">
+                    <select id="sortOptions" class="appearance-none pl-2 pr-16 py-3 border-2 border-blue-800 font-semibold text-blue-800 text-sm bg-white focus:outline-none focus:border-blue-800 hover:cursor-pointer">
                         <option class="font-semibold text-gray-600">Most Popular</option>
                         <option class="font-semibold text-gray-600">Highest Price</option>
                         <option class="font-semibold text-gray-600">Lowest Price</option>

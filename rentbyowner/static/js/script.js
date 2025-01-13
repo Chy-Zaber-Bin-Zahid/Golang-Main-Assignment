@@ -16,7 +16,7 @@ class Property {
         // Create the image element
         const img = document.createElement('img');
         img.src = `https://imgservice.rentbyowner.com/640x417/${this.property.FeatureImage}`;
-        img.alt = this.property.FeatureImage;
+        img.alt = this.property.PropertyName;
         img.className = 'w-full h-64 object-cover';
         relativeDiv.appendChild(img);
 
@@ -30,7 +30,7 @@ class Property {
 
         // Create the heart icon
         const heartIcon = document.createElement('i');
-        heartIcon.className = 'ph ph-heart-straight text-white text-2xl z-50 relative';
+        heartIcon.className = 'ph ph-heart-straight text-white text-2xl z-10 relative';
         heartIcon.id = this.id
         button.appendChild(heartIcon);
 
@@ -344,3 +344,67 @@ selectElement.addEventListener('change', function() {
     localStorage.setItem('filter', selectElement.value)
     fetchData(searchValue, selectElement.value)
 });
+
+// const input = document.getElementById('datepicker');
+// const datepicker = new HotelDatepicker(input, {
+//     startDate: new Date(),
+//     format: 'YYYY-MM-DD',
+//     monthsToDisplay: 2,
+//     showTopbar: false,
+//     selectForward: true,
+//     minNights: 1,
+//     maxNights: 28,
+//     colors: {
+//         selected: '#1e40af', // Blue-800
+//         hoveredInRange: '#dbeafe', // Blue-100
+//         selectedInRange: '#eff6ff', // Blue-50
+//     },
+//     i18n: {
+//         month: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+//         day: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+//     }
+// });
+
+// // Update nights count when selection changes
+// datepicker.on('selected', function (startDate, endDate) {
+//     if (startDate && endDate) {
+//         const nights = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+//         document.querySelector('button span').textContent = `${nights} Nights`;
+//     }
+// });
+
+function modal(state, modal) {
+    if (state) {
+        const blueOverlay = document.getElementById('blueOverlay-main')
+        blueOverlay.classList.remove('hidden')
+        if (modal === 'date') {
+            document.getElementById('modal-dates').classList.remove('hidden')
+        } else if (modal === 'filter') {
+            document.getElementById('modal-filter').classList.remove('hidden')
+        }
+    } else {
+        const blueOverlay = document.getElementById('blueOverlay-main')
+        blueOverlay.classList.add('hidden')
+        document.getElementById('modal-filter').classList.add('hidden')
+        document.getElementById('modal-dates').classList.add('hidden')
+    }
+}
+
+document.getElementById('blueOverlay').addEventListener('click', () => {
+    modal(false, 'blueOverlay')
+})
+
+document.getElementById('dates').addEventListener('click', () => {
+    modal(true, 'date')
+})
+
+const filters = document.querySelectorAll('.filter'); 
+filters.forEach((filter) => {
+    filter.addEventListener('click', () => {
+        modal(true, 'filter');
+    });
+});
+
+document.getElementById('modal-cross').addEventListener('click', () => {
+    modal(false, 'cross')
+})

@@ -13,5 +13,4 @@ func init() {
     )
 	beego.Router("/refine", &controllers.MainController{})
     beego.AddNamespace(ns)
-
 }
