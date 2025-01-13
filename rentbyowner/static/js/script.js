@@ -6,7 +6,7 @@ class Property {
     render () {
         // Create the main container div
         const tile = document.createElement('div');
-        tile.className = 'max-w-md bg-white rounded-lg overflow-hidden shadow-lg';
+        tile.className = 'w-full bg-white rounded-lg overflow-hidden shadow-lg';
 
         // Create the relative div
         const relativeDiv = document.createElement('div');
@@ -186,7 +186,7 @@ class Shimmer {
     render() {
     // Create the main div
     const mainDiv = document.createElement('div');
-    mainDiv.className = 'max-w-md bg-white rounded-lg overflow-hidden shadow-lg flex flex-col';
+    mainDiv.className = 'w-full bg-white rounded-lg overflow-hidden shadow-lg flex flex-col';
 
     // Create the animated pulse div
     const pulseDiv = document.createElement('div');
