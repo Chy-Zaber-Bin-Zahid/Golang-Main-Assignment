@@ -32,7 +32,8 @@ type Property struct {
 }
 
 type Item struct {
-    Property  Property `json:"Property"`
+    Property Property `json:"Property"`
+    ID       string   `json:"ID"`
 }
 
 type Response struct {

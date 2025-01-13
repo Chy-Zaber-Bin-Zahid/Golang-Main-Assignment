@@ -1,6 +1,7 @@
 class Property {
     constructor(property) {
-        this.property = property;
+        this.property = property.Property;
+        this.id = property.ID;
     }
     
     render () {
@@ -30,6 +31,7 @@ class Property {
         // Create the heart icon
         const heartIcon = document.createElement('i');
         heartIcon.className = 'ph ph-heart-straight text-white text-2xl z-50 relative';
+        heartIcon.id = this.id
         button.appendChild(heartIcon);
 
         // Create the overlay div
@@ -231,8 +233,8 @@ class Shimmer {
 
 function initializeHeartButtons() {
     const buttons = document.querySelectorAll('.ph-heart-straight');
-    buttons.forEach((button, index) => {
-        const isRed = localStorage.getItem(`heart-${index}`) === 'true';
+    buttons.forEach((button) => {
+        const isRed = localStorage.getItem(`heart-${button.id}`) === 'true';
         if (isRed) {
             button.classList.remove('ph', 'text-white');
             button.classList.add('ph-fill', 'text-red-500');
@@ -241,21 +243,21 @@ function initializeHeartButtons() {
             button.classList.add('ph', 'text-white');
         }
         button.addEventListener('click', () => {
-            const exist = localStorage.getItem(`heart-${index}`) === 'true' ? true : false;
+            const exist = localStorage.getItem(`heart-${button.id}`) === 'true' ? true : false;
             if (exist) {
                 if (exist) {
                     button.classList.add('ph', 'text-white');
                     button.classList.remove('ph-fill', 'text-red-500');
-                    localStorage.setItem(`heart-${index}`, 'false');
+                    localStorage.setItem(`heart-${button.id}`, 'false');
                 } else {
                     button.classList.remove('ph', 'text-white');
                     button.classList.add('ph-fill', 'text-red-500');
-                    localStorage.setItem(`heart-${index}`, 'true');
+                    localStorage.setItem(`heart-${button.id}`, 'true');
                 }
             } else {
                 button.classList.remove('ph', 'text-white');
                 button.classList.add('ph-fill', 'text-red-500');
-                localStorage.setItem(`heart-${index}`, 'true');
+                localStorage.setItem(`heart-${button.id}`, 'true');
             }
 
         });
@@ -324,7 +326,7 @@ async function fetchData(searchValue, selectedValue) {
             propertyData.sort((a, b) => a.Property.ReviewScore - b.Property.ReviewScore);
         } 
         for (let i = 0; i < propertyData.length; i++) {
-            const tile = new Property(propertyData[i].Property);
+            const tile = new Property(propertyData[i]);
             tile.render()
         }
         initializeHeartButtons()
