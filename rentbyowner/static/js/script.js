@@ -405,6 +405,9 @@ filters.forEach((filter) => {
     });
 });
 
-document.getElementById('modal-cross').addEventListener('click', () => {
-    modal(false, 'cross')
-})
+const modalCross = document.querySelectorAll('.modal-cross'); 
+modalCross.forEach((filter) => {
+    filter.addEventListener('click', () => {
+        modal(false, 'cross')
+    });
+});
