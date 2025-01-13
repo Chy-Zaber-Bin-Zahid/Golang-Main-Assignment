@@ -41,7 +41,6 @@ type Response struct {
 
 func (c *GetProperty) GetPropertyData() {
 	itemIDs := c.Ctx.Input.Param(":itemIds")
-	log.Println(itemIDs)
 	apiKey, err := beego.AppConfig.String("API_PROPERTY")
 	if err != nil {
 		log.Println("Error reading API_PROPERTY: " + err.Error())

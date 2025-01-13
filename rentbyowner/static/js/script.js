@@ -1,7 +1,6 @@
 class Property {
     constructor(property) {
         this.property = property;
-        console.log(this.property.FeatureImage)
     }
     
     render () {
@@ -30,7 +29,7 @@ class Property {
 
         // Create the heart icon
         const heartIcon = document.createElement('i');
-        heartIcon.className = 'ph ph-heart text-white text-xl z-50 relative';
+        heartIcon.className = 'ph ph-heart-straight text-white text-2xl z-50 relative';
         button.appendChild(heartIcon);
 
         // Create the overlay div
@@ -131,7 +130,6 @@ class Property {
         let tagsStore = "";
         for (let i = 0; i < 3; i++) {
             const key = keys[i];
-            console.log(key)
             if (key) {
                 if (i === 2) {
                     tagsStore += `${amenities[key]}`;
@@ -231,6 +229,39 @@ class Shimmer {
     }
 }
 
+function initializeHeartButtons() {
+    const buttons = document.querySelectorAll('.ph-heart-straight');
+    buttons.forEach((button, index) => {
+        const isRed = localStorage.getItem(`heart-${index}`) === 'true';
+        if (isRed) {
+            button.classList.remove('ph', 'text-white');
+            button.classList.add('ph-fill', 'text-red-500');
+        } else {
+            button.classList.remove('ph-fill', 'text-red-500');
+            button.classList.add('ph', 'text-white');
+        }
+        button.addEventListener('click', () => {
+            const exist = localStorage.getItem(`heart-${index}`) === 'true' ? true : false;
+            if (exist) {
+                if (exist) {
+                    button.classList.add('ph', 'text-white');
+                    button.classList.remove('ph-fill', 'text-red-500');
+                    localStorage.setItem(`heart-${index}`, 'false');
+                } else {
+                    button.classList.remove('ph', 'text-white');
+                    button.classList.add('ph-fill', 'text-red-500');
+                    localStorage.setItem(`heart-${index}`, 'true');
+                }
+            } else {
+                button.classList.remove('ph', 'text-white');
+                button.classList.add('ph-fill', 'text-red-500');
+                localStorage.setItem(`heart-${index}`, 'true');
+            }
+
+        });
+    });
+}
+
 function shimmerFunc() {
     for (let i = 0; i < 12; i++) {
         const shimmer = new Shimmer();
@@ -257,7 +288,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 async function fetchData(searchValue) {
     try {
-        console.log("hello2")
         const responseFirstApi = await fetch(`/api/v1/keyword/${searchValue}`);
         if (!responseFirstApi.ok) {
             throw new Error('Network responseFirstApi was not ok ' + responseFirstApi.statusText);
@@ -278,6 +308,7 @@ async function fetchData(searchValue) {
             const tile = new Property(propertyData[i].Property);
             tile.render()
         }
+        initializeHeartButtons()
     } catch (error) {
         console.error('There has been a problem with your fetch operation:', error);
     }
