@@ -364,6 +364,7 @@ function modal(state, modal) {
 
 document.getElementById('blueOverlay').addEventListener('click', () => {
     modal(false, 'blueOverlay')
+    document.getElementsByTagName('body')[0].classList.remove('overflow-hidden');
 })
 
 document.getElementById('dates').addEventListener('click', () => {
@@ -381,33 +382,19 @@ const modalCross = document.querySelectorAll('.modal-cross');
 modalCross.forEach((filter) => {
     filter.addEventListener('click', () => {
         modal(false, 'cross')
+        document.getElementsByTagName('body')[0].classList.remove('overflow-hidden');
     });
 });
 
-// const option = {
-//     startDate: new Date(),
-//     format: 'YYYY-MM-DD',
-//     monthsToDisplay: 2,
-//     showTopbar: false,
-//     selectForward: true,
-//     minNights: 1,
-//     maxNights: 28,
-//     colors: {
-//         selected: '#1e40af', // Blue-800
-//         hoveredInRange: '#dbeafe', // Blue-100
-//         selectedInRange: '#eff6ff', // Blue-50
-//     },
-//     i18n: {
-//         month: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-//         day: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-//     }
-// }
-
-// var hdpkr = new HotelDatepicker(document.getElementById("input-id"), option);
-
-var input = document.getElementById('input-id');
-var datepicker = new HotelDatepicker(input, {
+let input = document.getElementById('input-id');
+let datepicker = new HotelDatepicker(input, {
     inline: true,
     clearButton: false,
     showTopbar: false,
+});
+
+document.querySelectorAll('.modal-btn').forEach(button => {
+    button.addEventListener('click', () => {
+        document.getElementsByTagName('body')[0].classList.add('overflow-hidden');
+    });
 });
