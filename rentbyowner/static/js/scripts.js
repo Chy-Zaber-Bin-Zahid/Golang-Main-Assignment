@@ -345,34 +345,6 @@ selectElement.addEventListener('change', function() {
     fetchData(searchValue, selectElement.value)
 });
 
-// const input = document.getElementById('datepicker');
-// const datepicker = new HotelDatepicker(input, {
-//     startDate: new Date(),
-//     format: 'YYYY-MM-DD',
-//     monthsToDisplay: 2,
-//     showTopbar: false,
-//     selectForward: true,
-//     minNights: 1,
-//     maxNights: 28,
-//     colors: {
-//         selected: '#1e40af', // Blue-800
-//         hoveredInRange: '#dbeafe', // Blue-100
-//         selectedInRange: '#eff6ff', // Blue-50
-//     },
-//     i18n: {
-//         month: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-//         day: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-//     }
-// });
-
-// // Update nights count when selection changes
-// datepicker.on('selected', function (startDate, endDate) {
-//     if (startDate && endDate) {
-//         const nights = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
-//         document.querySelector('button span').textContent = `${nights} Nights`;
-//     }
-// });
-
 function modal(state, modal) {
     if (state) {
         const blueOverlay = document.getElementById('blueOverlay-main')
