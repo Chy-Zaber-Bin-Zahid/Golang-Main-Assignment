@@ -7,6 +7,68 @@
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="../static/js/scripts.js" defer></script>
+    <style>
+        .range_container {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        max-width: 55%;
+        margin: 20px auto;
+        }
+
+        .sliders_control {
+        position: relative;
+        margin-bottom: 10px;
+        }
+
+        .form_control {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        font-size: 24px;
+        color: #635a5a;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        pointer-events: all;
+        width: 20px;
+        height: 20px;
+        background-color: #00e08e;
+        border-radius: 50%;
+        cursor: pointer;
+        }
+
+        input[type=range]::-moz-range-thumb {
+        -webkit-appearance: none;
+        pointer-events: all;
+        width: 20px;
+        height: 20px;
+        background-color: #00e08e;
+        border-radius: 50%;
+        cursor: pointer;
+        }
+
+        input[type=range]::-webkit-slider-thumb:hover {
+        background: #00e08e;
+        }
+
+        input[type="range"] {
+        -webkit-appearance: none;
+        appearance: none;
+        height: 6px;
+        width: 100%;
+        position: absolute;
+        background-color: #00e08e;
+        pointer-events: none;
+        }
+
+        #fromSlider {
+        height: 0;
+        z-index: 1;
+        top: 3.7px;
+        }
+    </style>
 </head>
 <body>
     <div id="blueOverlay-main" class="hidden">
@@ -124,12 +186,12 @@
                 <div class="py-3 border-b border-gray-200 relative pb-[18px]">
                     <h3 class="text-lg font-semibold">Price range</h3>
                     <p class="text-sm text-gray-500 mb-2 italic font-semibold">Select an average nightly price</p>
-                    <div class="relative w-full max-w-[300px] mx-auto h-4 flex items-center mb-4">
-                        <div class="absolute h-1 bg-emerald-400 w-full"></div>
-                        <div class="w-4 h-4 bg-emerald-400 rounded-full"></div>
-                        <div class="flex-grow"></div>
-                        <div class="w-4 h-4 bg-emerald-400 rounded-full"></div>
-                    </div>
+                    <div class="range_container">
+                        <div class="sliders_control">
+                          <input id="fromSlider" type="range" value="0" min="0" max="100" />
+                          <input id="toSlider" type="range" value="100" min="0" max="100" />
+                        </div>
+                      </div>
                     <div class="flex items-center justify-center gap-2 max-w-[380px] w-full mx-auto">
                         <!-- Min Price -->
                         <div class="border-2 border-gray-200 rounded-lg px-4 py-3 w-48 flex items-center justify-between h-[70px] flex-1">
