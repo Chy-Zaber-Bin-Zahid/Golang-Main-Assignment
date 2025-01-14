@@ -383,3 +383,31 @@ modalCross.forEach((filter) => {
         modal(false, 'cross')
     });
 });
+
+// const option = {
+//     startDate: new Date(),
+//     format: 'YYYY-MM-DD',
+//     monthsToDisplay: 2,
+//     showTopbar: false,
+//     selectForward: true,
+//     minNights: 1,
+//     maxNights: 28,
+//     colors: {
+//         selected: '#1e40af', // Blue-800
+//         hoveredInRange: '#dbeafe', // Blue-100
+//         selectedInRange: '#eff6ff', // Blue-50
+//     },
+//     i18n: {
+//         month: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+//         day: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+//     }
+// }
+
+// var hdpkr = new HotelDatepicker(document.getElementById("input-id"), option);
+
+var input = document.getElementById('input-id');
+var datepicker = new HotelDatepicker(input, {
+    inline: true,
+    clearButton: false,
+    showTopbar: false,
+});

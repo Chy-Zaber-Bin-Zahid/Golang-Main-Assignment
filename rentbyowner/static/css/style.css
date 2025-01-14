@@ -1,0 +1,130 @@
+.range_container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 55%;
+    margin: 20px auto;
+    }
+
+    .sliders_control {
+    position: relative;
+    margin-bottom: 10px;
+    }
+
+    .form_control {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    font-size: 24px;
+    color: #635a5a;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    pointer-events: all;
+    width: 20px;
+    height: 20px;
+    background-color: #00e08e;
+    border-radius: 50%;
+    cursor: pointer;
+    }
+
+    input[type=range]::-moz-range-thumb {
+    -webkit-appearance: none;
+    pointer-events: all;
+    width: 20px;
+    height: 20px;
+    background-color: #00e08e;
+    border-radius: 50%;
+    cursor: pointer;
+    }
+
+    input[type=range]::-webkit-slider-thumb:hover {
+    background: #00e08e;
+    }
+
+    input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    width: 100%;
+    position: absolute;
+    background-color: #00e08e;
+    pointer-events: none;
+    }
+
+    #fromSlider {
+    height: 0;
+    z-index: 1;
+    top: 3.7px;
+    }
+
+    .datepicker{
+        width: 100% !important;
+        box-shadow: none !important;
+    }
+
+    .datepicker__inner{
+        padding: 0 !important;
+    }
+
+    .datepicker__months{
+        display: flex !important;
+        justify-content: center !important;
+        align-items: start !important;
+        height: 253px !important;
+    }
+
+    .datepicker__month{
+        flex: 1 !important;
+    }
+
+    .datepicker__month-day--today {
+        background-color: white !important;
+        border-top-right-radius: 5px !important;
+        border-bottom-right-radius: 5px !important;
+        border-top-left-radius: 5px !important;
+        border-bottom-left-radius: 5px !important;
+        color: black !important;
+        outline: 1px solid #103076 !important;
+    }
+
+
+    .datepicker__month-day--last-day-selected {
+        border-top-right-radius: 5px !important;
+        border-bottom-right-radius: 5px !important;
+        border-top-left-radius: 0 !important;
+        border-bottom-left-radius: 0 !important;
+    }
+
+    .datepicker__month-day--selected {
+        background-color: rgba(16, 48, 115, .3) !important;
+        color: black !important;
+    }
+
+    .datepicker__month-day--hovering {
+        background-color: rgba(16, 48, 115, .3) !important;
+        color: black !important;
+    }
+
+    .datepicker__month-day--first-day-selected {
+        background-color: #103076 !important;
+        color: white !important;
+    }
+
+    .datepicker__month-day--first-day-selected {
+        border-top-left-radius: 5px !important;
+        border-bottom-left-radius: 5px !important;
+        border-top-right-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+    }
+
+    .datepicker__month-day--last-day-selected {
+        background-color: #103076 !important;
+        color: white !important;
+    }
+
+    .datepicker__month-day--invalid {
+        color: #acb2c1 !important;
+    }
+
