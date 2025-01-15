@@ -398,3 +398,155 @@ document.querySelectorAll('.modal-btn').forEach(button => {
         document.getElementsByTagName('body')[0].classList.add('overflow-hidden');
     });
 });
+
+
+const table1 = document.getElementById('month-1-input-id')
+const table2 = document.getElementById('month-2-input-id')
+let child
+if (table1.querySelector('.datepicker__month-day--today')) {
+    child = table1.querySelector('.datepicker__month-day--today')
+    if (table1) {
+        function findTextContent15(element) {
+            // Base case: Check if the current element's textContent is 15
+            if (element.textContent.trim() === String(Number(child.textContent) + 1)) {
+                element.classList.add('datepicker__month-day--first-day-selected')
+            }
+
+            if (element.textContent.trim() === String(Number(child.textContent) + 2)) {
+                element.classList.add('datepicker__month-day--last-day-selected')
+            }
+    
+            // Recursively check the child nodes
+            for (let child of element.children) {
+                if (findTextContent15(child)) {
+                    return true; // Stop further checks when a match is found
+                }
+            }
+    
+            return false; // No match found in this branch
+        }
+    
+        if (!findTextContent15(table1)) {
+            console.log('No element with textContent 15 found.');
+        }
+    } else {
+        console.log('Table not found!');
+    }
+} else {
+    child = table2.querySelector('.datepicker__month-day--today')
+    if (table2) {
+        function findTextContent15(element) {
+            // Base case: Check if the current element's textContent is 15
+            if (element.textContent.trim() === String(Number(child.textContent) + 1)) {
+                element.classList.add('datepicker__month-day--first-day-selected')
+            }
+
+            if (element.textContent.trim() === String(Number(child.textContent) + 2)) {
+                element.classList.add('datepicker__month-day--last-day-selected')
+            }
+    
+            // Recursively check the child nodes
+            for (let child of element.children) {
+                if (findTextContent15(child)) {
+                    return true; // Stop further checks when a match is found
+                }
+            }
+    
+            return false; // No match found in this branch
+        }
+    
+        if (!findTextContent15(table2)) {
+            console.log('No element with textContent 15 found.');
+        }
+    } else {
+        console.log('Table not found!');
+    }
+}
+
+// const targetElement = document.getElementById('tooltip-input-id');
+
+// if (targetElement) {
+//     // Create a MutationObserver instance
+//     const observer = new MutationObserver((mutationsList) => {
+//         for (let mutation of mutationsList) {
+//             if (mutation.type === 'childList' || mutation.type === 'characterData') {
+//                 console.log('Text content changed to:', targetElement.textContent.trim());
+//                 document.getElementById('night').textContent = targetElement.textContent.trim();
+//             }
+//         }
+//     });
+
+//     // Configure what to observe
+//     observer.observe(targetElement, {
+//         characterData: true, // Observes text content changes
+//         childList: true,     // Observes additions/removals of child nodes
+//         subtree: true        // Observes within all child elements
+//     });
+
+//     console.log('Observer set up to detect text content changes.');
+// } else {
+//     console.error('Element with ID "tooltip-input-id" not found.');
+// }
+
+function getToolText () {
+    const dateCells = document.querySelectorAll('td.datepicker__month-day--valid');
+
+    if (dateCells.length > 0) {
+    // Loop through each matched <td> element
+    dateCells.forEach((cell) => {
+        cell.addEventListener('click', (event) => {
+        // Use event.target to get the element that was clicked
+        const clickedCell = event.target;
+        console.log(clickedCell)
+        const classes = clickedCell.classList;
+        const check = classes.contains('datepicker__month-day--hovering')
+        console.log(check)
+        if (check) {
+            console.log('Clicked cell has the class "datepicker__month-day--selected":');
+            const tool = document.getElementById('tooltip-input-id').textContent;
+            console.log(tool)
+            document.getElementById('night').textContent = tool;
+        } else {
+            console.log('Clicked cell does not have the class "datepicker__month-day--selected".');
+        }
+        });
+    });
+
+    console.log('Event listeners added to valid date cells.');
+    } else {
+    console.error('No valid date cells found.');
+    }
+}
+
+getToolText()
+
+
+const targetElement1 = document.getElementById('month-1-input-id');
+const targetElement2 = document.getElementById('month-2-input-id');
+
+// Check if the elements exist
+if (targetElement1 && targetElement2) {
+  // Create a MutationObserver instance
+  const observer = new MutationObserver((mutationsList) => {
+    // Loop through each mutation
+    mutationsList.forEach((mutation) => {
+      // Check if the mutation is related to child elements
+      if (mutation.type === 'childList') {
+        console.log('A change was detected in the child elements!');
+        // Call the function here
+        getToolText();
+      }
+    });
+  });
+
+  // Configure the observer to watch for child changes
+  const config = { childList: true, subtree: true };
+
+  // Start observing both elements
+  observer.observe(targetElement1, config);
+  observer.observe(targetElement2, config);
+
+  console.log('MutationObserver is now watching for changes in both elements...');
+} else {
+  console.error('Elements not found.');
+}
