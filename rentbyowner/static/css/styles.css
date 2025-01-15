@@ -90,12 +90,9 @@
     }
 
 
-    .datepicker__month-day--last-day-selected {
-        border-top-right-radius: 5px !important;
-        border-bottom-right-radius: 5px !important;
-        border-top-left-radius: 0 !important;
-        border-bottom-left-radius: 0 !important;
-    }
+    /* .datepicker__month-day--last-day-selected {
+
+    } */
 
     .datepicker__month-day--selected {
         background-color: rgba(16, 48, 115, .3) !important;
@@ -107,19 +104,24 @@
         color: black !important;
     }
 
-    .datepicker__month-day--first-day-selected {
-        background-color: #103076 !important;
-        color: white !important;
-    }
+    /* .datepicker__month-day--first-day-selected {
+ 
+    } */
 
     .datepicker__month-day--first-day-selected {
         border-top-left-radius: 5px !important;
         border-bottom-left-radius: 5px !important;
         border-top-right-radius: 0 !important;
         border-bottom-right-radius: 0 !important;
+        background-color: #103076 !important;
+        color: white !important;
     }
 
     .datepicker__month-day--last-day-selected {
+        border-top-right-radius: 5px !important;
+        border-bottom-right-radius: 5px !important;
+        border-top-left-radius: 0 !important;
+        border-bottom-left-radius: 0 !important;
         background-color: #103076 !important;
         color: white !important;
     }

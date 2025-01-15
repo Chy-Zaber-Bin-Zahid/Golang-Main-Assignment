@@ -463,30 +463,6 @@ if (table1.querySelector('.datepicker__month-day--today')) {
     }
 }
 
-// const targetElement = document.getElementById('tooltip-input-id');
-
-// if (targetElement) {
-//     // Create a MutationObserver instance
-//     const observer = new MutationObserver((mutationsList) => {
-//         for (let mutation of mutationsList) {
-//             if (mutation.type === 'childList' || mutation.type === 'characterData') {
-//                 console.log('Text content changed to:', targetElement.textContent.trim());
-//                 document.getElementById('night').textContent = targetElement.textContent.trim();
-//             }
-//         }
-//     });
-
-//     // Configure what to observe
-//     observer.observe(targetElement, {
-//         characterData: true, // Observes text content changes
-//         childList: true,     // Observes additions/removals of child nodes
-//         subtree: true        // Observes within all child elements
-//     });
-
-//     console.log('Observer set up to detect text content changes.');
-// } else {
-//     console.error('Element with ID "tooltip-input-id" not found.');
-// }
 
 function getToolText () {
     const dateCells = document.querySelectorAll('td.datepicker__month-day--valid');
@@ -500,7 +476,6 @@ function getToolText () {
         console.log(clickedCell)
         const classes = clickedCell.classList;
         const check = classes.contains('datepicker__month-day--hovering')
-        console.log(check)
         if (check) {
             console.log('Clicked cell has the class "datepicker__month-day--selected":');
             const tool = document.getElementById('tooltip-input-id').textContent;
@@ -550,3 +525,101 @@ if (targetElement1 && targetElement2) {
 } else {
   console.error('Elements not found.');
 }
+
+const firstDaySelectedDefault = table1.querySelector('.datepicker__month-day--first-day-selected')
+const firstDayMonthDefault = firstDaySelectedDefault.ariaLabel.split(',')[1].trim().slice(0, 3);
+const firstDayIndexDefault = firstDaySelectedDefault.textContent
+const lastDaySelectedDefault = table1.querySelector('.datepicker__month-day--last-day-selected')
+const lastDayMonthDefault = lastDaySelectedDefault.ariaLabel.split(',')[1].trim().slice(0, 3);
+const lastDayIndexDefault = lastDaySelectedDefault.textContent
+
+let firstDaySelected, firstDayMonth, firstDayIndex, lastDaySelected, lastDayMonth, lastDayIndex
+const nightBtn = document.getElementById('night-btn')
+nightBtn.addEventListener('click', () => {
+    nightBtnClick()
+})
+
+function nightBtnClick(param = "") {
+    if (param.length > 0) {
+        firstDaySelectedDefault.click();
+        lastDaySelectedDefault.click();
+        return
+    }
+    if (table1.querySelector('.datepicker__month-day--last-day-selected') === null && table2.querySelector('.datepicker__month-day--last-day-selected') === null) {
+        firstDaySelectedDefault.click();
+        firstDaySelectedDefault.click();
+        lastDaySelectedDefault.click();
+        modal(false, 'nightBtn')
+        document.getElementById('dates-p').textContent = `${firstDayMonthDefault} ${firstDayIndexDefault} - ${lastDayMonthDefault} ${lastDayIndexDefault}`
+        document.getElementById('dates-cross').classList.remove('hidden')
+        document.getElementById('night').textContent = '1 Night'
+        return
+    }
+    firstDaySelected = undefined;
+    firstDayMonth = undefined;
+    firstDayIndex = undefined;
+    lastDaySelected = undefined;
+    lastDayMonth = undefined;
+    lastDayIndex = undefined;
+    setTimeout(() => {
+        if (table1.querySelector('.datepicker__month-day--first-day-selected')) {
+            firstDaySelected = table1.querySelector('.datepicker__month-day--first-day-selected')
+                if (firstDaySelected.ariaLabel.split(',').length > 3) {
+                    firstDayMonth = firstDaySelected.ariaLabel.split(',')[2].trim().slice(0, 3);
+                } else {
+                    firstDayMonth = firstDaySelected.ariaLabel.split(',')[1].trim().slice(0, 3);
+                }
+                firstDayIndex = firstDaySelected.textContent
+        } else if (table2.querySelector('.datepicker__month-day--first-day-selected')) {
+            firstDaySelected = table2.querySelector('.datepicker__month-day--first-day-selected')
+                if (firstDaySelected.ariaLabel.split(',').length > 3) {
+                    firstDayMonth = firstDaySelected.ariaLabel.split(',')[2].trim().slice(0, 3);
+                } else {
+                    firstDayMonth = firstDaySelected.ariaLabel.split(',')[1].trim().slice(0, 3);
+                }
+                firstDayIndex = firstDaySelected.textContent
+        }
+        if (table1.querySelector('.datepicker__month-day--last-day-selected')) {
+            lastDaySelected = table1.querySelector('.datepicker__month-day--last-day-selected')
+                if (lastDaySelected.ariaLabel.split(',').length > 3) {
+                    lastDayMonth = lastDaySelected.ariaLabel.split(',')[2].trim().slice(0, 3);
+                } else {
+                    lastDayMonth = lastDaySelected.ariaLabel.split(',')[1].trim().slice(0, 3);
+                }
+                lastDayIndex = lastDaySelected.textContent
+            
+        } else if (table2.querySelector('.datepicker__month-day--last-day-selected')) {
+            lastDaySelected = table2.querySelector('.datepicker__month-day--last-day-selected')
+                if (lastDaySelected.ariaLabel.split(',').length > 3) {
+                    lastDayMonth = lastDaySelected.ariaLabel.split(',')[2].trim().slice(0, 3);
+                } else {
+                    lastDayMonth = lastDaySelected.ariaLabel.split(',')[1].trim().slice(0, 3);
+                }
+                lastDayIndex = lastDaySelected.textContent
+        } else {
+            firstDayMonth = firstDayMonthDefault
+            firstDayIndex = firstDayIndexDefault
+            lastDayMonth = lastDayMonthDefault
+            lastDayIndex = lastDayIndexDefault
+            nightBtnClick('dateCross')
+            document.getElementById('night').textContent = '1 Night'
+        }
+        modal(false, 'nightBtn')
+        document.getElementById('dates-p').textContent = `${firstDayMonth} ${firstDayIndex} - ${lastDayMonth} ${lastDayIndex}`
+        document.getElementById('dates-cross').classList.remove('hidden')
+    }, 500);
+}
+
+document.getElementById('dates-cross').addEventListener('click', () => {
+    event.stopPropagation();
+    modal(false, 'nightBtnCross')
+    document.getElementById('dates-cross').classList.add('hidden')
+    document.getElementById('dates-p').textContent = 'Dates'
+    nightBtnClick('dateCross')
+    document.getElementById('night').textContent = '1 Night'
+    // firstDaySelectedDefault.classList.add('datepicker__month-day--first-day-selected');
+    // lastDaySelectedDefault.classList.add('datepicker__month-day--last-day-selected');
+    // firstDaySelected.classList.remove('datepicker__month-day--first-day-selected')
+    // lastDaySelected.classList.remove('datepicker__month-day--last-day-selected');
+    // console.log(firstDaySelectedDefault)
+})
