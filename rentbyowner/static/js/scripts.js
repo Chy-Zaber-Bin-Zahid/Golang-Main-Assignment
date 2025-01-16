@@ -661,3 +661,37 @@ document.getElementById('dates-cross').addEventListener('click', () => {
     localStorage.removeItem('date')
     fetchData(searchValue, "", date)
 })
+
+let guestNumber = 0
+document.getElementById('increment-btn').addEventListener('click', () => {
+    const number = Number(document.getElementById('guest-number').textContent)
+    if (number < 30) {
+        document.getElementById('guest-number').textContent = Number(document.getElementById('guest-number').textContent) + 1
+        guestNumber = Number(document.getElementById('guest-number').textContent)
+    }
+})
+
+document.getElementById('decrement-btn').addEventListener('click', () => {
+    const number = Number(document.getElementById('guest-number').textContent)
+    if (number > 1) {
+        document.getElementById('guest-number').textContent = number - 1
+        guestNumber = Number(document.getElementById('guest-number').textContent)
+    }
+})
+
+document.getElementById('search').addEventListener('click', () => {
+    modal(false, 'search')
+    document.getElementsByTagName('body')[0].classList.remove('overflow-hidden');
+    if (guestNumber !== 0) {
+            document.getElementById('guest-text').textContent = `${guestNumber > 1 ? `${guestNumber} Guests` : `${guestNumber} Guest`}`
+            document.getElementById('guest-cross').classList.remove('hidden')
+    }
+})
+
+document.getElementById('guest-cross').addEventListener('click', () => {
+    event.stopPropagation();
+    document.getElementById('guest-text').textContent = 'Guests'
+    guestNumber = 0
+    document.getElementById('guest-number').textContent = String(guestNumber)
+    document.getElementById('guest-cross').classList.add('hidden')
+})

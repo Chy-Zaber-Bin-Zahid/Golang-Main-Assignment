@@ -18,6 +18,7 @@ type Amenities struct {
 
 type Counts struct {
     Reviews   int `json:"Reviews,omitempty"`
+	Occupancy int `json:"Occupancy"`
 }
 
 type Property struct {
