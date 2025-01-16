@@ -293,10 +293,16 @@ document.addEventListener('DOMContentLoaded', (event) => {
         document.getElementById('dates-p').textContent = `${formattedStart} - ${formattedEnd}`
         document.getElementById('dates-cross').classList.remove('hidden')   
     }
+    if (localStorage.getItem('guests')) {
+        const guestLocalNum = localStorage.getItem('guests');
+        document.getElementById('guest-text').textContent = `${guestLocalNum !== 0 ? `${guestLocalNum > 1 ? `${guestLocalNum} Guests` : `${guestLocalNum} Guest`}` : 'Guests'}`
+        document.getElementById('guest-cross').classList.remove('hidden')
+        document.getElementById('guest-number').textContent = guestLocalNum  
+    }
     fetchData(searchValue);
 });
 
-async function fetchData(searchValue, selectedValue = "", dates = "") {
+async function fetchData(searchValue, selectedValue = "", dates = "", guest = 0) {
     try {
         const sortLocalCheck = localStorage.getItem('filter');
         if (sortLocalCheck) {
@@ -316,14 +322,15 @@ async function fetchData(searchValue, selectedValue = "", dates = "") {
         }
         const locations = await responseFirstApi.json();
         let responseSecondApi;
+        const guestLocalCheck = localStorage.getItem('guests')
         const dateLocalCheck = localStorage.getItem('date')
         if (dates.length > 0 || dateLocalCheck) {
             if (dateLocalCheck) {
                 dates = dateLocalCheck
             }
-            responseSecondApi = await fetch(`/api/v1/locationSlug/${locations}|${dates}`);
+            responseSecondApi = await fetch(`/api/v1/locationSlug/${locations}|${dates}|${guestLocalCheck ? guestLocalCheck : guest}`);
         } else {
-            responseSecondApi = await fetch(`/api/v1/locationSlug/${locations}`);
+            responseSecondApi = await fetch(`/api/v1/locationSlug/${locations}|${guestLocalCheck ? guestLocalCheck : guest}`);
         }
         
         if (!responseSecondApi.ok) {
@@ -686,6 +693,9 @@ document.getElementById('search').addEventListener('click', () => {
             document.getElementById('guest-text').textContent = `${guestNumber > 1 ? `${guestNumber} Guests` : `${guestNumber} Guest`}`
             document.getElementById('guest-cross').classList.remove('hidden')
     }
+    const searchValue = getQueryParamByName('search');
+    localStorage.setItem('guests', guestNumber)
+    fetchData(searchValue, "", date, guestNumber)
 })
 
 document.getElementById('guest-cross').addEventListener('click', () => {
@@ -694,4 +704,7 @@ document.getElementById('guest-cross').addEventListener('click', () => {
     guestNumber = 0
     document.getElementById('guest-number').textContent = String(guestNumber)
     document.getElementById('guest-cross').classList.add('hidden')
+    const searchValue = getQueryParamByName('search');
+    localStorage.removeItem('guests')
+    fetchData(searchValue, "", date, guestNumber)
 })

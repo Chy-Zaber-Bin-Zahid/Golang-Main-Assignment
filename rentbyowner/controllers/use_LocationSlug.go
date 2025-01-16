@@ -24,11 +24,17 @@ type Result struct {
 func (c *UseLocationSlug) UseLocation() {
 	locationSlug := c.Ctx.Input.Param(":locationSlug")
 	var startDate, endDate string
-	if strings.Contains(locationSlug, "|") {
-		parts := strings.Split(locationSlug, "|")
+	var guestNumber interface{}
+	parts := strings.Split(locationSlug, "|")
+	log.Println("Hello -------------------------------", parts)
+	if len(parts) == 4 {
 		locationSlug = parts[0]
 		startDate = parts[1]
 		endDate = parts[2]
+		guestNumber = parts[3]
+	} else {
+		locationSlug = parts[0]
+		guestNumber = parts[1]
 	}
 	apiUrl, err := beego.AppConfig.String("API_ITEM_IDS")
 	if err != nil {
@@ -36,8 +42,11 @@ func (c *UseLocationSlug) UseLocation() {
 	}
 	modifiedUrl := strings.ReplaceAll(apiUrl, "bangladesh:dhaka-division:dhaka:973", locationSlug)
 	if startDate != "" {
-		modifiedUrl = fmt.Sprintf("%s&dateStart=%s&dateEnd=%s", modifiedUrl, startDate, endDate)
-		log.Println("changes:", modifiedUrl)
+		modifiedUrl = fmt.Sprintf("%s&dateStart=%s&dateEnd=%s&pax=%s", modifiedUrl, startDate, endDate, guestNumber)
+		log.Println("changes---------------------------", modifiedUrl)
+	} else {
+		modifiedUrl = fmt.Sprintf("%s&pax=%v", modifiedUrl, guestNumber)
+		log.Println("asdas---------------------------", modifiedUrl)
 	}
 	itemIdsChan := make(chan []string)
 	errChan := make(chan error)
