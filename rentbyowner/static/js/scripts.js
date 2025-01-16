@@ -283,10 +283,20 @@ function getQueryParamByName(name) {
 document.addEventListener('DOMContentLoaded', (event) => {
     // shimmerFunc()
     const searchValue = getQueryParamByName('search');
-    fetchData(searchValue, "");
+    if (localStorage.getItem('date')) {
+        const [startDate, endDate] = localStorage.getItem('date').split('|');
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        const options = { month: 'short', day: 'numeric' };
+        const formattedStart = start.toLocaleDateString('en-US', options);
+        const formattedEnd = end.toLocaleDateString('en-US', options);
+        document.getElementById('dates-p').textContent = `${formattedStart} - ${formattedEnd}`
+        document.getElementById('dates-cross').classList.remove('hidden')   
+    }
+    fetchData(searchValue);
 });
 
-async function fetchData(searchValue, selectedValue) {
+async function fetchData(searchValue, selectedValue = "", dates = "") {
     try {
         const sortLocalCheck = localStorage.getItem('filter');
         if (sortLocalCheck) {
@@ -305,11 +315,22 @@ async function fetchData(searchValue, selectedValue) {
             throw new Error('Network responseFirstApi was not ok ' + responseFirstApi.statusText);
         }
         const locations = await responseFirstApi.json();
-        const responseSecondApi = await fetch(`/api/v1/locationSlug/${locations}`);
+        let responseSecondApi;
+        const dateLocalCheck = localStorage.getItem('date')
+        if (dates.length > 0 || dateLocalCheck) {
+            if (dateLocalCheck) {
+                dates = dateLocalCheck
+            }
+            responseSecondApi = await fetch(`/api/v1/locationSlug/${locations}|${dates}`);
+        } else {
+            responseSecondApi = await fetch(`/api/v1/locationSlug/${locations}`);
+        }
+        
         if (!responseSecondApi.ok) {
             throw new Error('Network responseSecondApi was not ok ' + responseSecondApi.statusText);
         }
         const itemIds = await responseSecondApi.json();
+        console.log(itemIds)
         const queryString = itemIds.join(',');
         const responseThirdApi = await fetch(`/api/v1/itemIds/${queryString}`);
         if (!responseThirdApi.ok) {
@@ -335,6 +356,7 @@ async function fetchData(searchValue, selectedValue) {
     }
 }
 
+let date
 const selectElement = document.getElementById('sortOptions');
 if (localStorage.getItem('filter')) {
     selectElement.value = localStorage.getItem('filter')
@@ -342,7 +364,8 @@ if (localStorage.getItem('filter')) {
 selectElement.addEventListener('change', function() {
     const searchValue = getQueryParamByName('search');
     localStorage.setItem('filter', selectElement.value)
-    fetchData(searchValue, selectElement.value)
+    console.log("this is date", date)
+    fetchData(searchValue, selectElement.value, date)
 });
 
 function modal(state, modal) {
@@ -473,21 +496,14 @@ function getToolText () {
         cell.addEventListener('click', (event) => {
         // Use event.target to get the element that was clicked
         const clickedCell = event.target;
-        console.log(clickedCell)
         const classes = clickedCell.classList;
         const check = classes.contains('datepicker__month-day--hovering')
         if (check) {
-            console.log('Clicked cell has the class "datepicker__month-day--selected":');
             const tool = document.getElementById('tooltip-input-id').textContent;
-            console.log(tool)
             document.getElementById('night').textContent = tool;
-        } else {
-            console.log('Clicked cell does not have the class "datepicker__month-day--selected".');
         }
         });
     });
-
-    console.log('Event listeners added to valid date cells.');
     } else {
     console.error('No valid date cells found.');
     }
@@ -520,20 +536,21 @@ if (targetElement1 && targetElement2) {
   // Start observing both elements
   observer.observe(targetElement1, config);
   observer.observe(targetElement2, config);
-
-  console.log('MutationObserver is now watching for changes in both elements...');
 } else {
   console.error('Elements not found.');
 }
 
+const months = {'Jan': 1, 'Feb': 2, 'Mar': 3, 'Apr': 4, 'May': 5, 'Jun': 6, 'Jul': 7, 'Aug': 8, 'Sep': 9, 'Oct': 10, 'Nov': 11, 'Dec': 12}
 const firstDaySelectedDefault = table1.querySelector('.datepicker__month-day--first-day-selected')
 const firstDayMonthDefault = firstDaySelectedDefault.ariaLabel.split(',')[1].trim().slice(0, 3);
+const firstDayYearDefault = firstDaySelectedDefault.ariaLabel.split(',')[2].trim().slice(0, 4);
 const firstDayIndexDefault = firstDaySelectedDefault.textContent
 const lastDaySelectedDefault = table1.querySelector('.datepicker__month-day--last-day-selected')
 const lastDayMonthDefault = lastDaySelectedDefault.ariaLabel.split(',')[1].trim().slice(0, 3);
+const lastDayYearDefault = lastDaySelectedDefault.ariaLabel.split(',')[2].trim().slice(0, 4);
 const lastDayIndexDefault = lastDaySelectedDefault.textContent
 
-let firstDaySelected, firstDayMonth, firstDayIndex, lastDaySelected, lastDayMonth, lastDayIndex
+let firstDaySelected, firstDayMonth, firstDayYear, firstDayIndex, lastDaySelected, lastDayMonth, lastDayYear, lastDayIndex
 const nightBtn = document.getElementById('night-btn')
 nightBtn.addEventListener('click', () => {
     nightBtnClick()
@@ -553,29 +570,39 @@ function nightBtnClick(param = "") {
         document.getElementById('dates-p').textContent = `${firstDayMonthDefault} ${firstDayIndexDefault} - ${lastDayMonthDefault} ${lastDayIndexDefault}`
         document.getElementById('dates-cross').classList.remove('hidden')
         document.getElementById('night').textContent = '1 Night'
+        const searchValue = getQueryParamByName('search');
+        document.getElementsByTagName('body')[0].classList.remove('overflow-hidden');
+        localStorage.setItem('date', `${firstDayYearDefault}-0${months[firstDayMonthDefault]}-${firstDayIndexDefault.length < 2 ? `0${firstDayIndexDefault}` : firstDayIndexDefault}|${lastDayYearDefault}-0${months[lastDayMonthDefault]}-${lastDayIndexDefault.length < 2 ? `0${lastDayIndexDefault}` : lastDayIndexDefault}`)
+        fetchData(searchValue)
         return
     }
     firstDaySelected = undefined;
     firstDayMonth = undefined;
+    firstDayYear = undefined;
     firstDayIndex = undefined;
     lastDaySelected = undefined;
     lastDayMonth = undefined;
+    lastDayYear = undefined;
     lastDayIndex = undefined;
     setTimeout(() => {
         if (table1.querySelector('.datepicker__month-day--first-day-selected')) {
             firstDaySelected = table1.querySelector('.datepicker__month-day--first-day-selected')
                 if (firstDaySelected.ariaLabel.split(',').length > 3) {
                     firstDayMonth = firstDaySelected.ariaLabel.split(',')[2].trim().slice(0, 3);
+                    firstDayYear = firstDaySelected.ariaLabel.split(',')[3].trim().slice(0, 4);
                 } else {
                     firstDayMonth = firstDaySelected.ariaLabel.split(',')[1].trim().slice(0, 3);
+                    firstDayYear = firstDaySelected.ariaLabel.split(',')[2].trim().slice(0, 4);
                 }
                 firstDayIndex = firstDaySelected.textContent
         } else if (table2.querySelector('.datepicker__month-day--first-day-selected')) {
             firstDaySelected = table2.querySelector('.datepicker__month-day--first-day-selected')
                 if (firstDaySelected.ariaLabel.split(',').length > 3) {
                     firstDayMonth = firstDaySelected.ariaLabel.split(',')[2].trim().slice(0, 3);
+                    firstDayYear = firstDaySelected.ariaLabel.split(',')[3].trim().slice(0, 4);
                 } else {
                     firstDayMonth = firstDaySelected.ariaLabel.split(',')[1].trim().slice(0, 3);
+                    firstDayYear = firstDaySelected.ariaLabel.split(',')[2].trim().slice(0, 4);
                 }
                 firstDayIndex = firstDaySelected.textContent
         }
@@ -583,8 +610,10 @@ function nightBtnClick(param = "") {
             lastDaySelected = table1.querySelector('.datepicker__month-day--last-day-selected')
                 if (lastDaySelected.ariaLabel.split(',').length > 3) {
                     lastDayMonth = lastDaySelected.ariaLabel.split(',')[2].trim().slice(0, 3);
+                    lastDayYear = lastDaySelected.ariaLabel.split(',')[3].trim().slice(0, 4);
                 } else {
                     lastDayMonth = lastDaySelected.ariaLabel.split(',')[1].trim().slice(0, 3);
+                    lastDayYear = lastDaySelected.ariaLabel.split(',')[2].trim().slice(0, 4);
                 }
                 lastDayIndex = lastDaySelected.textContent
             
@@ -592,14 +621,18 @@ function nightBtnClick(param = "") {
             lastDaySelected = table2.querySelector('.datepicker__month-day--last-day-selected')
                 if (lastDaySelected.ariaLabel.split(',').length > 3) {
                     lastDayMonth = lastDaySelected.ariaLabel.split(',')[2].trim().slice(0, 3);
+                    lastDayYear = lastDaySelected.ariaLabel.split(',')[3].trim().slice(0, 4);
                 } else {
                     lastDayMonth = lastDaySelected.ariaLabel.split(',')[1].trim().slice(0, 3);
+                    lastDayYear = lastDaySelected.ariaLabel.split(',')[2].trim().slice(0, 4);
                 }
                 lastDayIndex = lastDaySelected.textContent
         } else {
             firstDayMonth = firstDayMonthDefault
+            firstDayYear = firstDayYearDefault
             firstDayIndex = firstDayIndexDefault
             lastDayMonth = lastDayMonthDefault
+            lastDayYear = lastDayYearDefault
             lastDayIndex = lastDayIndexDefault
             nightBtnClick('dateCross')
             document.getElementById('night').textContent = '1 Night'
@@ -607,6 +640,12 @@ function nightBtnClick(param = "") {
         modal(false, 'nightBtn')
         document.getElementById('dates-p').textContent = `${firstDayMonth} ${firstDayIndex} - ${lastDayMonth} ${lastDayIndex}`
         document.getElementById('dates-cross').classList.remove('hidden')
+        const searchValue = getQueryParamByName('search');
+        console.log(lastDayMonth)
+        date = `${firstDayYear}-0${months[firstDayMonth]}-${firstDayIndex.length < 2 ? `0${firstDayIndex}` : firstDayIndex}|${lastDayYear}-0${months[lastDayMonth]}-${lastDayIndex.length < 2 ? `0${lastDayIndex}` : lastDayIndex}`
+        localStorage.setItem('date', date)
+        document.getElementsByTagName('body')[0].classList.remove('overflow-hidden');
+        fetchData(searchValue, "", date)
     }, 500);
 }
 
@@ -617,9 +656,8 @@ document.getElementById('dates-cross').addEventListener('click', () => {
     document.getElementById('dates-p').textContent = 'Dates'
     nightBtnClick('dateCross')
     document.getElementById('night').textContent = '1 Night'
-    // firstDaySelectedDefault.classList.add('datepicker__month-day--first-day-selected');
-    // lastDaySelectedDefault.classList.add('datepicker__month-day--last-day-selected');
-    // firstDaySelected.classList.remove('datepicker__month-day--first-day-selected')
-    // lastDaySelected.classList.remove('datepicker__month-day--last-day-selected');
-    // console.log(firstDaySelectedDefault)
+    date = ""
+    const searchValue = getQueryParamByName('search');
+    localStorage.removeItem('date')
+    fetchData(searchValue, "", date)
 })

@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"log"
 	"strings"
 	"encoding/json"
@@ -22,11 +23,22 @@ type Result struct {
 
 func (c *UseLocationSlug) UseLocation() {
 	locationSlug := c.Ctx.Input.Param(":locationSlug")
+	var startDate, endDate string
+	if strings.Contains(locationSlug, "|") {
+		parts := strings.Split(locationSlug, "|")
+		locationSlug = parts[0]
+		startDate = parts[1]
+		endDate = parts[2]
+	}
 	apiUrl, err := beego.AppConfig.String("API_ITEM_IDS")
 	if err != nil {
 		log.Println("Error reading API_ITEM_IDS: " + err.Error())
 	}
 	modifiedUrl := strings.ReplaceAll(apiUrl, "bangladesh:dhaka-division:dhaka:973", locationSlug)
+	if startDate != "" {
+		modifiedUrl = fmt.Sprintf("%s&dateStart=%s&dateEnd=%s", modifiedUrl, startDate, endDate)
+		log.Println("changes:", modifiedUrl)
+	}
 	itemIdsChan := make(chan []string)
 	errChan := make(chan error)
 	go func() {
@@ -53,6 +65,7 @@ func (c *UseLocationSlug) UseLocation() {
 	}()
 	select {
 		case itemIds := <-itemIdsChan:
+			log.Println("ids:", itemIds)
 			c.Data["json"] = itemIds
 			c.ServeJSON()
 		case err := <-errChan:
