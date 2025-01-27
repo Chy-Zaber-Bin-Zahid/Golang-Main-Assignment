@@ -328,6 +328,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
             console.log("First Number:", num1);
             console.log("Second Number:", num2);
         }
+        priceRangeLow = num1
+        priceRangeHigh = num2
     }
     fetchData(searchValue, "", "", 0, num1, num2);
 });
@@ -453,7 +455,6 @@ async function fetchData(searchValue, selectedValue = "", dates = "", guest = 0,
                 initialMinPrice = minPrice - 1
             }
         }
-        
         if (selectedValue === "Lowest Price") {
             propertyData.sort((a, b) => a.Property.Price - b.Property.Price);
         } else if (selectedValue === "Highest Price"){
@@ -482,7 +483,8 @@ selectElement.addEventListener('change', function() {
     const searchValue = getQueryParamByName('search');
     localStorage.setItem('filter', selectElement.value)
     console.log("this is date", date)
-    fetchData(searchValue, selectElement.value, date)
+    console.log("this is price", priceRangeLow)
+    fetchData(searchValue, selectElement.value, date, guestNumber, priceRangeLow, priceRangeHigh);
 });
 
 function modal(state, modal) {
