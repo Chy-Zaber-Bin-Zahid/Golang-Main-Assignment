@@ -332,6 +332,21 @@ document.addEventListener('DOMContentLoaded', (event) => {
         priceRangeLow = num1
         priceRangeHigh = num2
     }
+    if (localStorage.getItem('more-filter')) {
+        if (Number(localStorage.getItem('more-filter')) > 0) {
+            document.getElementById('filter-p').textContent = localStorage.getItem('more-filter')
+            document.getElementById('filter-cross').classList.remove('hidden')
+        }
+    }
+    if (localStorage.getItem('check')) {
+        const check = localStorage.getItem('check').split(',');
+        check.forEach(num => {
+            const checkbox = document.getElementById(`check-${num}`);
+            if (checkbox) {
+                checkbox.checked = true;
+            }
+        });
+    }
     fetchData(searchValue, "", "", 0, num1, num2);
 });
 
@@ -784,6 +799,9 @@ function nightBtnClick(param = "") {
             filterDates = true
             filterNumber += 1
         }
+        if (filterNumber > 0) {
+            localStorage.setItem('more-filter', filterNumber)
+        }
         document.getElementById('filter-p').textContent = filterNumber
         document.getElementsByTagName('body')[0].classList.remove('overflow-hidden');
         console.log('date', firstDayYearDefault, lastDayYearDefault)
@@ -802,8 +820,11 @@ document.getElementById('dates-cross').addEventListener('click', () => {
     const searchValue = getQueryParamByName('search');
     filterDates = false
     filterNumber -= 1
-    if (filterNumber === 0) {
+    if (filterNumber <= 0) {
         document.getElementById('filter-cross').classList.add('hidden')
+        localStorage.setItem('more-filter', filterNumber)
+    } else {
+        localStorage.setItem('more-filter', filterNumber)
     }
     document.getElementById('filter-p').textContent = filterNumber
     localStorage.removeItem('date')
@@ -879,11 +900,14 @@ document.getElementById('search').addEventListener('click', () => {
 
         if (check.length === 0) {
             console.log('check', check)
+            if (filterNumber < 0) {
+                filterNumber = 0
+            }
             filterNumber -= filterCheck;
             filterCheck = 0
-            console.log('filterNumber', filterNumber)
+            console.log('filterNumber--->', filterNumber)
         }
-        if (filterNumber === 0) {
+        if (filterNumber <= 0) {
             document.getElementById('filter-cross').classList.add('hidden')
         } else {
             document.getElementById('filter-cross').classList.remove('hidden')
@@ -891,6 +915,11 @@ document.getElementById('search').addEventListener('click', () => {
         
         document.getElementById('filter-p').textContent = filterNumber
     }
+    console.log('asdasd', filterNumber)
+    if (filterNumber > 0) {
+        localStorage.setItem('more-filter', filterNumber)
+    }
+    localStorage.setItem('check', check)
     fetchData(searchValue, "", date, guestNumber, priceRangeLow, priceRangeHigh)
 })
 
@@ -902,8 +931,11 @@ document.getElementById('guest-cross').addEventListener('click', () => {
     document.getElementById('guest-cross').classList.add('hidden')
     filterGuest = false
     filterNumber -= 1
-    if (filterNumber === 0) {
+    if (filterNumber <= 0) {
         document.getElementById('filter-cross').classList.add('hidden')
+        localStorage.setItem('more-filter', filterNumber)
+    } else {
+        localStorage.setItem('more-filter', filterNumber)
     }
     document.getElementById('filter-p').textContent = filterNumber
     const searchValue = getQueryParamByName('search');
@@ -926,7 +958,9 @@ document.getElementById('price-cross').addEventListener('click', () => {
     filterNumber -= 1
     if (filterNumber <= 0) {
         document.getElementById('filter-cross').classList.add('hidden')
-        filterNumber = 0
+        localStorage.setItem('more-filter', filterNumber)
+    } else {
+        localStorage.setItem('more-filter', filterNumber)
     }
     document.getElementById('filter-p').textContent = filterNumber
     initialMinPrice = 0
@@ -1018,6 +1052,9 @@ document.getElementById('clear').addEventListener('click', () => {
     document.getElementById('price-cross').classList.add('hidden')
     document.getElementById('dates-p').textContent = 'Dates'
     document.getElementById('dates-cross').classList.add('hidden')
+    nightBtnClick('dateCross')
+    document.getElementById('night').textContent = '1 Night'
+    date = ""
     document.getElementById('calendar-left').textContent = ''
     document.getElementById('calendar-right').textContent = ''
     document.getElementById('guest-number').textContent = '0'
@@ -1026,8 +1063,20 @@ document.getElementById('clear').addEventListener('click', () => {
     document.getElementById('price-low').value = 9;
     document.getElementById('price-high').value = 2501;
     check = [];
+    console.log(check)
     localStorage.removeItem('guests')
     localStorage.removeItem('price')
     localStorage.removeItem('date')
+    localStorage.setItem('more-filter', 0)
+    localStorage.removeItem('check', check)
     filterNumber = 0
 })
+
+document.querySelectorAll('#check-in, #check-out').forEach(button => {
+    button.addEventListener('click', () => {
+        document.getElementById('modal-dates').classList.remove('hidden')
+        document.getElementsByTagName('body')[0].classList.add('overflow-hidden');  
+        document.getElementById('blueOverlay-main').classList.remove('hidden')
+        document.getElementById('modal-filter').classList.add('hidden')
+    });
+});
