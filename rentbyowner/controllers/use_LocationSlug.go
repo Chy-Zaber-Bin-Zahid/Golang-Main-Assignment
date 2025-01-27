@@ -45,7 +45,7 @@ func (c *UseLocationSlug) UseLocation() {
 		log.Println("Error reading API_ITEM_IDS: " + err.Error())
 	}
 	modifiedUrl := strings.ReplaceAll(apiUrl, "bangladesh:dhaka-division:dhaka:973", locationSlug)
-	log.Println("olala------------------", pLow, pHigh)
+	log.Println(pLow, pHigh)
 	if startDate != "" {
 		if pLow == "0" && pHigh == "0" {
 			modifiedUrl = fmt.Sprintf("%s&dateStart=%s&dateEnd=%s&pax=%s", modifiedUrl, startDate, endDate, guestNumber)
