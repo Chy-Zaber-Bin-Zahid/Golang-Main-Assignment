@@ -293,7 +293,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
         const formattedStart = start.toLocaleDateString('en-US', options);
         const formattedEnd = end.toLocaleDateString('en-US', options);
         document.getElementById('dates-p').textContent = `${formattedStart} - ${formattedEnd}`
-        document.getElementById('dates-cross').classList.remove('hidden')   
+        document.getElementById('dates-cross').classList.remove('hidden')  
+        document.getElementById('calendar-left').textContent = formattedStart 
+        document.getElementById('calendar-right').textContent = formattedEnd 
     }
     if (localStorage.getItem('guests')) {
         const guestLocalNum = localStorage.getItem('guests');
@@ -311,10 +313,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
     }
     if (localStorage.getItem('price')) {
         const price = localStorage.getItem('price');
-        if (price === '৳0 - ৳0') {
-            console.log('price',price)
-            document.getElementById('price-p').textContent = `৳9 - ৳2501`  
-            document.getElementById('price-cross').classList.remove('hidden')
+        if (price === '৳0 - ৳0' || price === '৳9 - ৳2501') {
+            document.getElementById('price-p').textContent = `Price`  
+            document.getElementById('price-cross').classList.add('hidden')
         } else {
             document.getElementById('price-p').textContent = price
             document.getElementById('price-cross').classList.remove('hidden')
@@ -365,6 +366,21 @@ async function fetchData(searchValue, selectedValue = "", dates = "", guest = 0,
         if (dates.length > 0 || dateLocalCheck) {
             if (dateLocalCheck) {
                 dates = dateLocalCheck
+                
+                const month = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+                // Extract month and date using regex
+                const matches = dates.match(/\d{4}-(\d{2})-(\d{2})\|\d{4}-(\d{2})-(\d{2})/);
+                console.log(dates)
+                if (matches) {
+                    const month1 = month[parseInt(matches[1], 10)];
+                    const day1 = matches[2];
+                    const month2 = month[parseInt(matches[3], 10)];
+                    const day2 = matches[4];
+                    document.getElementById('calendar-left').textContent = `${month1} ${day1}` 
+                    document.getElementById('calendar-right').textContent = `${month2} ${day2}`
+                }
+
             }
             responseSecondApi = await fetch(`/api/v1/locationSlug/${locations}|${dates}|${guestLocalCheck ? guestLocalCheck : guest}|${pLow}|${pHigh}`);
         } else {
@@ -759,11 +775,18 @@ function nightBtnClick(param = "") {
         modal(false, 'nightBtn')
         document.getElementById('dates-p').textContent = `${firstDayMonth} ${firstDayIndex} - ${lastDayMonth} ${lastDayIndex}`
         document.getElementById('dates-cross').classList.remove('hidden')
+        document.getElementById('filter-cross').classList.remove('hidden')
         const searchValue = getQueryParamByName('search');
         console.log(lastDayMonth)
         date = `${firstDayYear}-0${months[firstDayMonth]}-${firstDayIndex.length < 2 ? `0${firstDayIndex}` : firstDayIndex}|${lastDayYear}-0${months[lastDayMonth]}-${lastDayIndex.length < 2 ? `0${lastDayIndex}` : lastDayIndex}`
         localStorage.setItem('date', date)
+        if (date.length > 0 && filterDates !== true) {
+            filterDates = true
+            filterNumber += 1
+        }
+        document.getElementById('filter-p').textContent = filterNumber
         document.getElementsByTagName('body')[0].classList.remove('overflow-hidden');
+        console.log('date', firstDayYearDefault, lastDayYearDefault)
         fetchData(searchValue, "", date)
     }, 500);
 }
@@ -777,8 +800,16 @@ document.getElementById('dates-cross').addEventListener('click', () => {
     document.getElementById('night').textContent = '1 Night'
     date = ""
     const searchValue = getQueryParamByName('search');
+    filterDates = false
+    filterNumber -= 1
+    if (filterNumber === 0) {
+        document.getElementById('filter-cross').classList.add('hidden')
+    }
+    document.getElementById('filter-p').textContent = filterNumber
     localStorage.removeItem('date')
     fetchData(searchValue, "", date)
+    document.getElementById('calendar-left').textContent = '' 
+    document.getElementById('calendar-right').textContent = '' 
 })
 
 let guestNumber = 0
@@ -800,6 +831,9 @@ document.getElementById('decrement-btn').addEventListener('click', () => {
     }
 })
 
+let check = []
+let filterCheck = check.length
+
 document.getElementById('search').addEventListener('click', () => {
     modal(false, 'search')
     document.getElementsByTagName('body')[0].classList.remove('overflow-hidden');
@@ -809,16 +843,54 @@ document.getElementById('search').addEventListener('click', () => {
     }
     console.log('price', priceRangeLow, priceRangeHigh)
     if (priceRangeLow > document.getElementById('price-low').min || priceRangeHigh < document.getElementById('price-high').max) {
-        document.getElementById('price-p').textContent = `৳${priceRangeLow} - ৳${priceRangeHigh}`
-        document.getElementById('price-cross').classList.remove('hidden')
-    } else {
-        document.getElementById('price-p').textContent = `৳${initialMinPrice} - ৳${initialMaxPrice}`
-        document.getElementById('price-cross').classList.remove('hidden')
+        if (Number(priceRangeLow) === 9 && Number(priceRangeHigh) === 2501) {
+            document.getElementById('price-p').textContent = `Price`
+            document.getElementById('price-cross').classList.add('hidden')
+        } else {
+            document.getElementById('price-p').textContent = `৳${priceRangeLow} - ৳${priceRangeHigh}`
+            document.getElementById('price-cross').classList.remove('hidden')
+        }
     }
     const searchValue = getQueryParamByName('search');
     localStorage.setItem('guests', guestNumber)
-    localStorage.setItem('price', `৳${priceRangeLow} - ৳${priceRangeHigh}`)
-    console.log('price', priceRangeLow, priceRangeHigh)
+    if (Number(priceRangeHigh) === 2501 && Number(priceRangeLow) === 9) {
+        localStorage.setItem('price', `৳0 - ৳0`)
+    } else {
+        localStorage.setItem('price', `৳${priceRangeLow} - ৳${priceRangeHigh}`)
+    }
+    if (guestNumber !== 0 || 
+        (Number(priceRangeLow) !== 9 && Number(priceRangeLow) !== 0) || 
+        (Number(priceRangeHigh) !== 2501 && Number(priceRangeHigh) !== 0) || check.length >= 0) {
+        if (guestNumber !== 0 && filterGuest !== true) {
+            filterGuest = true
+            filterNumber += 1
+        }
+        if (((Number(priceRangeLow) !== 9 && Number(priceRangeLow) !== 0) || 
+        (Number(priceRangeHigh) !== 2501 && Number(priceRangeHigh) !== 0)) && filterPrice !== true) {
+            filterPrice = true;
+            filterNumber += 1;
+        }
+        console.log(filterCheck, check)
+        if (check.length !== filterCheck) {
+            filterNumber -= filterCheck;
+            filterCheck = check.length
+            filterNumber += filterCheck;
+        }
+
+        if (check.length === 0) {
+            console.log('check', check)
+            filterNumber -= filterCheck;
+            filterCheck = 0
+            console.log('filterNumber', filterNumber)
+        }
+        if (filterNumber === 0) {
+            document.getElementById('filter-cross').classList.add('hidden')
+        } else {
+            document.getElementById('filter-cross').classList.remove('hidden')
+        }
+        
+        document.getElementById('filter-p').textContent = filterNumber
+    }
     fetchData(searchValue, "", date, guestNumber, priceRangeLow, priceRangeHigh)
 })
 
@@ -828,6 +900,12 @@ document.getElementById('guest-cross').addEventListener('click', () => {
     guestNumber = 0
     document.getElementById('guest-number').textContent = String(guestNumber)
     document.getElementById('guest-cross').classList.add('hidden')
+    filterGuest = false
+    filterNumber -= 1
+    if (filterNumber === 0) {
+        document.getElementById('filter-cross').classList.add('hidden')
+    }
+    document.getElementById('filter-p').textContent = filterNumber
     const searchValue = getQueryParamByName('search');
     localStorage.removeItem('guests')
     fetchData(searchValue, "", date, guestNumber)
@@ -844,8 +922,17 @@ document.getElementById('price-cross').addEventListener('click', () => {
     document.getElementById('toSlider').value = 2501;
     document.getElementById('price-low').value = 9;
     document.getElementById('price-high').value = 2501;
+    filterPrice = false
+    filterNumber -= 1
+    if (filterNumber <= 0) {
+        document.getElementById('filter-cross').classList.add('hidden')
+        filterNumber = 0
+    }
+    document.getElementById('filter-p').textContent = filterNumber
     initialMinPrice = 0
     initialMaxPrice = 0
+    priceRangeLow = 0
+    priceRangeHigh = 0
     fetchData(searchValue, "", date, guestNumber, initialMinPrice, initialMaxPrice)
 })
 
@@ -882,3 +969,65 @@ toSlider.addEventListener('input', () => {
     priceRangeLow = fromSlider.value;
     priceRangeHigh = toSlider.value;
 });
+
+let filterNumber = 0
+let filterGuest = false
+let filterPrice = false
+let filterDates = false
+
+document.querySelectorAll('.checkbox').forEach(checkbox => {
+    checkbox.addEventListener('change', () => {
+        const checkedNumbers = Array.from(document.querySelectorAll('.checkbox:checked'))
+            .map(cb => cb.id.replace('check-', ''));
+
+        for (let i = 1; i <= 21; i++) {
+            if (checkedNumbers.includes(i.toString())) {
+                if (!check.includes(i)) {
+                    check.push(i); // Add i if it's not already in the array
+                }
+            } else {
+                const index = check.indexOf(i);
+                if (index > -1) {
+                    check.splice(index, 1); // Remove i if it's unchecked
+                }
+            }
+        }
+
+        console.log('Current check array:', check);
+    });
+});
+
+document.getElementById('clear').addEventListener('click', () => {
+    filterGuest = false
+    filterPrice = false
+    filterDates = false
+    guestNumber = 0
+    priceRangeHigh = 0
+    priceRangeLow = 0
+    check.forEach(num => {
+        const checkbox = document.getElementById(`check-${num}`);
+        if (checkbox) {
+            checkbox.checked = false;
+        }
+    });
+    document.getElementById('filter-p').textContent = filterNumber
+    document.getElementById('filter-cross').classList.add('hidden')
+    document.getElementById('guest-text').textContent = 'Guests'
+    document.getElementById('guest-cross').classList.add('hidden')
+    document.getElementById('price-p').textContent = 'Price'
+    document.getElementById('price-cross').classList.add('hidden')
+    document.getElementById('dates-p').textContent = 'Dates'
+    document.getElementById('dates-cross').classList.add('hidden')
+    document.getElementById('calendar-left').textContent = ''
+    document.getElementById('calendar-right').textContent = ''
+    document.getElementById('guest-number').textContent = '0'
+    document.getElementById('fromSlider').value = 9;
+    document.getElementById('toSlider').value = 2501;
+    document.getElementById('price-low').value = 9;
+    document.getElementById('price-high').value = 2501;
+    check = [];
+    localStorage.removeItem('guests')
+    localStorage.removeItem('price')
+    localStorage.removeItem('date')
+    filterNumber = 0
+})

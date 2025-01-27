@@ -62,7 +62,7 @@
                                     <p class="text-gray-500 italic">Show only pet-friendly properties</p>
                                 </div>
                             </div>
-                            <input type="checkbox" class="w-7 h-7 rounded accent-emerald-400">
+                            <input id="check-1" type="checkbox" class="checkbox w-7 h-7 rounded accent-emerald-400">
                         </div>
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-3">
@@ -79,7 +79,7 @@
                                     <p class="italic text-gray-500">Show only eco-friendly properties</p>
                                 </div>
                             </div>
-                            <input type="checkbox" class="w-7 h-7 rounded accent-emerald-400">
+                            <input id="check-2" type="checkbox" class="checkbox w-7 h-7 rounded accent-emerald-400">
                         </div>
                     </div>
                 </div>
@@ -91,7 +91,7 @@
                         <div class="border border-gray-300 rounded-lg px-3 py-1 flex items-center justify-between relative flex-1">
                             <div class="h-11 font-semibold">
                                 <p class="text-sm text-gray-500">Check-in</p>
-                                <p class="text-lg"></p>
+                                <p id="calendar-left" class="text-lg"></p>
                             </div>
                             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                                 <svg class="fill-current h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -104,7 +104,7 @@
                         <div class="border border-gray-300 rounded-lg px-3 py-1 w-40 flex items-center justify-between relative flex-1">
                           <div class="h-11 font-semibold">
                             <p class="text-sm text-gray-500">Check-out</p>
-                            <p class="text-lg"></p>
+                            <p id="calendar-right" class="text-lg"></p>
                           </div>
                           <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                             <svg class="fill-current h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -163,79 +163,79 @@
                     <p class="text-sm text-gray-500 mb-3 italic font-semibold">Choose the amenities that are most important</p>
                     <div class="grid grid-cols-3 gap-3 italic text-gray-500 font-semibold">
                         <label class="flex items-center gap-2">
-                            <input type="checkbox" class="w-7 h-7 rounded accent-emerald-400">
+                            <input id="check-3" type="checkbox" class="checkbox w-7 h-7 rounded accent-emerald-400">
                             <span class="text-sm">Air Conditioner</span>
                         </label>
                         <label class="flex items-center gap-2">
-                            <input type="checkbox" class="w-7 h-7 rounded accent-emerald-400">
+                            <input id="check-4" type="checkbox" class="checkbox w-7 h-7 rounded accent-emerald-400">
                             <span class="text-sm">Balcony/terrace</span>
                         </label>
                         <label class="flex items-center gap-2">
-                            <input type="checkbox" class="w-7 h-7 rounded accent-emerald-400">
+                            <input id="check-5" type="checkbox" class="checkbox w-7 h-7 rounded accent-emerald-400">
                             <span class="text-sm">Bedding/linens</span>
                         </label>
                         <label class="flex items-center gap-2">
-                            <input type="checkbox" class="w-7 h-7 rounded accent-emerald-400">
+                            <input id="check-6" type="checkbox" class="checkbox w-7 h-7 rounded accent-emerald-400">
                             <span class="text-sm">Breakfast</span>
                         </label>
                         <label class="flex items-center gap-2">
-                            <input type="checkbox" class="w-7 h-7 rounded accent-emerald-400">
+                            <input id="check-7" type="checkbox" class="checkbox w-7 h-7 rounded accent-emerald-400">
                             <span class="text-sm">Child Friendly</span>
                         </label>
                         <label class="flex items-center gap-2">
-                            <input type="checkbox" class="w-7 h-7 rounded accent-emerald-400">
+                            <input id="check-8" type="checkbox" class="checkbox w-7 h-7 rounded accent-emerald-400">
                             <span class="text-sm">Hot Tub</span>
                         </label>
                         <label class="flex items-center gap-2">
-                            <input type="checkbox" class="w-7 h-7 rounded accent-emerald-400">
+                            <input id="check-9" type="checkbox" class="checkbox w-7 h-7 rounded accent-emerald-400">
                             <span class="text-sm">Internet/Wifi</span>
                         </label>
                         <label class="flex items-center gap-2">
-                            <input type="checkbox" class="w-7 h-7 rounded accent-emerald-400">
+                            <input id="check-10" type="checkbox" class="checkbox w-7 h-7 rounded accent-emerald-400">
                             <span class="text-sm">Kitchen</span>
                         </label>
                         <label class="flex items-center gap-2">
-                            <input type="checkbox" class="w-7 h-7 rounded accent-emerald-400">
+                            <input id="check-11" type="checkbox" class="checkbox w-7 h-7 rounded accent-emerald-400">
                             <span class="text-sm">Laundry</span>
                         </label>
                         <label class="flex items-center gap-2">
-                            <input type="checkbox" class="w-7 h-7 rounded accent-emerald-400">
+                            <input id="check-12" type="checkbox" class="checkbox w-7 h-7 rounded accent-emerald-400">
                             <span class="text-sm">Parking</span>
                         </label>
                         <label class="flex items-center gap-2">
-                            <input type="checkbox" class="w-7 h-7 rounded accent-emerald-400">
+                            <input id="check-13" type="checkbox" class="checkbox w-7 h-7 rounded accent-emerald-400">
                             <span class="text-sm">Pool</span>
                         </label>
                         <label class="flex items-center gap-2">
-                            <input type="checkbox" class="w-7 h-7 rounded accent-emerald-400">
+                            <input id="check-14" type="checkbox" class="checkbox w-7 h-7 rounded accent-emerald-400">
                             <span class="text-sm">Smoking</span>
                         </label>
                         <label class="flex items-center gap-2">
-                            <input type="checkbox" class="w-7 h-7 rounded accent-emerald-400">
+                            <input id="check-15" type="checkbox" class="checkbox w-7 h-7 rounded accent-emerald-400">
                             <span class="text-sm">TV</span>
                         </label>
                         <label class="flex items-center gap-2">
-                            <input type="checkbox" class="w-7 h-7 rounded accent-emerald-400">
+                            <input id="check-16" type="checkbox" class="checkbox w-7 h-7 rounded accent-emerald-400">
                             <span class="text-sm">View</span>
                         </label>
                         <label class="flex items-center gap-2">
-                            <input type="checkbox" class="w-7 h-7 rounded accent-emerald-400">
+                            <input id="check-17" type="checkbox" class="checkbox w-7 h-7 rounded accent-emerald-400">
                             <span class="text-sm">Wheelchair Accessible</span>
                         </label>
                         <label class="flex items-center gap-2">
-                            <input type="checkbox" class="w-7 h-7 rounded accent-emerald-400">
+                            <input id="check-18" type="checkbox" class="checkbox w-7 h-7 rounded accent-emerald-400">
                             <span class="text-sm">Private Beach</span>
                         </label>
                         <label class="flex items-center gap-2">
-                            <input type="checkbox" class="w-7 h-7 rounded accent-emerald-400">
+                            <input id="check-19" type="checkbox" class="checkbox w-7 h-7 rounded accent-emerald-400">
                             <span class="text-sm">Ocean view</span>
                         </label>
                         <label class="flex items-center gap-2">
-                            <input type="checkbox" class="w-7 h-7 rounded accent-emerald-400">
+                            <input id="check-20" type="checkbox" class="checkbox w-7 h-7 rounded accent-emerald-400">
                             <span class="text-sm">Oceanfront</span>
                         </label>
                         <label class="flex items-center gap-2">
-                            <input type="checkbox" class="w-7 h-7 rounded accent-emerald-400">
+                            <input id="check-21" type="checkbox" class="checkbox w-7 h-7 rounded accent-emerald-400">
                             <span class="text-sm">Lake view</span>
                         </label>
                     </div>
@@ -281,8 +281,8 @@
                     <button class="modal-btn filter px-4 py-2 rounded-[10px] border border-gray-200 hover:border-blue-800 hover:text-white hover:bg-blue-800 duration-300 transition-all shadow-md">
                         More Filters
                     </button>
-                    <div class="absolute w-5 h-5 rounded-full bg-emerald-400 -top-[6px] -right-[6px] flex justify-center items-center hidden">
-                        <p class="text-white" >1</p>
+                    <div id="filter-cross" class="absolute w-5 h-5 rounded-full bg-emerald-400 -top-[6px] -right-[6px] flex justify-center items-center hidden">
+                        <p id="filter-p" class="text-white" >0</p>
                     </div>
                 </div>
             </div>
