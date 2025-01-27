@@ -6,9 +6,7 @@
     <title>Rental Card</title>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../static/css/styles.css">
-
-
+    <link rel="stylesheet" href="../static/css/style.css">
     <link href="https://cdn.jsdelivr.net/npm/hotel-datepicker@4.11.2/dist/css/hotel-datepicker.min.css" rel="stylesheet">
 </head>
 <body>
@@ -140,7 +138,7 @@
                             <p class="text-sm text-gray-500 text-center">Min price</p>
                             <div class="w-full relative text-gray-500">
                               <span class="text-xl absolute left-4">৳</span>
-                              <p class="text-lg text-center">243</p>
+                              <input id="price-low" type="number" value="0" class="text-lg text-center w-full"></input>
                             </div>
                           </div>
                         </div>
@@ -154,7 +152,7 @@
                             <p class="text-sm text-gray-500 text-center">Max price(+)</p>
                             <div class="w-full relative text-gray-500">
                               <span class="text-xl absolute left-4">৳</span>
-                              <p class="text-lg text-center">121548</p>
+                              <input id="price-high" type="number" value="0" class="text-lg text-center w-full"></input>
                             </div>
                           </div>
                         </div>
@@ -255,30 +253,38 @@
         <section class="px-4 py-4 flex justify-between items-center">
             <!-- Filter Buttons -->
             <div class="flex gap-2 text-blue-800 text-[13px] font-semibold">
-                <button id="dates" class="relative modal-btn px-4 py-2 rounded-[10px] border border-gray-200 hover:border-blue-800 hover:text-white hover:bg-blue-800 duration-300 transition-all shadow-md">
-                    <p id="dates-p">Dates</p>
-                    <div id="dates-cross" class="absolute w-5 h-5 rounded-full bg-gray-400 -top-[6px] -right-[6px] flex justify-center items-center hidden">
+                <div class="relative">
+                    <button id="dates" class="modal-btn px-4 py-2 rounded-[10px] border border-gray-200 hover:border-blue-800 hover:text-white hover:bg-blue-800 duration-300 transition-all shadow-md">
+                        <p id="dates-p">Dates</p>
+                    </button>
+                    <div id="dates-cross" class="cursor-pointer absolute w-5 h-5 rounded-full bg-gray-400 -top-[6px] -right-[6px] flex justify-center items-center hidden">
                         <i class="ph ph-x text-white"></i>
                     </div>
-                </button>
-                <button class="relative modal-btn filter px-4 py-2 rounded-[10px] border border-gray-200 hover:border-blue-800 hover:text-white hover:bg-blue-800 duration-300 transition-all shadow-md">
-                    Price
-                    <div class="absolute w-5 h-5 rounded-full bg-gray-400 -top-[6px] -right-[6px] flex justify-center items-center hidden">
+                </div>
+                <div class="relative">
+                    <button class="modal-btn filter px-4 py-2 rounded-[10px] border border-gray-200 hover:border-blue-800 hover:text-white hover:bg-blue-800 duration-300 transition-all shadow-md">
+                        <p id="price-p">Price</p>
+                    </button>
+                    <div id="price-cross" class="cursor-pointer absolute w-5 h-5 rounded-full bg-gray-400 -top-[6px] -right-[6px] flex justify-center items-center hidden">
                         <i class="ph ph-x text-white"></i>
                     </div>
-                </button>
-                <button class="relative modal-btn filter px-4 py-2 rounded-[10px] border border-gray-200 hover:border-blue-800 hover:text-white hover:bg-blue-800 duration-300 transition-all shadow-md">
-                    <p id="guest-text">Guests</p>
-                    <div id="guest-cross" class="absolute w-5 h-5 rounded-full bg-gray-400 -top-[6px] -right-[6px] flex justify-center items-center hidden">
+                </div>
+                <div class="relative">
+                    <button class="modal-btn filter px-4 py-2 rounded-[10px] border border-gray-200 hover:border-blue-800 hover:text-white hover:bg-blue-800 duration-300 transition-all shadow-md">
+                        <p id="guest-text">Guests</p>
+                    </button>
+                    <div id="guest-cross" class="cursor-pointer absolute w-5 h-5 rounded-full bg-gray-400 -top-[6px] -right-[6px] flex justify-center items-center hidden">
                         <i class="ph ph-x text-white"></i>
                     </div>
-                </button>
-                <button class="relative modal-btn filter px-4 py-2 rounded-[10px] border border-gray-200 hover:border-blue-800 hover:text-white hover:bg-blue-800 duration-300 transition-all shadow-md">
-                    More Filters
+                </div>
+                <div class="relative">
+                    <button class="modal-btn filter px-4 py-2 rounded-[10px] border border-gray-200 hover:border-blue-800 hover:text-white hover:bg-blue-800 duration-300 transition-all shadow-md">
+                        More Filters
+                    </button>
                     <div class="absolute w-5 h-5 rounded-full bg-emerald-400 -top-[6px] -right-[6px] flex justify-center items-center hidden">
                         <p class="text-white" >1</p>
                     </div>
-                </button>
+                </div>
             </div>
             <!-- Sort Dropdown -->
             <div class="flex items-center gap-2">

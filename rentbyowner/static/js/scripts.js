@@ -283,6 +283,8 @@ function getQueryParamByName(name) {
 document.addEventListener('DOMContentLoaded', (event) => {
     // shimmerFunc()
     const searchValue = getQueryParamByName('search');
+    let num1 = 0
+    let num2 = 0
     if (localStorage.getItem('date')) {
         const [startDate, endDate] = localStorage.getItem('date').split('|');
         const start = new Date(startDate);
@@ -295,14 +297,45 @@ document.addEventListener('DOMContentLoaded', (event) => {
     }
     if (localStorage.getItem('guests')) {
         const guestLocalNum = localStorage.getItem('guests');
-        document.getElementById('guest-text').textContent = `${guestLocalNum !== 0 ? `${guestLocalNum > 1 ? `${guestLocalNum} Guests` : `${guestLocalNum} Guest`}` : 'Guests'}`
-        document.getElementById('guest-cross').classList.remove('hidden')
+        if (Number(guestLocalNum) === 0) {
+            console.log('ss',guestLocalNum)
+            document.getElementById('guest-text').textContent = 'Guests'  
+            document.getElementById('guest-cross').classList.add('hidden')
+        } else {
+            document.getElementById('guest-text').textContent = `${guestLocalNum !== 0 ? 
+                `${guestLocalNum > 1 ? `${guestLocalNum} Guests` : `${guestLocalNum} Guest`}` 
+                : 'Guests'}`
+                document.getElementById('guest-cross').classList.remove('hidden')
+        }
         document.getElementById('guest-number').textContent = guestLocalNum  
     }
-    fetchData(searchValue);
+    if (localStorage.getItem('price')) {
+        const price = localStorage.getItem('price');
+        if (price === '৳0 - ৳0') {
+            console.log('price',price)
+            document.getElementById('price-p').textContent = `৳9 - ৳2501`  
+            document.getElementById('price-cross').classList.remove('hidden')
+        } else {
+            document.getElementById('price-p').textContent = price
+            document.getElementById('price-cross').classList.remove('hidden')
+        }
+        const numbers = price.match(/\d+/g);
+
+        if (numbers && numbers.length >= 2) {
+            num1 = parseInt(numbers[0], 10);
+            num2 = parseInt(numbers[1], 10);
+
+            console.log("First Number:", num1);
+            console.log("Second Number:", num2);
+        }
+    }
+    fetchData(searchValue, "", "", 0, num1, num2);
 });
 
-async function fetchData(searchValue, selectedValue = "", dates = "", guest = 0) {
+let initialMaxPrice = 0
+let initialMinPrice = 0
+
+async function fetchData(searchValue, selectedValue = "", dates = "", guest = 0, pLow = 0, pHigh = 0) {
     try {
         const sortLocalCheck = localStorage.getItem('filter');
         if (sortLocalCheck) {
@@ -324,13 +357,16 @@ async function fetchData(searchValue, selectedValue = "", dates = "", guest = 0)
         let responseSecondApi;
         const guestLocalCheck = localStorage.getItem('guests')
         const dateLocalCheck = localStorage.getItem('date')
+        // const defaultLowPrice = document.getElementById('fromSlider').min
+        // const defaultHighPrice = document.getElementById('fromSlider').max
+        console.log(pLow, pHigh)
         if (dates.length > 0 || dateLocalCheck) {
             if (dateLocalCheck) {
                 dates = dateLocalCheck
             }
-            responseSecondApi = await fetch(`/api/v1/locationSlug/${locations}|${dates}|${guestLocalCheck ? guestLocalCheck : guest}`);
+            responseSecondApi = await fetch(`/api/v1/locationSlug/${locations}|${dates}|${guestLocalCheck ? guestLocalCheck : guest}|${pLow}|${pHigh}`);
         } else {
-            responseSecondApi = await fetch(`/api/v1/locationSlug/${locations}|${guestLocalCheck ? guestLocalCheck : guest}`);
+            responseSecondApi = await fetch(`/api/v1/locationSlug/${locations}|${guestLocalCheck ? guestLocalCheck : guest}|${pLow}|${pHigh}`);
         }
         
         if (!responseSecondApi.ok) {
@@ -344,6 +380,25 @@ async function fetchData(searchValue, selectedValue = "", dates = "", guest = 0)
             throw new Error('Network responseThirdApi was not ok ' + responseThirdApi.statusText);
         }
         const propertyData = await responseThirdApi.json();
+        if (initialMaxPrice === 0) {
+            const fromSlide = document.getElementById('fromSlider');
+            const toSlide = document.getElementById('toSlider');
+            const minPrice = Math.round(Math.min(...propertyData.map(item => Number(item.Property.Price))));
+            const maxPrice = Math.round(Math.max(...propertyData.map(item => Number(item.Property.Price))));
+            fromSlide.min = minPrice - 1;
+            fromSlide.max = maxPrice + 1;
+            fromSlide.value = minPrice - 1;
+            
+            toSlide.min = minPrice - 1;
+            toSlide.max = maxPrice + 1;
+            toSlide.value = maxPrice + 1;
+            
+            document.getElementById('price-high').value = maxPrice + 1;
+            document.getElementById('price-low').value = minPrice - 1;
+            initialMaxPrice = maxPrice + 1
+            initialMinPrice = minPrice - 1
+        }
+        
         if (selectedValue === "Lowest Price") {
             propertyData.sort((a, b) => a.Property.Price - b.Property.Price);
         } else if (selectedValue === "Highest Price"){
@@ -670,6 +725,8 @@ document.getElementById('dates-cross').addEventListener('click', () => {
 })
 
 let guestNumber = 0
+let priceRangeLow = 0
+let priceRangeHigh = 0
 document.getElementById('increment-btn').addEventListener('click', () => {
     const number = Number(document.getElementById('guest-number').textContent)
     if (number < 30) {
@@ -693,9 +750,16 @@ document.getElementById('search').addEventListener('click', () => {
             document.getElementById('guest-text').textContent = `${guestNumber > 1 ? `${guestNumber} Guests` : `${guestNumber} Guest`}`
             document.getElementById('guest-cross').classList.remove('hidden')
     }
+    console.log('price', priceRangeLow, priceRangeHigh)
+    if (priceRangeLow > document.getElementById('price-low').min || priceRangeHigh < document.getElementById('price-high').max) {
+        document.getElementById('price-p').textContent = `৳${priceRangeLow} - ৳${priceRangeHigh}`
+        document.getElementById('price-cross').classList.remove('hidden')
+    }
     const searchValue = getQueryParamByName('search');
     localStorage.setItem('guests', guestNumber)
-    fetchData(searchValue, "", date, guestNumber)
+    localStorage.setItem('price', `৳${priceRangeLow} - ৳${priceRangeHigh}`)
+    console.log('price', priceRangeLow, priceRangeHigh)
+    fetchData(searchValue, "", date, guestNumber, priceRangeLow, priceRangeHigh)
 })
 
 document.getElementById('guest-cross').addEventListener('click', () => {
@@ -708,3 +772,37 @@ document.getElementById('guest-cross').addEventListener('click', () => {
     localStorage.removeItem('guests')
     fetchData(searchValue, "", date, guestNumber)
 })
+
+const fromSlider = document.getElementById('fromSlider');
+const toSlider = document.getElementById('toSlider');
+const priceLow = document.getElementById('price-low');
+const priceHigh = document.getElementById('price-high');
+
+fromSlider.addEventListener('input', () => {
+    console.log('s')
+    let fromValue = Number(fromSlider.value);
+    let toValue = Number(toSlider.value);
+
+    if (fromValue >= toValue) {
+        toSlider.value = fromValue + 1; // Ensure toSlider moves forward
+    }
+
+    priceLow.value = fromSlider.value;
+    priceHigh.value = toSlider.value;
+    priceRangeLow = fromSlider.value;
+    priceRangeHigh = toSlider.value;
+});
+
+toSlider.addEventListener('input', () => {
+    let fromValue = Number(fromSlider.value);
+    let toValue = Number(toSlider.value);
+
+    if (toValue <= fromValue) {
+        fromSlider.value = toValue - 1; // Ensure fromSlider moves backward
+    }
+
+    priceLow.value = fromSlider.value;
+    priceHigh.value = toSlider.value;
+    priceRangeLow = fromSlider.value;
+    priceRangeHigh = toSlider.value;
+});
