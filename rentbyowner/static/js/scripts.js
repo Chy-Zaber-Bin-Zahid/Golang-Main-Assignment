@@ -381,22 +381,77 @@ async function fetchData(searchValue, selectedValue = "", dates = "", guest = 0,
         }
         const propertyData = await responseThirdApi.json();
         if (initialMaxPrice === 0) {
-            const fromSlide = document.getElementById('fromSlider');
-            const toSlide = document.getElementById('toSlider');
-            const minPrice = Math.round(Math.min(...propertyData.map(item => Number(item.Property.Price))));
-            const maxPrice = Math.round(Math.max(...propertyData.map(item => Number(item.Property.Price))));
-            fromSlide.min = minPrice - 1;
-            fromSlide.max = maxPrice + 1;
-            fromSlide.value = minPrice - 1;
-            
-            toSlide.min = minPrice - 1;
-            toSlide.max = maxPrice + 1;
-            toSlide.value = maxPrice + 1;
-            
-            document.getElementById('price-high').value = maxPrice + 1;
-            document.getElementById('price-low').value = minPrice - 1;
-            initialMaxPrice = maxPrice + 1
-            initialMinPrice = minPrice - 1
+            if (localStorage.getItem('price')) {
+                const price = localStorage.getItem('price');
+                const numbers = price.match(/\d+/g);
+        
+                if (numbers && numbers.length >= 2) {
+                    num1 = parseInt(numbers[0], 10);
+                    num2 = parseInt(numbers[1], 10);
+        
+                    console.log("First Number:", num1);
+                    console.log("Second Number:", num2);
+                }
+                
+                if (price === '৳0 - ৳0') {
+                    const fromSlide = document.getElementById('fromSlider');
+                    const toSlide = document.getElementById('toSlider');
+                    document.getElementById('price-high').value = 2501;
+                    document.getElementById('price-low').value = 9;
+                    fromSlide.value = 0;
+                    toSlide.value = 100;
+                    const minPrice = Math.round(Math.min(...propertyData.map(item => Number(item.Property.Price))));
+                    const maxPrice = Math.round(Math.max(...propertyData.map(item => Number(item.Property.Price))));
+                    fromSlide.min = minPrice - 1;
+                    fromSlide.max = maxPrice + 1;
+                    fromSlide.value = minPrice - 1;
+                    
+                    toSlide.min = minPrice - 1;
+                    toSlide.max = maxPrice + 1;
+                    toSlide.value = maxPrice + 1;
+                    
+                    document.getElementById('price-high').value = maxPrice + 1;
+                    document.getElementById('price-low').value = minPrice - 1;
+                    initialMaxPrice = maxPrice + 1
+                    initialMinPrice = minPrice - 1
+                } else {
+                    console.log('price', num1)
+                    const fromSlide = document.getElementById('fromSlider');
+                    const toSlide = document.getElementById('toSlider');
+                    
+                    console.log('price', fromSlider.value)
+                    toSlide.value = num2;
+                    fromSlide.min = 9;
+                    fromSlide.max = 2501;
+                    fromSlide.value = num1;
+                    console.log('price', fromSlider.value)
+                    toSlide.min = 9;
+                    toSlide.max = 2501;
+                    toSlide.value = num2;
+                    
+                    document.getElementById('price-high').value = num2;
+                    document.getElementById('price-low').value = num1;
+                    initialMaxPrice = 2501
+                    initialMinPrice = 9
+                }
+            } else {
+                const fromSlide = document.getElementById('fromSlider');
+                const toSlide = document.getElementById('toSlider');
+                const minPrice = Math.round(Math.min(...propertyData.map(item => Number(item.Property.Price))));
+                const maxPrice = Math.round(Math.max(...propertyData.map(item => Number(item.Property.Price))));
+                fromSlide.min = minPrice - 1;
+                fromSlide.max = maxPrice + 1;
+                fromSlide.value = minPrice - 1;
+                
+                toSlide.min = minPrice - 1;
+                toSlide.max = maxPrice + 1;
+                toSlide.value = maxPrice + 1;
+                
+                document.getElementById('price-high').value = maxPrice + 1;
+                document.getElementById('price-low').value = minPrice - 1;
+                initialMaxPrice = maxPrice + 1
+                initialMinPrice = minPrice - 1
+            }
         }
         
         if (selectedValue === "Lowest Price") {
@@ -754,6 +809,9 @@ document.getElementById('search').addEventListener('click', () => {
     if (priceRangeLow > document.getElementById('price-low').min || priceRangeHigh < document.getElementById('price-high').max) {
         document.getElementById('price-p').textContent = `৳${priceRangeLow} - ৳${priceRangeHigh}`
         document.getElementById('price-cross').classList.remove('hidden')
+    } else {
+        document.getElementById('price-p').textContent = `৳${initialMinPrice} - ৳${initialMaxPrice}`
+        document.getElementById('price-cross').classList.remove('hidden')
     }
     const searchValue = getQueryParamByName('search');
     localStorage.setItem('guests', guestNumber)
@@ -771,6 +829,22 @@ document.getElementById('guest-cross').addEventListener('click', () => {
     const searchValue = getQueryParamByName('search');
     localStorage.removeItem('guests')
     fetchData(searchValue, "", date, guestNumber)
+})
+
+document.getElementById('price-cross').addEventListener('click', () => {
+    event.stopPropagation();
+    document.getElementById('price-p').textContent = 'Price'
+    document.getElementById('price-cross').classList.add('hidden')
+    const searchValue = getQueryParamByName('search');
+    localStorage.removeItem('price')
+    console.log('initial', initialMinPrice)
+    document.getElementById('fromSlider').value = 9;
+    document.getElementById('toSlider').value = 2501;
+    document.getElementById('price-low').value = 9;
+    document.getElementById('price-high').value = 2501;
+    initialMinPrice = 0
+    initialMaxPrice = 0
+    fetchData(searchValue, "", date, guestNumber, initialMinPrice, initialMaxPrice)
 })
 
 const fromSlider = document.getElementById('fromSlider');
