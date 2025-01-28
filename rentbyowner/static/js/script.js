@@ -846,7 +846,7 @@ document.getElementById('increment-btn').addEventListener('click', () => {
 
 document.getElementById('decrement-btn').addEventListener('click', () => {
     const number = Number(document.getElementById('guest-number').textContent)
-    if (number > 1) {
+    if (number > 0) {
         document.getElementById('guest-number').textContent = number - 1
         guestNumber = Number(document.getElementById('guest-number').textContent)
     }
@@ -976,18 +976,22 @@ const priceLow = document.getElementById('price-low');
 const priceHigh = document.getElementById('price-high');
 
 fromSlider.addEventListener('input', () => {
-    console.log('s')
     let fromValue = Number(fromSlider.value);
     let toValue = Number(toSlider.value);
 
     if (fromValue >= toValue) {
-        toSlider.value = fromValue + 1; // Ensure toSlider moves forward
+        priceLow.value = toSlider.value;
+        priceHigh.value = fromSlider.value;
+        priceRangeLow = toSlider.value;
+        priceRangeHigh = fromSlider.value;
+    } else {
+        priceLow.value = fromSlider.value;
+        priceHigh.value = toSlider.value;
+        priceRangeLow = fromSlider.value;
+        priceRangeHigh = toSlider.value;
     }
 
-    priceLow.value = fromSlider.value;
-    priceHigh.value = toSlider.value;
-    priceRangeLow = fromSlider.value;
-    priceRangeHigh = toSlider.value;
+    
 });
 
 toSlider.addEventListener('input', () => {
@@ -995,14 +999,20 @@ toSlider.addEventListener('input', () => {
     let toValue = Number(toSlider.value);
 
     if (toValue <= fromValue) {
-        fromSlider.value = toValue - 1; // Ensure fromSlider moves backward
+        priceLow.value = toSlider.value;
+        priceHigh.value = fromSlider.value;
+        priceRangeLow = toSlider.value;
+        priceRangeHigh = fromSlider.value;
+    } else {
+        priceLow.value = fromSlider.value;
+        priceHigh.value = toSlider.value;
+        priceRangeLow = fromSlider.value;
+        priceRangeHigh = toSlider.value;
     }
 
-    priceLow.value = fromSlider.value;
-    priceHigh.value = toSlider.value;
-    priceRangeLow = fromSlider.value;
-    priceRangeHigh = toSlider.value;
+
 });
+
 
 let filterNumber = 0
 let filterGuest = false
@@ -1079,4 +1089,32 @@ document.querySelectorAll('#check-in, #check-out').forEach(button => {
         document.getElementById('blueOverlay-main').classList.remove('hidden')
         document.getElementById('modal-filter').classList.add('hidden')
     });
+});
+
+
+document.getElementById("price-low").addEventListener("input", () => {
+    console.log("Price Low changed!");
+    if (Number(document.getElementById("price-low").value) < 9) {
+        console.log("Price is too low!");
+        document.getElementById("price-low").value = 9; // Set it to 9 if lower
+    }
+    if (Number(document.getElementById("price-low").value) > 2500) {
+        console.log("Price is too low!");
+        document.getElementById("price-low").value = 2500; // Set it to 9 if lower
+    }
+    fromSlider.value = document.getElementById("price-low").value;
+});
+
+
+document.getElementById("price-high").addEventListener("input", () => {
+    console.log("Price high changed!");
+    if (Number(document.getElementById("price-high").value) > 2501) {
+        console.log("Price is too high!");
+        document.getElementById("price-high").value = 2501; // Set it to 9 if lower
+    }
+    if (Number(document.getElementById("price-high").value) < 10) {
+        console.log("Price is too high!");
+        document.getElementById("price-high").value = 10; // Set it to 9 if lower
+    }
+    toSlider.value = document.getElementById("price-high").value;
 });
