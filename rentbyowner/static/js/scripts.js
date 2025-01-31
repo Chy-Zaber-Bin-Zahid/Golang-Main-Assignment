@@ -41,7 +41,7 @@ class Property {
         nextButton.innerHTML = '&#10095;'; // Right arrow
 
         const dotsContainer = document.createElement('div');
-        dotsContainer.className = 'absolute bottom-10 left-1/2 transform -translate-x-1/2 flex space-x-2 flex justify-center items-center z-30';
+        dotsContainer.className = 'absolute bottom-10 left-1/2 transform -translate-x-1/2 flex space-x-2 flex justify-center items-center z-30 dots-container';
 
         // Create dots
         const dots = [];
@@ -1216,7 +1216,7 @@ function next() {
                 return;
             }
 
-            const carouselId = parentDiv.id; // Unique ID for each carousel
+            const carouselId = parentDiv.id;
 
             try {
                 if (!nextSlide.includes(carouselId)) {
@@ -1230,17 +1230,14 @@ function next() {
 
                     const images = await responseImageApi.json();
 
-                    // Check if the key already exists in carouselItems, if not, initialize it as an empty array
                     if (!Array.isArray(carouselItems[carouselId])) {
                         carouselItems[carouselId] = [];
                     }
 
-                    // Push the newly fetched images into the existing array
                     const mainDiv = document.getElementById(`${carouselId}relative`);
                     console.log(mainDiv);
                     const imgElement = mainDiv.querySelector("img");
 
-                    // Remove the img element if it exists
                     if (imgElement) {
                         mainDiv.removeChild(imgElement);
                     }
@@ -1259,19 +1256,27 @@ function next() {
                 const carouselTrack = document.getElementById(`${carouselId}relative`);
                 const imagesAll = carouselTrack.querySelectorAll('img');
                 const totalImages = imagesAll.length;
-                document.getElementById('prev').classList.remove('hidden');
-                // Initialize currentIndex for this carousel if it doesn't exist
+                parentDiv.querySelector('#prev').classList.remove('hidden');
+
                 if (!currentIndex[carouselId]) {
                     currentIndex[carouselId] = 0;
                 }
 
-                // Function to update the carousel position
                 function updateCarousel() {
                     const offset = -currentIndex[carouselId] * carouselTrack.clientWidth;
                     carouselTrack.style.transform = `translateX(${offset}px)`;
+                    
+                    // Update dots
+                    const dots = document.querySelectorAll(`#${carouselId} .dots-container button`);
+                    dots.forEach((dot, index) => {
+                        if (index === currentIndex[carouselId]) {
+                            dot.className = 'rounded-full bg-white transition-all duration-300 w-2 h-2';
+                        } else {
+                            dot.className = 'rounded-full bg-white transition-all duration-300 w-1 h-1';
+                        }
+                    });
                 }
 
-                // Next button click event
                 if (currentIndex[carouselId] < totalImages - 1) {
                     currentIndex[carouselId]++;
                     if (currentIndex[carouselId] === totalImages - 1) {
@@ -1297,32 +1302,37 @@ function prev() {
                 return;
             }
 
-            const carouselId = parentDiv.id; // Unique ID for each carousel
+            const carouselId = parentDiv.id;
 
             const carouselTrack = document.getElementById(`${carouselId}relative`);
             const imagesAll = carouselTrack.querySelectorAll('img');
             const totalImages = imagesAll.length;
 
-            // Show the "Next" button if it was hidden
-            document.getElementById('next').classList.remove('hidden');
+            parentDiv.querySelector('#next').classList.remove('hidden');
 
-            // Initialize currentIndex for this carousel if it doesn't exist
             if (!currentIndex[carouselId]) {
                 currentIndex[carouselId] = 0;
             }
 
-            // Function to update the carousel position
             function updateCarousel() {
                 const offset = -currentIndex[carouselId] * carouselTrack.clientWidth;
                 carouselTrack.style.transform = `translateX(${offset}px)`;
+                
+                // Update dots
+                const dots = document.querySelectorAll(`#${carouselId} .dots-container button`);
+                dots.forEach((dot, index) => {
+                    if (index === currentIndex[carouselId]) {
+                        dot.className = 'rounded-full bg-white transition-all duration-300 w-2 h-2';
+                    } else {
+                        dot.className = 'rounded-full bg-white transition-all duration-300 w-1 h-1';
+                    }
+                });
             }
 
-            // Previous button click event
             if (currentIndex[carouselId] > 0) {
-                currentIndex[carouselId]--; // Decrement the index
+                currentIndex[carouselId]--;
                 updateCarousel();
 
-                // Hide the "Previous" button if we're back at the first image
                 if (currentIndex[carouselId] === 0) {
                     event.target.classList.add('hidden');
                 }
