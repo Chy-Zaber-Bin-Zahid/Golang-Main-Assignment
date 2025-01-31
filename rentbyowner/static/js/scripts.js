@@ -1219,7 +1219,7 @@ document.getElementById("price-high").addEventListener("input", () => {
 
 
 
-
+//////////////// Carousel Logic ////////////////
 
 let nextSlide = [];
 let currentIndex = {}; // Object to store current indices for each carousel
@@ -1241,15 +1241,6 @@ function updateCarousel(carouselId) {
     });
 }
 
-// Function to handle window resize
-function handleResize() {
-    Object.keys(currentIndex).forEach(carouselId => {
-        updateCarousel(carouselId);
-    });
-}
-
-// Add resize event listener
-window.addEventListener('resize', handleResize);
 
 function next() {
     document.querySelectorAll('#next').forEach(button => {
