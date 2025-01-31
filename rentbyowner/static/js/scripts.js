@@ -13,7 +13,7 @@ class Property {
         // Create the relative div
         const mainCarouselDiv = document.createElement('div');
         mainCarouselDiv.id = this.id;
-        mainCarouselDiv.className = 'overflow-hidden relative rounded-t-lg';
+        mainCarouselDiv.className = 'overflow-hidden relative rounded-t-lg group';
 
         const relativeDiv = document.createElement('div');
         relativeDiv.id = this.id + 'relative';
@@ -26,18 +26,36 @@ class Property {
         // Ensure carouselItems[this.id] is an array
         carouselItems[this.id] = [this.property.FeatureImage];
 
+        // Create Loader Div
+        const loader = document.createElement('div');
+        loader.id = 'loader'+'-'+this.id;
+        loader.className = 'absolute flex gap-2 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 hidden';
+
+        // Colors for circles
+        const colors = ['bg-blue-500', 'bg-green-500', 'bg-blue-500'];
+
+        // Create 3 Circles
+        colors.forEach((color, index) => {
+            const circle = document.createElement('div');
+            circle.className = `w-3 h-3 ${color} rounded-full animate-pulse-custom`;
+            circle.style.animationDelay = `${index * 0.3}s`; // Delay each circle
+            loader.appendChild(circle);
+        });
+
+        // Append Loader to Container
+        mainCarouselDiv.appendChild(loader);
         
         // Create navigation buttons
         const prevButton = document.createElement('button');
         prevButton.id = 'prev';
         prevButton.className =
-            'absolute top-1/2 left-2 transform -translate-y-1/2 bg-white text-black text-xs p-[5px] px-2 rounded-full z-30 hidden';
+            'absolute top-1/2 left-2 transform -translate-y-1/2 bg-white text-black text-xs p-[5px] px-2 rounded-full z-30 hidden opacity-0 group-hover:opacity-100';
         prevButton.innerHTML = '&#10094;'; // Left arrow
         
         const nextButton = document.createElement('button');
         nextButton.id = 'next';
         nextButton.className =
-            'absolute top-1/2 right-2 transform -translate-y-1/2 bg-white text-black text-xs p-[5px] px-2 rounded-full z-30';
+            'absolute top-1/2 right-2 transform -translate-y-1/2 bg-white text-black text-xs p-[5px] px-2 rounded-full z-30 opacity-0 group-hover:opacity-100';
         nextButton.innerHTML = '&#10095;'; // Right arrow
 
         const dotsContainer = document.createElement('div');
@@ -89,7 +107,7 @@ class Property {
 
         // Create the bottom info container
         const bottomInfoDiv = document.createElement('div');
-        bottomInfoDiv.className = 'absolute bottom-2 left-2 bg-[#f5f5f5] px-2 py-[2px] pb-0 rounded-[5px] flex items-center justify-center';
+        bottomInfoDiv.className = 'absolute bottom-2 left-2 bg-[#f5f5f5] px-2 py-[2px] pb-0 rounded-[5px] flex items-center justify-center z-30';
 
         // Create the span for info text
         const infoSpan = document.createElement('span');
@@ -102,7 +120,7 @@ class Property {
         infoIcon.className = 'ph ph-info ml-1 text-xl';
         bottomInfoDiv.appendChild(infoIcon);
 
-        relativeDiv.appendChild(bottomInfoDiv);
+        mainCarouselDiv.appendChild(bottomInfoDiv);
         mainCarouselDiv.appendChild(relativeDiv);
         tile.appendChild(mainCarouselDiv);
 
@@ -1206,11 +1224,38 @@ document.getElementById("price-high").addEventListener("input", () => {
 let nextSlide = [];
 let currentIndex = {}; // Object to store current indices for each carousel
 
+// Function to update the carousel position
+function updateCarousel(carouselId) {
+    const carouselTrack = document.getElementById(`${carouselId}relative`);
+    const offset = -currentIndex[carouselId] * carouselTrack.clientWidth;
+    carouselTrack.style.transform = `translateX(${offset}px)`;
+
+    // Update dots
+    const dots = document.querySelectorAll(`#${carouselId} .dots-container button`);
+    dots.forEach((dot, index) => {
+        if (index === currentIndex[carouselId]) {
+            dot.className = 'rounded-full bg-white transition-all duration-300 w-2 h-2';
+        } else {
+            dot.className = 'rounded-full bg-white transition-all duration-300 w-1 h-1';
+        }
+    });
+}
+
+// Function to handle window resize
+function handleResize() {
+    Object.keys(currentIndex).forEach(carouselId => {
+        updateCarousel(carouselId);
+    });
+}
+
+// Add resize event listener
+window.addEventListener('resize', handleResize);
+
 function next() {
     document.querySelectorAll('#next').forEach(button => {
         button.addEventListener('click', async (event) => {
             const parentDiv = event.target.parentElement;
-
+            document.getElementById(`loader-${parentDiv.id}`).classList.remove('hidden');
             if (!parentDiv || !parentDiv.id) {
                 console.warn("Parent element does not have an ID.");
                 return;
@@ -1261,29 +1306,14 @@ function next() {
                 if (!currentIndex[carouselId]) {
                     currentIndex[carouselId] = 0;
                 }
-
-                function updateCarousel() {
-                    const offset = -currentIndex[carouselId] * carouselTrack.clientWidth;
-                    carouselTrack.style.transform = `translateX(${offset}px)`;
-                    
-                    // Update dots
-                    const dots = document.querySelectorAll(`#${carouselId} .dots-container button`);
-                    dots.forEach((dot, index) => {
-                        if (index === currentIndex[carouselId]) {
-                            dot.className = 'rounded-full bg-white transition-all duration-300 w-2 h-2';
-                        } else {
-                            dot.className = 'rounded-full bg-white transition-all duration-300 w-1 h-1';
-                        }
-                    });
-                }
-
+                document.getElementById(`loader-${parentDiv.id}`).classList.add('hidden');
                 if (currentIndex[carouselId] < totalImages - 1) {
                     currentIndex[carouselId]++;
                     if (currentIndex[carouselId] === totalImages - 1) {
                         event.target.classList.add('hidden');
                     }
                 }
-                updateCarousel();
+                updateCarousel(carouselId);
 
             } catch (error) {
                 console.error("Error fetching images:", error);
@@ -1304,34 +1334,15 @@ function prev() {
 
             const carouselId = parentDiv.id;
 
-            const carouselTrack = document.getElementById(`${carouselId}relative`);
-            const imagesAll = carouselTrack.querySelectorAll('img');
-            const totalImages = imagesAll.length;
-
             parentDiv.querySelector('#next').classList.remove('hidden');
 
             if (!currentIndex[carouselId]) {
                 currentIndex[carouselId] = 0;
             }
 
-            function updateCarousel() {
-                const offset = -currentIndex[carouselId] * carouselTrack.clientWidth;
-                carouselTrack.style.transform = `translateX(${offset}px)`;
-                
-                // Update dots
-                const dots = document.querySelectorAll(`#${carouselId} .dots-container button`);
-                dots.forEach((dot, index) => {
-                    if (index === currentIndex[carouselId]) {
-                        dot.className = 'rounded-full bg-white transition-all duration-300 w-2 h-2';
-                    } else {
-                        dot.className = 'rounded-full bg-white transition-all duration-300 w-1 h-1';
-                    }
-                });
-            }
-
             if (currentIndex[carouselId] > 0) {
                 currentIndex[carouselId]--;
-                updateCarousel();
+                updateCarousel(carouselId);
 
                 if (currentIndex[carouselId] === 0) {
                     event.target.classList.add('hidden');
