@@ -10,6 +10,7 @@ func init() {
 		beego.NSRouter("/keyword/:keyword", &controllers.GetLocationSlug{}, "get:GetLocation"),
 		beego.NSRouter("/locationSlug/:locationSlug", &controllers.UseLocationSlug{}, "get:UseLocation"),
 		beego.NSRouter("/itemIds/:itemIds", &controllers.GetProperty{}, "get:GetPropertyData"),
+		beego.NSRouter("/propertyId/:propertyId", &controllers.GetImages{}, "get:GetImagesData"),
     )
 	beego.Router("/refine", &controllers.MainController{})
     beego.AddNamespace(ns)
