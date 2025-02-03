@@ -24,9 +24,9 @@ class Property {
                         <div class="w-3 h-3 ${color} rounded-full animate-pulse-custom" style="animation-delay: ${index * 0.3}s;"></div>
                     `).join('')}
                 </div>
-                <button id="prev" class="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white text-black text-xs p-[5px] px-2 rounded-full z-30 hidden opacity-0 max-[1170px]:opacity-100 group-hover:opacity-100">&#10094;</button>
-                <button id="next" class="absolute top-1/2 right-2 transform -translate-y-1/2 bg-white text-black text-xs p-[5px] px-2 rounded-full z-30 opacity-0 max-[1170px]:opacity-100 group-hover:opacity-100">&#10095;</button>
-                <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex space-x-2 flex justify-center items-center z-30 dots-container h-2">
+                <button id="prev" class="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white text-black text-xs p-[5px] px-2 rounded-full z-20 hidden opacity-0 max-[1170px]:opacity-100 group-hover:opacity-100">&#10094;</button>
+                <button id="next" class="absolute top-1/2 right-2 transform -translate-y-1/2 bg-white text-black text-xs p-[5px] px-2 rounded-full z-20 opacity-0 max-[1170px]:opacity-100 group-hover:opacity-100">&#10095;</button>
+                <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex space-x-2 flex justify-center items-center z-20 dots-container h-2">
                     ${Array.from({ length: 5 }, (_, index) => `
                         <button class="rounded-full bg-white transition-all duration-300 ${index === 0 ? 'w-2 h-2' : 'w-1 h-1'}"></button>
                     `).join('')}
@@ -37,7 +37,7 @@ class Property {
                         <div class="bg-black opacity-20 absolute w-full h-full top-0 left-0 z-10"></div>
                     </button>
                 </div>
-                <div class="absolute bottom-2 left-2 bg-[#f5f5f5] px-2 py-[2px] pb-0 rounded-[5px] flex items-center justify-center z-30">
+                <div class="absolute bottom-2 left-2 bg-[#f5f5f5] px-2 py-[2px] pb-0 rounded-[5px] flex items-center justify-center z-20">
                     <span class="text-[15px] font-medium">From $${this.property.Price}</span>
                     <i class="ph ph-info ml-1 text-xl"></i>
                 </div>
