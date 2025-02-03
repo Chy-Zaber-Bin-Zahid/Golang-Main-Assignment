@@ -1,4 +1,4 @@
-# Golang-Main-Assignment
+# Rent By Owner
 ## Project Setup
 **Clone Repo:**
 ```
