@@ -15,9 +15,9 @@ class Property {
 
         // Create the inner HTML for the tile
         tile.innerHTML = `
-            <div id="${this.id}" class="overflow-hidden relative rounded-t-lg group">
+            <div id="${this.id}" class="overflow-hidden relative rounded-t-lg group select-none">
                 <div id="${this.id}relative" class="flex transition-transform duration-500 ease-in-out">
-                    <img src="https://imgservice.rentbyowner.com/640x417/${this.property.FeatureImage}" alt="${this.property.PropertyName}" class="w-full h-64 object-cover shrink-0 carousel-img" />
+                    <img src="https://imgservice.rentbyowner.com/640x417/${this.property.FeatureImage}" alt="${this.property.PropertyName}" class="w-full h-64 object-cover shrink-0 carousel-img select-none" />
                 </div>
                 <div id="loader-${this.id}" class="absolute flex gap-2 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 hidden">
                     ${['bg-blue-500', 'bg-green-500', 'bg-blue-500'].map((color, index) => `
@@ -384,13 +384,45 @@ async function fetchData(searchValue, selectedValue = "", dates = "", guest = 0,
             const tile = new Property(propertyData[i]);
             tile.render()
         }
+        const errorMessageElement = document.getElementById('error-message');
+        if (errorMessageElement) {
+            errorMessageElement.remove();
+        }
         initializeHeartButtons()
         const carousel = new CarouselController();
         carousel.init();
     } catch (error) {
-        console.error('There has been a problem with your fetch operation:', error);
+        if (error.message.includes('500')) {
+            console.log('500 error')
+            showErrorMessage(error);
+        } else {
+            console.log('Not 500 error')
+            showErrorMessage(error);
+        }
     }
 }
+
+function showErrorMessage(message) {
+    // Create the HTML string with the error message and styles
+    if (document.getElementById('error-message')) {
+        document.getElementById('error-message').remove();
+    }
+    const errorHTML = `
+        <div class="error-message" style="background-color: #f8d7da; color: #721c24; 
+            border: 1px solid #f5c6cb; border-radius: 5px; padding: 20px; text-align: center; 
+            margin-top: 20px; font-size: 16px; display: flex; align-items: center; justify-content: space-between;">
+            <span style="flex: 1;">${message}</span>
+        </div>
+    `;
+    
+    // Add the error message to the body or a specific container
+    document.getElementById('shimmer').classList.add('hidden');
+    const div = document.createElement('div');
+    div.id = 'error-message';
+    div.innerHTML = errorHTML;
+    document.body.appendChild(div);
+}
+
 
 let date
 const selectElement = document.getElementById('sortOptions');
@@ -1043,20 +1075,115 @@ document.getElementById("price-high").addEventListener("input", () => {
 //////////////// Carousel Logic ////////////////
 class CarouselController {
     constructor() {
-        // Keep the same global variables as class properties
         this.nextSlide = [];
-        this.currentIndex = {}; // Object to store current indices for each carousel
+        this.currentIndex = {};
         this.carouselItems = {};
+        this.isDragging = {};
+        this.startPos = {};
+        this.currentTranslate = {};
+        this.prevTranslate = {};
+        this.animationID = {};
+        this.currentCarouselWidth = {};
 
-        // Bind methods to maintain correct 'this' context
         this.updateCarousel = this.updateCarousel.bind(this);
         this.next = this.next.bind(this);
         this.prev = this.prev.bind(this);
     }
 
+    touchStart(carouselId, event) {
+        if (!this.nextSlide.includes(carouselId)) return;
+        
+        this.isDragging[carouselId] = true;
+        this.startPos[carouselId] = this.getPositionX(event);
+        this.animationID[carouselId] = requestAnimationFrame(() => this.animation(carouselId));
+        
+        const carouselTrack = document.getElementById(`${carouselId}relative`);
+        carouselTrack.style.cursor = 'grabbing';
+        carouselTrack.style.transition = 'none';
+    }
+
+    touchEnd(carouselId) {
+        if (!this.nextSlide.includes(carouselId)) return;
+        
+        this.isDragging[carouselId] = false;
+        cancelAnimationFrame(this.animationID[carouselId]);
+
+        const movedBy = this.currentTranslate[carouselId] - this.prevTranslate[carouselId];
+        const threshold = this.currentCarouselWidth[carouselId] * 0.2;
+
+        const carouselTrack = document.getElementById(`${carouselId}relative`);
+        const totalSlides = carouselTrack.querySelectorAll('img').length;
+
+        // Boundary check to prevent wrapping around
+        if (Math.abs(movedBy) > threshold) {
+            if (movedBy < 0 && this.currentIndex[carouselId] < totalSlides - 1) {
+                this.currentIndex[carouselId]++;
+            } else if (movedBy > 0 && this.currentIndex[carouselId] > 0) {
+                this.currentIndex[carouselId]--;
+            }
+        }
+
+        // Ensure the slide stays within bounds
+        this.currentIndex[carouselId] = Math.max(0, Math.min(this.currentIndex[carouselId], totalSlides - 1));
+
+        this.updateButtonsVisibility(carouselId, totalSlides);
+        this.setPositionByIndex(carouselId);
+
+        carouselTrack.style.cursor = 'grab';
+        carouselTrack.style.transition = 'transform 0.3s ease-out';
+    }
+
+    touchMove(carouselId, event) {
+        if (!this.isDragging[carouselId] || !this.nextSlide.includes(carouselId)) return;
+
+        const currentPosition = this.getPositionX(event);
+        const currentMove = currentPosition - this.startPos[carouselId];
+        this.currentTranslate[carouselId] = this.prevTranslate[carouselId] + currentMove;
+
+        // Boundary check during dragging
+        const carouselTrack = document.getElementById(`${carouselId}relative`);
+        const totalSlides = carouselTrack.querySelectorAll('img').length;
+        const maxTranslate = 0; // First slide
+        const minTranslate = -(totalSlides - 1) * this.currentCarouselWidth[carouselId]; // Last slide
+
+        // Prevent dragging beyond the first or last slide
+        this.currentTranslate[carouselId] = Math.max(minTranslate, Math.min(maxTranslate, this.currentTranslate[carouselId]));
+    }
+
+    getPositionX(event) {
+        return event.touches[0].clientX;
+    }
+
+    animation(carouselId) {
+        if (this.isDragging[carouselId]) {
+            this.setSliderPosition(carouselId);
+            requestAnimationFrame(() => this.animation(carouselId));
+        }
+    }
+
+    setSliderPosition(carouselId) {
+        const carouselTrack = document.getElementById(`${carouselId}relative`);
+        carouselTrack.style.transform = `translateX(${this.currentTranslate[carouselId]}px)`;
+    }
+
+    setPositionByIndex(carouselId) {
+        this.currentTranslate[carouselId] = this.currentIndex[carouselId] * -this.currentCarouselWidth[carouselId];
+        this.prevTranslate[carouselId] = this.currentTranslate[carouselId];
+        this.updateCarousel(carouselId);
+    }
+
+    updateButtonsVisibility(carouselId, totalSlides) {
+        const parentDiv = document.getElementById(carouselId);
+        const prevButton = parentDiv.querySelector('#prev');
+        const nextButton = parentDiv.querySelector('#next');
+
+        prevButton.classList.toggle('hidden', this.currentIndex[carouselId] === 0);
+        nextButton.classList.toggle('hidden', this.currentIndex[carouselId] === totalSlides - 1);
+    }
+
     updateCarousel(carouselId) {
         const carouselTrack = document.getElementById(`${carouselId}relative`);
-        const offset = -this.currentIndex[carouselId] * carouselTrack.clientWidth;
+        const offset = -this.currentIndex[carouselId] * this.currentCarouselWidth[carouselId];
         carouselTrack.style.transform = `translateX(${offset}px)`;
 
         // Update dots
@@ -1068,6 +1195,24 @@ class CarouselController {
                 dot.className = 'rounded-full bg-white transition-all duration-300 w-1 h-1';
             }
         });
+    }
+
+    setupTouchEvents(carouselId) {
+        const carouselTrack = document.getElementById(`${carouselId}relative`);
+        this.currentCarouselWidth[carouselId] = carouselTrack.clientWidth;
+
+        // Touch events
+        carouselTrack.addEventListener('touchstart', (e) => this.touchStart(carouselId, e));
+        carouselTrack.addEventListener('touchend', () => this.touchEnd(carouselId));
+        carouselTrack.addEventListener('touchmove', (e) => this.touchMove(carouselId, e));
+
+        // Prevent context menu
+        carouselTrack.addEventListener('contextmenu', (e) => e.preventDefault());
+
+        // Initialize states
+        this.currentTranslate[carouselId] = 0;
+        this.prevTranslate[carouselId] = 0;
+        this.isDragging[carouselId] = false;
     }
 
     next() {
@@ -1096,7 +1241,6 @@ class CarouselController {
                         const mainDiv = document.getElementById(`${carouselId}relative`);
                         this.carouselItems[carouselId].push(...images.map(image => image));
     
-                        // Preload all images before adding them to DOM
                         const imageLoadPromises = this.carouselItems[carouselId].map(imageUrl => {
                             return new Promise((resolve, reject) => {
                                 const img = new Image();
@@ -1106,19 +1250,19 @@ class CarouselController {
                             });
                         });
     
-                        // Wait for all images to load
                         await Promise.all(imageLoadPromises);
     
-                        // Now add all preloaded images to DOM
                         this.carouselItems[carouselId].forEach(imageUrl => {
                             const img = document.createElement('img');
                             img.src = `https://imgservice.rentbyowner.com/640x417/${imageUrl}`;
                             img.alt = imageUrl;
                             img.className = 'w-full h-64 object-cover shrink-0 carousel-img opacity-0 transition-opacity duration-300';
                             mainDiv.appendChild(img);
-                            // Fade in the image after it's added to DOM
                             setTimeout(() => img.classList.remove('opacity-0'), 50);
                         });
+
+                        // Setup touch events after images are loaded
+                        this.setupTouchEvents(carouselId);
                     }
     
                     const carouselTrack = document.getElementById(`${carouselId}relative`);
