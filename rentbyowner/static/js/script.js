@@ -26,7 +26,7 @@ class Property {
                 </div>
                 <button id="prev" class="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white text-black text-xs p-[5px] px-2 rounded-full z-30 hidden opacity-0 group-hover:opacity-100">&#10094;</button>
                 <button id="next" class="absolute top-1/2 right-2 transform -translate-y-1/2 bg-white text-black text-xs p-[5px] px-2 rounded-full z-30 opacity-0 group-hover:opacity-100">&#10095;</button>
-                <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex space-x-2 flex justify-center items-center z-30 dots-container">
+                <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex space-x-2 flex justify-center items-center z-30 dots-container h-2">
                     ${Array.from({ length: 5 }, (_, index) => `
                         <button class="rounded-full bg-white transition-all duration-300 ${index === 0 ? 'w-2 h-2' : 'w-1 h-1'}"></button>
                     `).join('')}
@@ -1079,52 +1079,59 @@ class CarouselController {
                     console.warn("Parent element does not have an ID.");
                     return;
                 }
-
                 const carouselId = parentDiv.id;
-
                 try {
                     if (!this.nextSlide.includes(carouselId)) {
                         this.nextSlide.push(carouselId);
                         console.log("Fetching images for:", carouselId);
                         const responseImageApi = await fetch(`/api/v1/propertyId/${carouselId}`);
-
                         if (!responseImageApi.ok) {
                             throw new Error(`API error: ${responseImageApi.status} ${responseImageApi.statusText}`);
                         }
-
                         const images = await responseImageApi.json();
-
                         if (!Array.isArray(this.carouselItems[carouselId])) {
                             this.carouselItems[carouselId] = [];
                         }
-
+                        
                         const mainDiv = document.getElementById(`${carouselId}relative`);
-                        // const imgElement = mainDiv.querySelector("img");
-
-                        // if (imgElement) {
-                        //     mainDiv.removeChild(imgElement);
-                        // }
-
                         this.carouselItems[carouselId].push(...images.map(image => image));
-
-                        for (let i = 0; i < this.carouselItems[carouselId].length; i++) {
+    
+                        // Preload all images before adding them to DOM
+                        const imageLoadPromises = this.carouselItems[carouselId].map(imageUrl => {
+                            return new Promise((resolve, reject) => {
+                                const img = new Image();
+                                img.onload = () => resolve(imageUrl);
+                                img.onerror = () => reject(new Error(`Failed to load image: ${imageUrl}`));
+                                img.src = `https://imgservice.rentbyowner.com/640x417/${imageUrl}`;
+                            });
+                        });
+    
+                        // Wait for all images to load
+                        await Promise.all(imageLoadPromises);
+    
+                        // Now add all preloaded images to DOM
+                        this.carouselItems[carouselId].forEach(imageUrl => {
                             const img = document.createElement('img');
-                            img.src = `https://imgservice.rentbyowner.com/640x417/${this.carouselItems[carouselId][i]}`;
-                            img.alt = this.carouselItems[carouselId][i];
-                            img.className = 'w-full h-64 object-cover shrink-0 carousel-img';
+                            img.src = `https://imgservice.rentbyowner.com/640x417/${imageUrl}`;
+                            img.alt = imageUrl;
+                            img.className = 'w-full h-64 object-cover shrink-0 carousel-img opacity-0 transition-opacity duration-300';
                             mainDiv.appendChild(img);
-                        }
+                            // Fade in the image after it's added to DOM
+                            setTimeout(() => img.classList.remove('opacity-0'), 50);
+                        });
                     }
-
+    
                     const carouselTrack = document.getElementById(`${carouselId}relative`);
                     const imagesAll = carouselTrack.querySelectorAll('img');
                     const totalImages = imagesAll.length;
                     parentDiv.querySelector('#prev').classList.remove('hidden');
-
+                    
                     if (!this.currentIndex[carouselId]) {
                         this.currentIndex[carouselId] = 0;
                     }
+                    
                     document.getElementById(`loader-${parentDiv.id}`).classList.add('hidden');
+                    
                     if (this.currentIndex[carouselId] < totalImages - 1) {
                         this.currentIndex[carouselId]++;
                         if (this.currentIndex[carouselId] === totalImages - 1) {
@@ -1132,9 +1139,9 @@ class CarouselController {
                         }
                     }
                     this.updateCarousel(carouselId);
-
                 } catch (error) {
                     console.error("Error fetching images:", error);
+                    document.getElementById(`loader-${parentDiv.id}`).classList.add('hidden');
                 }
             });
         });
