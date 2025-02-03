@@ -87,50 +87,32 @@ class Property {
 
 
 class Shimmer {
-    // Function to create a single item
     render() {
-    // Create the main div
-    const mainDiv = document.createElement('div');
-    mainDiv.className = 'w-full bg-white rounded-lg overflow-hidden shadow-lg flex flex-col';
+        // Create the main div
+        const mainDiv = document.createElement('div');
+        mainDiv.className = 'w-full bg-white rounded-lg overflow-hidden shadow-lg flex flex-col';
 
-    // Create the animated pulse div
-    const pulseDiv = document.createElement('div');
-    pulseDiv.className = 'animate-pulse';
-    const pulseInnerDiv = document.createElement('div');
-    pulseInnerDiv.className = 'w-full h-64 bg-gray-200';
-    pulseDiv.appendChild(pulseInnerDiv);
+        // Use innerHTML to create the structure
+        mainDiv.innerHTML = `
+            <div class="animate-pulse">
+                <div class="w-full h-64 bg-gray-200"></div>
+            </div>
+            <div class="px-4 py-3 flex flex-col gap-3 flex-grow">
+                <div class="flex-1 flex flex-col gap-3">
+                    ${Array.from({ length: 3 }, () => `
+                        <div class="w-full h-4 bg-gray-200 animate-pulse"></div>
+                    `).join('')}
+                </div>
+                <div class="flex justify-between items-center gap-2 h-full flex-1">
+                    <div></div>
+                    <div class="max-w-[210px] w-full h-[50px] bg-gray-200 animate-pulse"></div>
+                </div>
+            </div>
+        `;
 
-    // Create the content div
-    const contentDiv = document.createElement('div');
-    contentDiv.className = 'px-4 py-3 flex flex-col gap-3 flex-grow';
-
-    // Create the flex-1 div
-    const flex1Div = document.createElement('div');
-    flex1Div.className = 'flex-1 flex flex-col gap-3';
-    for (let i = 0; i < 3; i++) {
-        const innerDiv = document.createElement('div');
-        innerDiv.className = 'w-full h-4 bg-gray-200 animate-pulse';
-        flex1Div.appendChild(innerDiv);
-    }
-
-    // Create the justify-between div
-    const justifyBetweenDiv = document.createElement('div');
-    justifyBetweenDiv.className = 'flex justify-between items-center gap-2 h-full flex-1';
-    const innerDiv1 = document.createElement('div');
-    const innerDiv2 = document.createElement('div');
-    innerDiv2.className = 'max-w-[210px] w-full h-[50px] bg-gray-200 animate-pulse';
-    justifyBetweenDiv.appendChild(innerDiv1);
-    justifyBetweenDiv.appendChild(innerDiv2);
-
-    // Append all elements to the content div
-    contentDiv.appendChild(flex1Div);
-    contentDiv.appendChild(justifyBetweenDiv);
-
-    // Append pulseDiv and contentDiv to the mainDiv
-    mainDiv.appendChild(pulseDiv);
-    mainDiv.appendChild(contentDiv);
-    const shimmer = document.getElementById('shimmer');
-    shimmer.appendChild(mainDiv);
+        // Append the shimmer element to the container
+        const shimmer = document.getElementById('shimmer');
+        shimmer.appendChild(mainDiv);
     }
 }
 
