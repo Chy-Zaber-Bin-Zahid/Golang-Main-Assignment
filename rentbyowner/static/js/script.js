@@ -1095,13 +1095,17 @@ class CarouselController {
         
         this.isDragging[carouselId] = true;
         this.startPos[carouselId] = this.getPositionX(event);
+    
+        // Initialize currentTranslate and prevTranslate based on the current slide index
+        this.currentTranslate[carouselId] = -this.currentIndex[carouselId] * this.currentCarouselWidth[carouselId];
+        this.prevTranslate[carouselId] = this.currentTranslate[carouselId];
+    
         this.animationID[carouselId] = requestAnimationFrame(() => this.animation(carouselId));
         
         const carouselTrack = document.getElementById(`${carouselId}relative`);
         carouselTrack.style.cursor = 'grabbing';
         carouselTrack.style.transition = 'none';
     }
-
     touchEnd(carouselId) {
         if (!this.nextSlide.includes(carouselId)) return;
         
