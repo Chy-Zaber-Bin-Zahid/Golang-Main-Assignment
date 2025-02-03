@@ -250,35 +250,35 @@
         </div>
     </div>
     <div class="max-w-[1990px] mx-auto">
-        <section class="px-4 py-4 flex justify-between items-center">
+        <section class="px-4 py-4 flex justify-between items-center gap-4 max-[750px]:flex-col max-[750px]:justify-center max-[750px]:items-center">
             <!-- Filter Buttons -->
-            <div class="flex gap-2 text-blue-800 text-[13px] font-semibold">
-                <div class="relative">
-                    <button id="dates" class="modal-btn px-4 py-2 rounded-[10px] border border-gray-200 hover:border-blue-800 hover:text-white hover:bg-blue-800 duration-300 transition-all shadow-md">
+            <div class="flex gap-2 text-blue-800 text-[13px] font-semibold max-[400px]:grid max-[400px]:grid-cols-2 max-[400px]:gap-2 w-full">
+                <div class="relative max-[400px]:w-full">
+                    <button id="dates" class="modal max-[400px]:w-full text-center px-4 py-2 rounded-[10px] border border-gray-200 hover:border-blue-800 hover:text-white hover:bg-blue-800 duration-300 transition-all shadow-md">
                         <p id="dates-p">Dates</p>
                     </button>
                     <div id="dates-cross" class="cursor-pointer absolute w-5 h-5 rounded-full bg-gray-400 -top-[6px] -right-[6px] flex justify-center items-center hidden">
                         <i class="ph ph-x text-white"></i>
                     </div>
                 </div>
-                <div class="relative">
-                    <button class="modal-btn filter px-4 py-2 rounded-[10px] border border-gray-200 hover:border-blue-800 hover:text-white hover:bg-blue-800 duration-300 transition-all shadow-md">
+                <div class="relative max-[400px]:w-full">
+                    <button class="modal-btn filter max-[400px]:w-full text-center px-4 py-2 rounded-[10px] border border-gray-200 hover:border-blue-800 hover:text-white hover:bg-blue-800 duration-300 transition-all shadow-md">
                         <p id="price-p">Price</p>
                     </button>
                     <div id="price-cross" class="cursor-pointer absolute w-5 h-5 rounded-full bg-gray-400 -top-[6px] -right-[6px] flex justify-center items-center hidden">
                         <i class="ph ph-x text-white"></i>
                     </div>
                 </div>
-                <div class="relative">
-                    <button class="modal-btn filter px-4 py-2 rounded-[10px] border border-gray-200 hover:border-blue-800 hover:text-white hover:bg-blue-800 duration-300 transition-all shadow-md">
+                <div class="relative max-[400px]:w-full">
+                    <button class="modal-btn filter max-[400px]:w-full text-center px-4 py-2 rounded-[10px] border border-gray-200 hover:border-blue-800 hover:text-white hover:bg-blue-800 duration-300 transition-all shadow-md">
                         <p id="guest-text">Guests</p>
                     </button>
                     <div id="guest-cross" class="cursor-pointer absolute w-5 h-5 rounded-full bg-gray-400 -top-[6px] -right-[6px] flex justify-center items-center hidden">
                         <i class="ph ph-x text-white"></i>
                     </div>
                 </div>
-                <div class="relative">
-                    <button class="modal-btn filter px-4 py-2 rounded-[10px] border border-gray-200 hover:border-blue-800 hover:text-white hover:bg-blue-800 duration-300 transition-all shadow-md">
+                <div class="relative max-[400px]:w-full">
+                    <button class="modal-btn filter max-[400px]:w-full text-center px-4 py-2 rounded-[10px] border border-gray-200 hover:border-blue-800 hover:text-white hover:bg-blue-800 duration-300 transition-all shadow-md">
                         More Filters
                     </button>
                     <div id="filter-cross" class="absolute w-5 h-5 rounded-full bg-emerald-400 -top-[6px] -right-[6px] flex justify-center items-center hidden">
@@ -287,10 +287,10 @@
                 </div>
             </div>
             <!-- Sort Dropdown -->
-            <div class="flex items-center gap-2">
-                <span class="text-blue-800 font-semibold">Sort by</span>
-                <div class="relative">
-                    <select id="sortOptions" class="appearance-none pl-2 pr-16 py-3 border-2 border-blue-800 font-semibold text-blue-800 text-sm bg-white focus:outline-none focus:border-blue-800 hover:cursor-pointer">
+            <div class="flex items-center gap-2 w-full justify-end">
+                <span class="text-blue-800 font-semibold max-[400px]:w-[20%]">Sort by</span>
+                <div class="relative max-[400px]:flex-1">
+                    <select id="sortOptions" class="appearance-none pl-2 pr-16 py-3 border-2 border-blue-800 font-semibold text-blue-800 text-sm bg-white focus:outline-none focus:border-blue-800 hover:cursor-pointer max-[400px]:w-full">
                         <option class="font-semibold text-gray-600">Most Popular</option>
                         <option class="font-semibold text-gray-600">Highest Price</option>
                         <option class="font-semibold text-gray-600">Lowest Price</option>
