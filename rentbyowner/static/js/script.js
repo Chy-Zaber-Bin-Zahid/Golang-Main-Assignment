@@ -17,15 +17,15 @@ class Property {
         tile.innerHTML = `
             <div id="${this.id}" class="overflow-hidden relative rounded-t-lg group select-none">
                 <div id="${this.id}relative" class="flex transition-transform duration-500 ease-in-out">
-                    <img src="https://imgservice.rentbyowner.com/640x417/${this.property.FeatureImage}" alt="${this.property.PropertyName}" class="w-full h-64 object-cover shrink-0 carousel-img select-none" />
+                    <img src="https://imgservice.rentbyowner.com/640x417/${this.property.FeatureImage}" alt="${this.property.PropertyName}" class="w-full h-64 object-cover shrink-0 carousel-img" />
                 </div>
                 <div id="loader-${this.id}" class="absolute flex gap-2 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 hidden">
                     ${['bg-blue-500', 'bg-green-500', 'bg-blue-500'].map((color, index) => `
                         <div class="w-3 h-3 ${color} rounded-full animate-pulse-custom" style="animation-delay: ${index * 0.3}s;"></div>
                     `).join('')}
                 </div>
-                <button id="prev" class="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white text-black text-xs p-[5px] px-2 rounded-full z-30 hidden opacity-0 group-hover:opacity-100">&#10094;</button>
-                <button id="next" class="absolute top-1/2 right-2 transform -translate-y-1/2 bg-white text-black text-xs p-[5px] px-2 rounded-full z-30 opacity-0 group-hover:opacity-100">&#10095;</button>
+                <button id="prev" class="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white text-black text-xs p-[5px] px-2 rounded-full z-30 hidden opacity-0 max-[1170px]:opacity-100 group-hover:opacity-100">&#10094;</button>
+                <button id="next" class="absolute top-1/2 right-2 transform -translate-y-1/2 bg-white text-black text-xs p-[5px] px-2 rounded-full z-30 opacity-0 max-[1170px]:opacity-100 group-hover:opacity-100">&#10095;</button>
                 <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex space-x-2 flex justify-center items-center z-30 dots-container h-2">
                     ${Array.from({ length: 5 }, (_, index) => `
                         <button class="rounded-full bg-white transition-all duration-300 ${index === 0 ? 'w-2 h-2' : 'w-1 h-1'}"></button>
@@ -292,12 +292,15 @@ async function fetchData(searchValue, selectedValue = "", dates = "", guest = 0,
         }
         const itemIds = await responseSecondApi.json();
         console.log(itemIds)
-        const queryString = itemIds.join(',');
+        const limitedIds = itemIds.length > 64 ? itemIds.slice(0, 64) : itemIds;
+        const queryString = limitedIds.join(',');
+        console.log(queryString)
         const responseThirdApi = await fetch(`/api/v1/itemIds/${queryString}`);
         if (!responseThirdApi.ok) {
             throw new Error('Network responseThirdApi was not ok ' + responseThirdApi.statusText);
         }
         const propertyData = await responseThirdApi.json();
+        
         if (initialMaxPrice === 0) {
             if (localStorage.getItem('price')) {
                 const price = localStorage.getItem('price');
@@ -393,10 +396,10 @@ async function fetchData(searchValue, selectedValue = "", dates = "", guest = 0,
         carousel.init();
     } catch (error) {
         if (error.message.includes('500')) {
-            console.log('500 error')
+            console.log(error)
             showErrorMessage(error);
         } else {
-            console.log('Not 500 error')
+            console.log(error)
             showErrorMessage(error);
         }
     }
@@ -411,10 +414,9 @@ function showErrorMessage(message) {
         <div class="error-message" style="background-color: #f8d7da; color: #721c24; 
             border: 1px solid #f5c6cb; border-radius: 5px; padding: 20px; text-align: center; 
             margin-top: 20px; font-size: 16px; display: flex; align-items: center; justify-content: space-between;">
-            <span style="flex: 1;">${message}</span>
+            <span style="flex: 1;">Oops! Something Went Wrong!</span>
         </div>
     `;
-    
     // Add the error message to the body or a specific container
     document.getElementById('shimmer').classList.add('hidden');
     const div = document.createElement('div');
@@ -1103,7 +1105,6 @@ class CarouselController {
         this.animationID[carouselId] = requestAnimationFrame(() => this.animation(carouselId));
         
         const carouselTrack = document.getElementById(`${carouselId}relative`);
-        carouselTrack.style.cursor = 'grabbing';
         carouselTrack.style.transition = 'none';
     }
     touchEnd(carouselId) {
