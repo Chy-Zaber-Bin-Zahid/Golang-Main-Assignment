@@ -17,7 +17,7 @@ class Property {
         tile.innerHTML = `
             <div id="${this.id}" class="overflow-hidden relative rounded-t-lg group">
                 <div id="${this.id}relative" class="flex transition-transform duration-500 ease-in-out">
-                    <img src="https://imgservice.rentbyowner.com/640x417/${this.property.FeatureImage}" alt="${this.property.PropertyName}" class="w-full h-64 object-cover" />
+                    <img src="https://imgservice.rentbyowner.com/640x417/${this.property.FeatureImage}" alt="${this.property.PropertyName}" class="w-full h-64 object-cover shrink-0 carousel-img" />
                 </div>
                 <div id="loader-${this.id}" class="absolute flex gap-2 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 hidden">
                     ${['bg-blue-500', 'bg-green-500', 'bg-blue-500'].map((color, index) => `
@@ -385,8 +385,8 @@ async function fetchData(searchValue, selectedValue = "", dates = "", guest = 0,
             tile.render()
         }
         initializeHeartButtons()
-        next()
-        prev()
+        const carousel = new CarouselController();
+        carousel.init();
     } catch (error) {
         console.error('There has been a problem with your fetch operation:', error);
     }
@@ -1041,125 +1041,141 @@ document.getElementById("price-high").addEventListener("input", () => {
 
 
 //////////////// Carousel Logic ////////////////
+class CarouselController {
+    constructor() {
+        // Keep the same global variables as class properties
+        this.nextSlide = [];
+        this.currentIndex = {}; // Object to store current indices for each carousel
+        this.carouselItems = {};
 
-let nextSlide = [];
-let currentIndex = {}; // Object to store current indices for each carousel
+        // Bind methods to maintain correct 'this' context
+        this.updateCarousel = this.updateCarousel.bind(this);
+        this.next = this.next.bind(this);
+        this.prev = this.prev.bind(this);
+    }
 
-// Function to update the carousel position
-function updateCarousel(carouselId) {
-    const carouselTrack = document.getElementById(`${carouselId}relative`);
-    const offset = -currentIndex[carouselId] * carouselTrack.clientWidth;
-    carouselTrack.style.transform = `translateX(${offset}px)`;
+    updateCarousel(carouselId) {
+        const carouselTrack = document.getElementById(`${carouselId}relative`);
+        const offset = -this.currentIndex[carouselId] * carouselTrack.clientWidth;
+        carouselTrack.style.transform = `translateX(${offset}px)`;
 
-    // Update dots
-    const dots = document.querySelectorAll(`#${carouselId} .dots-container button`);
-    dots.forEach((dot, index) => {
-        if (index === currentIndex[carouselId]) {
-            dot.className = 'rounded-full bg-white transition-all duration-300 w-2 h-2';
-        } else {
-            dot.className = 'rounded-full bg-white transition-all duration-300 w-1 h-1';
-        }
-    });
-}
-
-
-function next() {
-    document.querySelectorAll('#next').forEach(button => {
-        button.addEventListener('click', async (event) => {
-            const parentDiv = event.target.parentElement;
-            document.getElementById(`loader-${parentDiv.id}`).classList.remove('hidden');
-            if (!parentDiv || !parentDiv.id) {
-                console.warn("Parent element does not have an ID.");
-                return;
+        // Update dots
+        const dots = document.querySelectorAll(`#${carouselId} .dots-container button`);
+        dots.forEach((dot, index) => {
+            if (index === this.currentIndex[carouselId]) {
+                dot.className = 'rounded-full bg-white transition-all duration-300 w-2 h-2';
+            } else {
+                dot.className = 'rounded-full bg-white transition-all duration-300 w-1 h-1';
             }
+        });
+    }
 
-            const carouselId = parentDiv.id;
-
-            try {
-                if (!nextSlide.includes(carouselId)) {
-                    nextSlide.push(carouselId);
-                    console.log("Fetching images for:", carouselId);
-                    const responseImageApi = await fetch(`/api/v1/propertyId/${carouselId}`);
-
-                    if (!responseImageApi.ok) {
-                        throw new Error(`API error: ${responseImageApi.status} ${responseImageApi.statusText}`);
-                    }
-
-                    const images = await responseImageApi.json();
-
-                    if (!Array.isArray(carouselItems[carouselId])) {
-                        carouselItems[carouselId] = [];
-                    }
-
-                    const mainDiv = document.getElementById(`${carouselId}relative`);
-                    console.log(mainDiv);
-                    const imgElement = mainDiv.querySelector("img");
-
-                    if (imgElement) {
-                        mainDiv.removeChild(imgElement);
-                    }
-
-                    carouselItems[carouselId].push(...images.map(image => image));
-
-                    for (let i = 0; i < carouselItems[carouselId].length; i++) {
-                        const img = document.createElement('img');
-                        img.src = `https://imgservice.rentbyowner.com/640x417/${carouselItems[carouselId][i]}`;
-                        img.alt = carouselItems[carouselId][i];
-                        img.className = 'w-full h-64 object-cover';
-                        mainDiv.appendChild(img);
-                    }
+    next() {
+        document.querySelectorAll('#next').forEach(button => {
+            button.addEventListener('click', async (event) => {
+                const parentDiv = event.target.parentElement;
+                document.getElementById(`loader-${parentDiv.id}`).classList.remove('hidden');
+                if (!parentDiv || !parentDiv.id) {
+                    console.warn("Parent element does not have an ID.");
+                    return;
                 }
 
-                const carouselTrack = document.getElementById(`${carouselId}relative`);
-                const imagesAll = carouselTrack.querySelectorAll('img');
-                const totalImages = imagesAll.length;
-                parentDiv.querySelector('#prev').classList.remove('hidden');
+                const carouselId = parentDiv.id;
 
-                if (!currentIndex[carouselId]) {
-                    currentIndex[carouselId] = 0;
+                try {
+                    if (!this.nextSlide.includes(carouselId)) {
+                        this.nextSlide.push(carouselId);
+                        console.log("Fetching images for:", carouselId);
+                        const responseImageApi = await fetch(`/api/v1/propertyId/${carouselId}`);
+
+                        if (!responseImageApi.ok) {
+                            throw new Error(`API error: ${responseImageApi.status} ${responseImageApi.statusText}`);
+                        }
+
+                        const images = await responseImageApi.json();
+
+                        if (!Array.isArray(this.carouselItems[carouselId])) {
+                            this.carouselItems[carouselId] = [];
+                        }
+
+                        const mainDiv = document.getElementById(`${carouselId}relative`);
+                        // const imgElement = mainDiv.querySelector("img");
+
+                        // if (imgElement) {
+                        //     mainDiv.removeChild(imgElement);
+                        // }
+
+                        this.carouselItems[carouselId].push(...images.map(image => image));
+
+                        for (let i = 0; i < this.carouselItems[carouselId].length; i++) {
+                            const img = document.createElement('img');
+                            img.src = `https://imgservice.rentbyowner.com/640x417/${this.carouselItems[carouselId][i]}`;
+                            img.alt = this.carouselItems[carouselId][i];
+                            img.className = 'w-full h-64 object-cover shrink-0 carousel-img';
+                            mainDiv.appendChild(img);
+                        }
+                    }
+
+                    const carouselTrack = document.getElementById(`${carouselId}relative`);
+                    const imagesAll = carouselTrack.querySelectorAll('img');
+                    const totalImages = imagesAll.length;
+                    parentDiv.querySelector('#prev').classList.remove('hidden');
+
+                    if (!this.currentIndex[carouselId]) {
+                        this.currentIndex[carouselId] = 0;
+                    }
+                    document.getElementById(`loader-${parentDiv.id}`).classList.add('hidden');
+                    if (this.currentIndex[carouselId] < totalImages - 1) {
+                        this.currentIndex[carouselId]++;
+                        if (this.currentIndex[carouselId] === totalImages - 1) {
+                            event.target.classList.add('hidden');
+                        }
+                    }
+                    this.updateCarousel(carouselId);
+
+                } catch (error) {
+                    console.error("Error fetching images:", error);
                 }
-                document.getElementById(`loader-${parentDiv.id}`).classList.add('hidden');
-                if (currentIndex[carouselId] < totalImages - 1) {
-                    currentIndex[carouselId]++;
-                    if (currentIndex[carouselId] === totalImages - 1) {
+            });
+        });
+    }
+
+    prev() {
+        document.querySelectorAll('#prev').forEach(button => {
+            button.addEventListener('click', (event) => {
+                const parentDiv = event.target.parentElement;
+
+                if (!parentDiv || !parentDiv.id) {
+                    console.warn("Parent element does not have an ID.");
+                    return;
+                }
+
+                const carouselId = parentDiv.id;
+
+                parentDiv.querySelector('#next').classList.remove('hidden');
+
+                if (!this.currentIndex[carouselId]) {
+                    this.currentIndex[carouselId] = 0;
+                }
+
+                if (this.currentIndex[carouselId] > 0) {
+                    this.currentIndex[carouselId]--;
+                    this.updateCarousel(carouselId);
+
+                    if (this.currentIndex[carouselId] === 0) {
                         event.target.classList.add('hidden');
                     }
                 }
-                updateCarousel(carouselId);
-
-            } catch (error) {
-                console.error("Error fetching images:", error);
-            }
+            });
         });
-    });
+    }
+
+    init() {
+        this.next();
+        this.prev();
+    }
 }
 
-function prev() {
-    document.querySelectorAll('#prev').forEach(button => {
-        button.addEventListener('click', (event) => {
-            const parentDiv = event.target.parentElement;
-
-            if (!parentDiv || !parentDiv.id) {
-                console.warn("Parent element does not have an ID.");
-                return;
-            }
-
-            const carouselId = parentDiv.id;
-
-            parentDiv.querySelector('#next').classList.remove('hidden');
-
-            if (!currentIndex[carouselId]) {
-                currentIndex[carouselId] = 0;
-            }
-
-            if (currentIndex[carouselId] > 0) {
-                currentIndex[carouselId]--;
-                updateCarousel(carouselId);
-
-                if (currentIndex[carouselId] === 0) {
-                    event.target.classList.add('hidden');
-                }
-            }
-        });
-    });
-}
+// Usage:
+// const carousel = new CarouselController();
+// carousel.init();
