@@ -445,6 +445,7 @@ function modal(state, modal) {
         blueOverlay.classList.remove('hidden')
         if (modal === 'date') {
             document.getElementById('modal-dates').classList.remove('hidden')
+            document.getElementsByTagName('body')[0].classList.add('overflow-hidden');
         } else if (modal === 'filter') {
             document.getElementById('modal-filter').classList.remove('hidden')
         }
@@ -463,6 +464,7 @@ document.getElementById('blueOverlay').addEventListener('click', () => {
 
 document.getElementById('dates').addEventListener('click', () => {
     modal(true, 'date')
+    document.getElementsByTagName('body')[0].classList.add('overflow-hidden');
 })
 
 const filters = document.querySelectorAll('.filter'); 

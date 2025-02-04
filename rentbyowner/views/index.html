@@ -6,14 +6,14 @@
     <title>Rental Card</title>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="../static/css/styles.css">
     <link href="https://cdn.jsdelivr.net/npm/hotel-datepicker@4.11.2/dist/css/hotel-datepicker.min.css" rel="stylesheet">
 </head>
 <body>
     <div id="blueOverlay-main" class="hidden">
         <div id="blueOverlay" class="fixed inset-0 bg-blue-800 bg-opacity-60 flex items-center justify-center z-30"></div>
         <!-- Modal Content -->
-        <div id="modal-dates" class="bg-white rounded-lg max-w-[750px] w-full z-30 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 shadow-xl hidden">
+        <div id="modal-dates" class="bg-white rounded-lg max-w-[750px] w-[95%] z-30 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 shadow-xl hidden">
             <button class="modal-cross text-black hover:text-gray-600 absolute right-4 top-[23px]">
                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -34,7 +34,7 @@
             </div>
         </div>
 
-        <div id="modal-filter" class="bg-white rounded-lg w-full max-w-[600px] py-6 z-30 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 shadow-xl hidden">
+        <div id="modal-filter" class="bg-white rounded-lg w-[95%] max-w-[600px] py-6 z-30 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 shadow-xl hidden">
             <div class="overflow-y-auto h-[700px] px-8">
                 <div class="relative my-3">
                     <h2 class="text-xl font-semibold text-center flex-1">Filters</h2>
@@ -86,10 +86,10 @@
                 <div class="py-3 border-b border-gray-200">
                     <h3 class="text-lg font-semibold">Select a date</h3>
                     <p class="text-sm text-gray-500 mb-1 italic font-semibold">When do you want to travel?</p>
-                    <div class="flex gap-4 w-full justify-center items-center max-w-[380px] mx-auto">
+                    <div class="flex max-[450px]:flex-col gap-4 w-full justify-center items-center max-w-[380px] mx-auto">
                         <!-- Check-in -->
-                        <div id="check-in" class="border border-gray-300 rounded-lg px-3 py-1 flex items-center justify-between relative flex-1">
-                            <div class="h-11 font-semibold">
+                        <div id="check-in" class="border border-gray-300 rounded-lg px-3 py-1 flex items-center justify-between relative flex-1 max-[450px]:w-full">
+                            <div class="h-11 font-semibold max-[450px]:w-full">
                                 <p class="text-sm text-gray-500">Check-in</p>
                                 <p id="calendar-left" class="text-lg"></p>
                             </div>
@@ -101,8 +101,8 @@
                         </div>
                     
                         <!-- Check-out -->
-                        <div id="check-out" class="border border-gray-300 rounded-lg px-3 py-1 w-40 flex items-center justify-between relative flex-1">
-                          <div class="h-11 font-semibold">
+                        <div id="check-out" class="border border-gray-300 rounded-lg px-3 py-1 w-40 flex items-center justify-between relative flex-1 max-[450px]:w-full">
+                          <div class="h-11 font-semibold max-[450px]:w-full">
                             <p class="text-sm text-gray-500">Check-out</p>
                             <p id="calendar-right" class="text-lg"></p>
                           </div>
@@ -131,9 +131,9 @@
                           <input id="toSlider" type="range" value="100" min="0" max="100" />
                         </div>
                       </div>
-                    <div class="flex items-center justify-center gap-2 max-w-[380px] w-full mx-auto">
+                    <div class="flex max-[450px]:flex-col items-center justify-center gap-2 max-w-[380px] w-full mx-auto">
                         <!-- Min Price -->
-                        <div class="border-2 border-gray-200 rounded-lg px-4 py-3 w-48 flex items-center justify-between h-[70px] flex-1">
+                        <div class="border-2 border-gray-200 rounded-lg px-4 py-3 w-48 max-[450px]:w-full flex items-center justify-between h-[70px] flex-1">
                           <div class="w-full font-semibold">
                             <p class="text-sm text-gray-500 text-center">Min price</p>
                             <div class="w-full relative text-gray-500">
@@ -147,7 +147,7 @@
                         <span class="text-gray-500 text-xl">-</span>
                     
                         <!-- Max Price -->
-                        <div class="border-2 border-gray-200 rounded-lg px-4 py-3 w-48 flex items-center justify-between h-[70px] flex-1">
+                        <div class="border-2 border-gray-200 rounded-lg px-4 py-3 w-48 max-[450px]:w-full flex items-center justify-between h-[70px] flex-1">
                           <div class="w-full font-semibold">
                             <p class="text-sm text-gray-500 text-center">Max price(+)</p>
                             <div class="w-full relative text-gray-500">
@@ -161,7 +161,7 @@
                 <div class="py-3">
                     <h3 class="text-lg font-semibold">Amenities</h3>
                     <p class="text-sm text-gray-500 mb-3 italic font-semibold">Choose the amenities that are most important</p>
-                    <div class="grid grid-cols-3 gap-3 italic text-gray-500 font-semibold">
+                    <div class="grid grid-cols-3 max-[600px]:grid-cols-2 gap-3 italic text-gray-500 font-semibold">
                         <label class="flex items-center gap-2">
                             <input id="check-3" type="checkbox" class="checkbox w-7 h-7 rounded accent-emerald-400">
                             <span class="text-sm">Air Conditioner</span>
@@ -315,6 +315,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/fecha@4.2.3/lib/fecha.umd.min.js"></script> 
     <script src="https://cdn.jsdelivr.net/npm/hotel-datepicker@4.11.2/dist/js/hotel-datepicker.min.js"></script>
-    <script src="../static/js/script.js"></script>
+    <script src="../static/js/index.js"></script>
 </body>
 </html>
