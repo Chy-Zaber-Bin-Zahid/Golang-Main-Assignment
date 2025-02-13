@@ -6,6 +6,38 @@ import { initializeHeartButtons } from './heart.js';
 let initialMaxPrice = 0
 let initialMinPrice = 0
 
+function touchAPICall() {
+    const carouselImages = document.querySelectorAll('.carousel-div');
+    carouselImages.forEach((img, index) => {
+        let startX;
+        let swiped = false;
+        if (img) {
+            img.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                startX = e.touches[0].clientX;
+            });
+            img.addEventListener('touchmove', (e) => {
+                if (startX === undefined || swiped) return;
+                const currentX = e.touches[0].clientX;
+                const deltaX = currentX - startX;
+
+                if (deltaX < -50) {
+                    const nextButton = img.parentElement.querySelector('#next');
+
+                    if (nextButton) {
+                        nextButton.click();
+                        console.log(`Left swiped on Image ${index + 1}`);
+                        swiped = true;
+                    }
+                }
+            });
+            img.addEventListener('touchend', () => {
+                startX = undefined;
+            });
+        }
+    });
+}
+
 
 async function fetchData(searchValue, selectedValue = "", dates = "", guest = 0, pLow = 0, pHigh = 0) {
     try {
@@ -162,6 +194,7 @@ async function fetchData(searchValue, selectedValue = "", dates = "", guest = 0,
         initializeHeartButtons()
         const carousel = new CarouselController();
         carousel.init();
+        touchAPICall()
     } catch (error) {
         if (error.message.includes('500')) {
             console.log(error)
