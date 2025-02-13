@@ -10,16 +10,16 @@ export class Property {
         tile.className = 'w-full bg-white shadow-lg rounded-lg';
         tile.innerHTML = `
             <div id="${this.id}" class="overflow-hidden relative rounded-t-lg group select-none">
-                <div id="${this.id}relative" class="flex transition-transform duration-500 ease-in-out">
+                <div id="${this.id}relative" class="flex transition-transform duration-150 ease-in-out">
                     <img src="https://imgservice.rentbyowner.com/640x417/${this.property.FeatureImage}" alt="${this.property.PropertyName}" class="w-full h-64 object-cover shrink-0 carousel-img" />
                 </div>
                 <div id="loader-${this.id}" class="absolute flex gap-2 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 hidden">
-                    ${['bg-blue-500', 'bg-green-500', 'bg-blue-500'].map((color, index) => `
-                        <div class="w-3 h-3 ${color} rounded-full animate-pulse-custom" style="animation-delay: ${index * 0.3}s;"></div>
-                    `).join('')}
+                        <div class="bg-blue-600 w-3 h-3 rounded-full animate-custom" style="animation-delay: 0s;"></div>
+                        <div class="bg-green-600 w-3 h-3 rounded-full animate-custom" style="animation-delay: .3s;"></div>
+                        <div class="bg-blue-600 w-3 h-3 rounded-full animate-custom" style="animation-delay: .6s;"></div>
                 </div>
-                <button id="prev" class="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white text-black text-xs p-[5px] px-2 rounded-full z-20 hidden opacity-0 max-[1170px]:opacity-100 group-hover:opacity-100">&#10094;</button>
-                <button id="next" class="absolute top-1/2 right-2 transform -translate-y-1/2 bg-white text-black text-xs p-[5px] px-2 rounded-full z-20 opacity-0 max-[1170px]:opacity-100 group-hover:opacity-100">&#10095;</button>
+                    <button id="prev" class="absolute flex justify-center items-center top-1/2 left-2 transform -translate-y-1/2 bg-white text-black text-xs p-0 w-8 h-8 rounded-full z-20 hidden opacity-0 max-[1170px]:opacity-100 group-hover:opacity-100">&#10094;</button>
+                    <button id="next" class="absolute flex justify-center items-center top-1/2 right-2 transform -translate-y-1/2 bg-white text-black text-xs p-0 w-8 h-8 rounded-full z-20 opacity-0 max-[1170px]:opacity-100 group-hover:opacity-100">&#10095;</button>
                 <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex space-x-2 flex justify-center items-center z-20 dots-container h-2">
                     ${Array.from({ length: 5 }, (_, index) => `
                         <button class="rounded-full bg-white transition-all duration-300 ${index === 0 ? 'w-2 h-2' : 'w-1 h-1'}"></button>

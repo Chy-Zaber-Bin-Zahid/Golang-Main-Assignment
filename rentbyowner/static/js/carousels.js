@@ -132,6 +132,8 @@ export class CarouselController {
     next() {
         document.querySelectorAll('#next').forEach(button => {
             button.addEventListener('click', async (event) => {
+                button.disabled = true;
+                button.style.pointerEvents = 'none';
                 const parentDiv = event.target.parentElement;
                 document.getElementById(`loader-${parentDiv.id}`).classList.remove('hidden');
                 if (!parentDiv || !parentDiv.id) {
@@ -200,7 +202,10 @@ export class CarouselController {
                 } catch (error) {
                     console.error("Error fetching images:", error);
                     document.getElementById(`loader-${parentDiv.id}`).classList.add('hidden');
-                }
+                } finally {
+                    button.disabled = false;
+                    button.style.pointerEvents = 'auto';
+                    }
             });
         });
     }

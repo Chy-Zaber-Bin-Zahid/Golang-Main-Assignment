@@ -1,4 +1,4 @@
-import { fetchData } from './apiCall.js';
+import { fetchData } from './apiCalls.js';
 
 
 function getQueryParamByName(name) {
@@ -154,11 +154,17 @@ if (table1.querySelector('.datepicker__month-day--today')) {
     if (table1) {
         function findTextContent15(element) {
             // Base case: Check if the current element's textContent is 15
-            if (element.textContent.trim() === String(Number(child.textContent) + 1)) {
-                element.classList.add('datepicker__month-day--first-day-selected')
+            if (table1.querySelector('.datepicker__month-day--today')) {
+                const tdElements = table1.querySelectorAll('td');
+                // Iterate through each <td> element
+                tdElements.forEach(td => {
+                    // Check if the text content is "1"
+                    if (Number(td.textContent.trim()) === (Number(table1.querySelector('.datepicker__month-day--today').textContent)+1)) {
+                        td.classList.add('datepicker__month-day--first-day-selected');
+                    }
+                });
             } else {
                 const tdElements = table2.querySelectorAll('td');
-
                 // Iterate through each <td> element
                 tdElements.forEach(td => {
                     // Check if the text content is "1"
@@ -172,8 +178,14 @@ if (table1.querySelector('.datepicker__month-day--today')) {
                 return
             }
 
-            if (element.textContent.trim() === String(Number(child.textContent) + 2)) {
-                element.classList.add('datepicker__month-day--last-day-selected')
+            if (table1.querySelector('.datepicker__month-day--today')) {
+                const tdElements = table1.querySelectorAll('td');
+                // Iterate through each <td> element
+                tdElements.forEach(td => {
+                    if (Number(td.textContent.trim()) === (Number(table1.querySelector('.datepicker__month-day--today').textContent)+2)) {
+                        td.classList.add('datepicker__month-day--last-day-selected');
+                    }
+                });
             } else {
                 const tdElements = table2.querySelectorAll('td');
 

@@ -1,5 +1,5 @@
 import { Property } from './property.js';
-import { CarouselController } from './carousel.js';
+import { CarouselController } from './carousels.js';
 import { shimmerFunc } from './shimmer.js';
 import { initializeHeartButtons } from './heart.js';
 
