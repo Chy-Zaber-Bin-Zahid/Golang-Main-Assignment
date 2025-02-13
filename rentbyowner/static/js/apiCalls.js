@@ -23,11 +23,16 @@ function touchAPICall() {
 
                 if (deltaX < -50) {
                     const nextButton = img.parentElement.querySelector('#next');
-
-                    if (nextButton) {
+                    const images = img.parentElement.querySelectorAll('img'); // Get all images inside the parent .carousel-div
+                    const count = images.length; // Get the number of images
+                    console.log(count); // Log the count for debugging
+                
+                    if (nextButton && count === 1) { // Check if there is exactly 1 image
                         nextButton.click();
                         console.log(`Left swiped on Image ${index + 1}`);
                         swiped = true;
+                    } else {
+                        console.log(`Swipe ignored: Carousel has ${count} images.`); // Log if swipe is ignored
                     }
                 }
             });

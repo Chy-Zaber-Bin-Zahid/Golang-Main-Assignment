@@ -135,7 +135,7 @@ export class CarouselController {
                 button.disabled = true;
                 button.style.pointerEvents = 'none';
                 const parentDiv = event.target.parentElement;
-                document.getElementById(`loader-${parentDiv.id}`).classList.remove('hidden');
+                document.getElementById(`loader-${parentDiv.id}`).style.visibility = 'visible';
                 if (!parentDiv || !parentDiv.id) {
                     console.warn("Parent element does not have an ID.");
                     return;
@@ -184,13 +184,13 @@ export class CarouselController {
                     const carouselTrack = document.getElementById(`${carouselId}relative`);
                     const imagesAll = carouselTrack.querySelectorAll('img');
                     const totalImages = imagesAll.length;
-                    parentDiv.querySelector('#prev').classList.remove('hidden');
+                    parentDiv.querySelector('#prev').style.display = 'block';
                     
                     if (!this.currentIndex[carouselId]) {
                         this.currentIndex[carouselId] = 0;
                     }
                     
-                    document.getElementById(`loader-${parentDiv.id}`).classList.add('hidden');
+                    document.getElementById(`loader-${parentDiv.id}`).style.visibility = 'hidden';
                     
                     if (this.currentIndex[carouselId] < totalImages - 1) {
                         this.currentIndex[carouselId]++;
@@ -201,7 +201,7 @@ export class CarouselController {
                     this.updateCarousel(carouselId);
                 } catch (error) {
                     console.error("Error fetching images:", error);
-                    document.getElementById(`loader-${parentDiv.id}`).classList.add('hidden');
+                    document.getElementById(`loader-${parentDiv.id}`).style.visibility = 'hidden';
                 } finally {
                     button.disabled = false;
                     button.style.pointerEvents = 'auto';

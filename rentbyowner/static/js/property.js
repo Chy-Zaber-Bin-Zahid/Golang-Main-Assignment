@@ -7,67 +7,65 @@ export class Property {
     render() {
         carouselItems[this.id] = [this.property.FeatureImage];
         const tile = document.createElement('div');
-        tile.className = 'w-full bg-white shadow-lg rounded-lg';
+        tile.className = 'property-tile';
         tile.innerHTML = `
-            <div id="${this.id}" class="overflow-hidden relative rounded-t-lg group select-none">
-                <div id="${this.id}relative" class="flex transition-transform duration-150 ease-in-out carousel-div">
-                    <img src="https://imgservice.rentbyowner.com/640x417/${this.property.FeatureImage}" alt="${this.property.PropertyName}" class="w-full h-64 object-cover shrink-0 carousel-img" />
+            <div id="${this.id}" class="carousel-container">
+                <div id="${this.id}relative" class="carousel-inner carousel-div">
+                    <img src="https://imgservice.rentbyowner.com/640x417/${this.property.FeatureImage}" alt="${this.property.PropertyName}" class="carousel-image" />
                 </div>
-                <div id="loader-${this.id}" class="absolute flex gap-1 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 hidden">
-                        <div class="bg-blue-600 w-[14px] h-[14px] rounded-full animate-custom delay-0"></div>
-                        <div class="bg-green-600 w-[14px] h-[14px] rounded-full animate-custom delay-1"></div>
-                        <div class="bg-blue-600 w-[14px] h-[14px] rounded-full animate-custom delay-2"></div>
+                <div id="loader-${this.id}" class="loader">
+                    <div class="loader-dot delay-0"></div>
+                    <div class="loader-dot delay-1"></div>
+                    <div class="loader-dot delay-2"></div>
                 </div>
-                <button id="prev" class="absolute flex justify-center items-center top-1/2 left-2 transform -translate-y-1/2 bg-white text-black text-xs p-0 w-8 h-8 rounded-full z-20 hidden opacity-0 max-[1170px]:opacity-100 group-hover:opacity-100">&#10094;</button>
-                <button id="next" class="absolute flex justify-center items-center top-1/2 right-2 transform -translate-y-1/2 bg-white text-black text-xs p-0 w-8 h-8 rounded-full z-20 opacity-0 max-[1170px]:opacity-100 group-hover:opacity-100">&#10095;</button>
-                <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex space-x-2 flex justify-center items-center z-20 dots-container h-2">
+                <button id="prev" class="carousel-button prev">&#10094;</button>
+                <button id="next" class="carousel-button next">&#10095;</button>
+                <div class="dots-container">
                     ${Array.from({ length: 5 }, (_, index) => `
-                        <button class="rounded-full bg-white transition-all duration-300 ${index === 0 ? 'w-2 h-2' : 'w-1 h-1'}"></button>
+                        <button class="dot ${index === 0 ? 'active' : ''}"></button>
                     `).join('')}
                 </div>
-                <div class="absolute top-4 right-4 flex gap-2">
-                    <button class="relative pt-[5px] pb-[1px] px-2 rounded-full overflow-hidden">
-                        <i class="ph ph-heart-straight text-white text-2xl z-20 relative" id="${this.id}"></i>
-                        <div class="bg-black opacity-20 absolute w-full h-full top-0 left-0 z-10"></div>
+                <div class="favorite-button-container">
+                    <button class="favorite-button">
+                        <i id="${this.id}" class="ph ph-heart-straight favorite-icon"></i>
+                        <div class="favorite-overlay"></div>
                     </button>
                 </div>
-                <div class="absolute bottom-2 left-2 bg-[#f5f5f5] px-2 py-[2px] pb-0 rounded-[5px] flex items-center justify-center z-20">
-                    <span class="text-[15px] font-medium">From $${this.property.Price}</span>
-                    <i class="ph ph-info ml-1 text-xl"></i>
+                <div class="price-container">
+                    <span class="price-text">From $${this.property.Price}</span>
+                    <i class="ph ph-info info-icon"></i>
                 </div>
             </div>
-            <div class="px-4 py-2 pb-3 flex flex-col gap-1">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center justify-center">
-                        <div class="flex items-center">
-                            ${this.property.StarRating ? `
-                                <div class="pr-2 border-r-2 border-gray-500 mr-2 flex justify-center items-center gap-1">
-                                    ${Array.from({ length: this.property.StarRating }, () => `
-                                        <i class="ph-fill ph-star text-amber-300 text-[12px] pb-[3px]"></i>
-                                    `).join('')}
-                                </div>
-                            ` : ''}
-                            <div class="flex justify-center items-center p-1 text-white text-xs rounded-full ${!this.property.Counts.Reviews ? 'bg-gray-400' : 'bg-blue-700'} mr-1">
-                                <i class="ph-fill ph-thumbs-up"></i>
+            <div class="property-details">
+                <div class="rating-container">
+                    <div class="rating-inner">
+                        ${this.property.StarRating ? `
+                            <div class="star-rating">
+                                ${Array.from({ length: this.property.StarRating }, () => `
+                                    <i class="ph-fill ph-star star-icon"></i>
+                                `).join('')}
                             </div>
-                            ${this.property.Counts.Reviews ? `
-                                <span class="text-blue-700 font-medium mr-1">${this.property.ReviewScore}</span>
-                            ` : ''}
+                        ` : ''}
+                        <div class="reviews-container ${!this.property.Counts.Reviews ? 'bg-gray' : 'bg-blue'}">
+                            <i class="ph-fill ph-thumbs-up thumbs-up-icon"></i>
                         </div>
-                        <span class="text-gray-600 text-[12px] font-semibold ${!this.property.Counts.Reviews && 'py-[3px]'}">
+                        ${this.property.Counts.Reviews ? `
+                            <span class="review-score">${this.property.ReviewScore}</span>
+                        ` : ''}
+                        <span class="reviews-text ${!this.property.Counts.Reviews && 'py-[3px]'}">
                             ${this.property.Counts.Reviews ? `(${this.property.Counts.Reviews} Reviews)` : 'New'}
                         </span>
                     </div>
-                    <span class="ml-auto text-[12px] text-gray-700">${this.property.PropertyType}</span>
+                    <span class="property-type">${this.property.PropertyType}</span>
                 </div>
-                <h2 class="text-md font-semibold text-gray-800 truncate">${this.property.PropertyName}</h2>
-                <div class="flex flex-wrap gap-2 text-[12px] text-gray-800">
-                    <span class="flex items-center">${Object.values(this.property.Amenities).slice(0, 3).join(' • ')}</span>
+                <h2 class="property-name">${this.property.PropertyName}</h2>
+                <div class="amenities">
+                    <span class="amenities-text">${Object.values(this.property.Amenities).slice(0, 3).join(' • ')}</span>
                 </div>
-                <div class="text-[12px] text-blue-700">Big Bear Lake > Lake Arrowhead</div>
-                <div class="flex justify-between items-center gap-2">
-                    <img src="https://static.rentbyowner.com/release/28.0.6/static/images/booking.svg" alt="Booking.com" class="w-22 h-4" />
-                    <button class="text-md max-w-[210px] w-full font-semibold bg-emerald-500 text-white py-1.5 rounded font-medium hover:bg-emerald-600 transition-colors">View Availability</button>
+                <div class="location">Big Bear Lake > Lake Arrowhead</div>
+                <div class="booking-container">
+                    <img src="https://static.rentbyowner.com/release/28.0.6/static/images/booking.svg" alt="Booking.com" class="booking-logo" />
+                    <button class="availability-button">View Availability</button>
                 </div>
             </div>
         `;
