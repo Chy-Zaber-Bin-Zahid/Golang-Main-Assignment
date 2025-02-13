@@ -13,10 +13,10 @@ export class Property {
                 <div id="${this.id}relative" class="flex transition-transform duration-150 ease-in-out carousel-div">
                     <img src="https://imgservice.rentbyowner.com/640x417/${this.property.FeatureImage}" alt="${this.property.PropertyName}" class="w-full h-64 object-cover shrink-0 carousel-img" />
                 </div>
-                <div id="loader-${this.id}" class="absolute flex gap-2 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 hidden">
-                        <div class="bg-blue-600 w-3 h-3 rounded-full animate-custom" style="animation-delay: 0s;"></div>
-                        <div class="bg-green-600 w-3 h-3 rounded-full animate-custom" style="animation-delay: .3s;"></div>
-                        <div class="bg-blue-600 w-3 h-3 rounded-full animate-custom" style="animation-delay: .6s;"></div>
+                <div id="loader-${this.id}" class="absolute flex gap-1 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 hidden">
+                        <div class="bg-blue-600 w-[14px] h-[14px] rounded-full animate-custom delay-0"></div>
+                        <div class="bg-green-600 w-[14px] h-[14px] rounded-full animate-custom delay-1"></div>
+                        <div class="bg-blue-600 w-[14px] h-[14px] rounded-full animate-custom delay-2"></div>
                 </div>
                 <button id="prev" class="absolute flex justify-center items-center top-1/2 left-2 transform -translate-y-1/2 bg-white text-black text-xs p-0 w-8 h-8 rounded-full z-20 hidden opacity-0 max-[1170px]:opacity-100 group-hover:opacity-100">&#10094;</button>
                 <button id="next" class="absolute flex justify-center items-center top-1/2 right-2 transform -translate-y-1/2 bg-white text-black text-xs p-0 w-8 h-8 rounded-full z-20 opacity-0 max-[1170px]:opacity-100 group-hover:opacity-100">&#10095;</button>
