@@ -454,3 +454,9 @@
 .carousel-img.visible {
     opacity: 1;
 }
+
+@media (max-width: 765px) {
+    .dots-container {
+        display: none;
+    }
+}
