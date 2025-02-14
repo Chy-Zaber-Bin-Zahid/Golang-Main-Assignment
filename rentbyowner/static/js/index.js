@@ -1,10 +1,17 @@
 import { fetchData } from './apiCalls.js';
-
+import { PriceRangeSlider } from './priceRange.js';
 
 function getQueryParamByName(name) {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(name);
 }
+
+const priceRangeSlider = new PriceRangeSlider(
+    'fromSlider', // ID of the "from" slider
+    'toSlider',   // ID of the "to" slider
+    'price-low',  // ID of the "price low" input field
+    'price-high'  // ID of the "price high" input field
+);
 
 document.addEventListener('DOMContentLoaded', (event) => {
     const searchValue = getQueryParamByName('search');
@@ -54,8 +61,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
             console.log("First Number:", num1);
             console.log("Second Number:", num2);
         }
-        priceRangeLow = num1
-        priceRangeHigh = num2
+        priceRangeSlider.setPriceRangeLow(num1)
+        priceRangeSlider.setPriceRangeHigh(num2)
     }
     if (localStorage.getItem('more-filter')) {
         if (Number(localStorage.getItem('more-filter')) > 0) {
@@ -84,9 +91,7 @@ if (localStorage.getItem('filter')) {
 selectElement.addEventListener('change', function() {
     const searchValue = getQueryParamByName('search');
     localStorage.setItem('filter', selectElement.value)
-    console.log("this is date", date)
-    console.log("this is price", priceRangeLow)
-    fetchData(searchValue, selectElement.value, date, guestNumber, priceRangeLow, priceRangeHigh);
+    fetchData(searchValue, selectElement.value, date, guestNumber, priceRangeSlider.getPriceRangeLow(), priceRangeSlider.getPriceRangeHigh());
 });
 
 function modal(state, modal) {
@@ -472,7 +477,8 @@ document.getElementById('search').addEventListener('click', () => {
             document.getElementById('guest-text').textContent = `${guestNumber > 1 ? `${guestNumber} Guests` : `${guestNumber} Guest`}`
             document.getElementById('guest-cross').classList.remove('hidden')
     }
-    console.log('price', priceRangeLow, priceRangeHigh)
+    const priceRangeLow = priceRangeSlider.getPriceRangeLow()
+    const priceRangeHigh = priceRangeSlider.getPriceRangeHigh()
     if (priceRangeLow > document.getElementById('price-low').min || priceRangeHigh < document.getElementById('price-high').max) {
         if (Number(priceRangeLow) === 9 && Number(priceRangeHigh) === 2501) {
             document.getElementById('price-p').textContent = `Price`
@@ -572,81 +578,10 @@ document.getElementById('price-cross').addEventListener('click', () => {
         localStorage.setItem('more-filter', filterNumber)
     }
     document.getElementById('filter-p').textContent = filterNumber
-    priceRangeLow = 0
-    priceRangeHigh = 0
+    priceRangeSlider.setPriceRangeLow(0)
+    priceRangeSlider.setPriceRangeHigh(0)
     fetchData(searchValue, "", date)
 })
-
-let priceRangeLow = 0
-let priceRangeHigh = 0
-const fromSlider = document.getElementById('fromSlider');
-const toSlider = document.getElementById('toSlider');
-const priceLow = document.getElementById('price-low');
-const priceHigh = document.getElementById('price-high');
-
-fromSlider.addEventListener('input', () => {
-    let fromValue = Number(fromSlider.value);
-    let toValue = Number(toSlider.value);
-
-    if (fromValue >= toValue) {
-        priceLow.value = toSlider.value;
-        priceHigh.value = fromSlider.value;
-        priceRangeLow = toSlider.value;
-        priceRangeHigh = fromSlider.value;
-    } else {
-        priceLow.value = fromSlider.value;
-        priceHigh.value = toSlider.value;
-        priceRangeLow = fromSlider.value;
-        priceRangeHigh = toSlider.value;
-    }
-});
-
-toSlider.addEventListener('input', () => {
-    let fromValue = Number(fromSlider.value);
-    let toValue = Number(toSlider.value);
-
-    if (toValue <= fromValue) {
-        priceLow.value = toSlider.value;
-        priceHigh.value = fromSlider.value;
-        priceRangeLow = toSlider.value;
-        priceRangeHigh = fromSlider.value;
-    } else {
-        priceLow.value = fromSlider.value;
-        priceHigh.value = toSlider.value;
-        priceRangeLow = fromSlider.value;
-        priceRangeHigh = toSlider.value;
-    }
-
-
-});
-
-document.getElementById("price-low").addEventListener("input", () => {
-    console.log("Price Low changed!");
-    if (Number(document.getElementById("price-low").value) < 9) {
-        console.log("Price is too low!");
-        document.getElementById("price-low").value = 9; // Set it to 9 if lower
-    }
-    if (Number(document.getElementById("price-low").value) > 2500) {
-        console.log("Price is too low!");
-        document.getElementById("price-low").value = 2500; // Set it to 9 if lower
-    }
-    fromSlider.value = document.getElementById("price-low").value;
-});
-
-
-document.getElementById("price-high").addEventListener("input", () => {
-    console.log("Price high changed!");
-    if (Number(document.getElementById("price-high").value) > 2501) {
-        console.log("Price is too high!");
-        document.getElementById("price-high").value = 2501; // Set it to 9 if lower
-    }
-    if (Number(document.getElementById("price-high").value) < 10) {
-        console.log("Price is too high!");
-        document.getElementById("price-high").value = 10; // Set it to 9 if lower
-    }
-    toSlider.value = document.getElementById("price-high").value;
-});
-
 
 let filterNumber = 0
 let filterGuest = false
@@ -680,8 +615,8 @@ document.getElementById('clear').addEventListener('click', () => {
     filterPrice = false
     filterDates = false
     guestNumber = 0
-    priceRangeHigh = 0
-    priceRangeLow = 0
+    priceRangeSlider.setPriceRangeLow(0)
+    priceRangeSlider.setPriceRangeHigh(0)
     check.forEach(num => {
         const checkbox = document.getElementById(`check-${num}`);
         if (checkbox) {
