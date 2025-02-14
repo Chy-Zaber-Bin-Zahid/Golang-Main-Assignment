@@ -136,19 +136,6 @@
         color: #acb2c1 !important;
     }
 
-    /* @keyframes scale {
-        0%, 100% { transform: scale(0); }
-        50% { transform: scale(1); }
-    }
-    
-    .animate-custom {
-        animation: scale 1.2s infinite ease-in-out;
-    }
-    
-.delay-0 { animation-delay: -0.32s; }
-.delay-1 { animation-delay: -0.16s; }
-.delay-2 { animation-delay: 0s; } */
-
 
 .property-tile {
     width: 100%;
@@ -436,4 +423,34 @@
 
 .heart-red {
     color: #ef4444; /* Replaces text-red-500 */
+}
+
+/* Define the base styles for the dots */
+.dots-container button {
+    border-radius: 50%;
+    background-color: white;
+    transition: all 0.3s;
+    width: 6px; /* Default size for inactive dots */
+    height: 6px;
+}
+
+/* Define the styles for the active dot */
+.dots-container button.active {
+    width: 10px; /* Larger size for active dot */
+    height: 10px;
+}
+
+/* Base styles for carousel images */
+.carousel-img {
+    width: 100%; /* w-full */
+    height: 16rem; /* h-64 */
+    object-fit: cover; /* object-cover */
+    flex-shrink: 0; /* shrink-0 */
+    opacity: 0; /* opacity-0 */
+    transition: opacity 300ms; /* transition-opacity duration-300 */
+}
+
+/* Class to remove opacity (added dynamically in JavaScript) */
+.carousel-img.visible {
+    opacity: 1;
 }

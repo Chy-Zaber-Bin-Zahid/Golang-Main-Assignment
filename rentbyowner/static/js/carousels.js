@@ -99,19 +99,30 @@ export class CarouselController {
         const parentDiv = document.getElementById(carouselId);
         const prevButton = parentDiv.querySelector('#prev');
         const nextButton = parentDiv.querySelector('#next');
-
-        prevButton.classList.toggle('hidden', this.currentIndex[carouselId] === 0);
-        nextButton.classList.toggle('hidden', this.currentIndex[carouselId] === totalSlides - 1);
+        if (this.currentIndex[carouselId] === 0) {
+            prevButton.style.display = 'none';
+        } else {
+            prevButton.style.display = 'block';
+        }
+        if (this.currentIndex[carouselId] === totalSlides - 1) {
+            nextButton.style.display = 'none';
+        } else {
+            nextButton.style.display = 'block';
+        }
     }
 
     updateCarousel(carouselId) {
         const carouselTrack = document.getElementById(`${carouselId}relative`);
         const offset = -this.currentIndex[carouselId] * this.currentCarouselWidth[carouselId];
         carouselTrack.style.transform = `translateX(${offset}px)`;
-
+    
         const dots = document.querySelectorAll(`#${carouselId} .dots-container button`);
         dots.forEach((dot, index) => {
-            dot.className = index === this.currentIndex[carouselId] ? 'rounded-full bg-white transition-all duration-300 w-2 h-2' : 'rounded-full bg-white transition-all duration-300 w-1 h-1';
+            if (index === this.currentIndex[carouselId]) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
         });
     }
 
@@ -172,9 +183,9 @@ export class CarouselController {
                             const img = document.createElement('img');
                             img.src = `https://imgservice.rentbyowner.com/640x417/${imageUrl}`;
                             img.alt = imageUrl;
-                            img.className = 'w-full h-64 object-cover shrink-0 carousel-img opacity-0 transition-opacity duration-300';
+                            img.className = 'carousel-img'; // Only the base class
                             mainDiv.appendChild(img);
-                            setTimeout(() => img.classList.remove('opacity-0'), 50);
+                            setTimeout(() => img.classList.add('visible'), 50); // Add the visible class
                         });
 
                         // Setup touch events after images are loaded
@@ -195,7 +206,7 @@ export class CarouselController {
                     if (this.currentIndex[carouselId] < totalImages - 1) {
                         this.currentIndex[carouselId]++;
                         if (this.currentIndex[carouselId] === totalImages - 1) {
-                            event.target.classList.add('hidden');
+                            event.target.style.display = 'none';
                         }
                     }
                     this.updateCarousel(carouselId);
@@ -222,7 +233,7 @@ export class CarouselController {
 
                 const carouselId = parentDiv.id;
 
-                parentDiv.querySelector('#next').classList.remove('hidden');
+                parentDiv.querySelector('#next').style.display = 'block';
 
                 if (!this.currentIndex[carouselId]) {
                     this.currentIndex[carouselId] = 0;
@@ -233,7 +244,7 @@ export class CarouselController {
                     this.updateCarousel(carouselId);
 
                     if (this.currentIndex[carouselId] === 0) {
-                        event.target.classList.add('hidden');
+                        event.target.style.display = 'none';
                     }
                 }
             });
