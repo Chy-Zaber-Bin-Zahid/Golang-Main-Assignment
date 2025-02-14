@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     }
     if (localStorage.getItem('price')) {
         const price = localStorage.getItem('price');
-        if (price === '৳0 - ৳0' || price === '৳9 - ৳2501') {
+        if (price === '৳0 - ৳0' || price === '৳13 - ৳2501') {
             document.getElementById('price-p').textContent = `Price`  
             document.getElementById('price-cross').classList.add('hidden')
         } else {
@@ -479,8 +479,9 @@ document.getElementById('search').addEventListener('click', () => {
     }
     const priceRangeLow = priceRangeSlider.getPriceRangeLow()
     const priceRangeHigh = priceRangeSlider.getPriceRangeHigh()
+    console.log('This is price: ', priceRangeLow)
     if (priceRangeLow > document.getElementById('price-low').min || priceRangeHigh < document.getElementById('price-high').max) {
-        if (Number(priceRangeLow) === 9 && Number(priceRangeHigh) === 2501) {
+        if (Number(priceRangeLow) === 13 && Number(priceRangeHigh) === 2501) {
             document.getElementById('price-p').textContent = `Price`
             document.getElementById('price-cross').classList.add('hidden')
         } else {
@@ -490,30 +491,28 @@ document.getElementById('search').addEventListener('click', () => {
     }
     const searchValue = getQueryParamByName('search');
     localStorage.setItem('guests', guestNumber)
-    if (Number(priceRangeHigh) === 2501 && Number(priceRangeLow) === 9) {
+    if (Number(priceRangeHigh) === 2501 && Number(priceRangeLow) === 13) {
         localStorage.setItem('price', `৳0 - ৳0`)
     } else {
         localStorage.setItem('price', `৳${priceRangeLow} - ৳${priceRangeHigh}`)
     }
     if (guestNumber !== 0 || 
-        (Number(priceRangeLow) !== 9 && Number(priceRangeLow) !== 0) || 
+        (Number(priceRangeLow) !== 13 && Number(priceRangeLow) !== 0) || 
         (Number(priceRangeHigh) !== 2501 && Number(priceRangeHigh) !== 0) || check.length >= 0) {
         if (guestNumber !== 0 && filterGuest !== true) {
             filterGuest = true
             filterNumber += 1
         }
-        if (((Number(priceRangeLow) !== 9 && Number(priceRangeLow) !== 0) || 
+        if (((Number(priceRangeLow) !== 13 && Number(priceRangeLow) !== 0) || 
         (Number(priceRangeHigh) !== 2501 && Number(priceRangeHigh) !== 0)) && filterPrice !== true) {
             filterPrice = true;
             filterNumber += 1;
         }
-        console.log(filterCheck, check)
         if (check.length !== filterCheck) {
             filterNumber -= filterCheck;
             filterCheck = check.length
             filterNumber += filterCheck;
         }
-
         if (check.length === 0) {
             console.log('check', check)
             if (filterNumber < 0) {
@@ -521,7 +520,6 @@ document.getElementById('search').addEventListener('click', () => {
             }
             filterNumber -= filterCheck;
             filterCheck = 0
-            console.log('filterNumber--->', filterNumber)
         }
         if (filterNumber <= 0) {
             document.getElementById('filter-cross').classList.add('hidden')
@@ -531,7 +529,6 @@ document.getElementById('search').addEventListener('click', () => {
         
         document.getElementById('filter-p').textContent = filterNumber
     }
-    console.log('asdasd', filterNumber)
     if (filterNumber > 0) {
         localStorage.setItem('more-filter', filterNumber)
     }
@@ -565,9 +562,9 @@ document.getElementById('price-cross').addEventListener('click', () => {
     document.getElementById('price-cross').classList.add('hidden')
     const searchValue = getQueryParamByName('search');
     localStorage.removeItem('price')
-    document.getElementById('fromSlider').value = 9;
+    document.getElementById('fromSlider').value = 13;
     document.getElementById('toSlider').value = 2501;
-    document.getElementById('price-low').value = 9;
+    document.getElementById('price-low').value = 13;
     document.getElementById('price-high').value = 2501;
     filterPrice = false
     filterNumber -= 1
@@ -637,9 +634,9 @@ document.getElementById('clear').addEventListener('click', () => {
     document.getElementById('calendar-left').textContent = ''
     document.getElementById('calendar-right').textContent = ''
     document.getElementById('guest-number').textContent = '0'
-    document.getElementById('fromSlider').value = 9;
+    document.getElementById('fromSlider').value = 13;
     document.getElementById('toSlider').value = 2501;
-    document.getElementById('price-low').value = 9;
+    document.getElementById('price-low').value = 13;
     document.getElementById('price-high').value = 2501;
     check = [];
     console.log(check)

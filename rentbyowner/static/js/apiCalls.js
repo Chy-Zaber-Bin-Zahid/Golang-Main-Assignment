@@ -98,7 +98,6 @@ async function fetchData(searchValue, selectedValue = "", dates = "", guest = 0,
         console.log(itemIds)
         const limitedIds = itemIds.length > 64 ? itemIds.slice(0, 64) : itemIds;
         const queryString = limitedIds.join(',');
-        console.log(queryString)
         const responseThirdApi = await fetch(`/api/v1/itemIds/${queryString}`);
         if (!responseThirdApi.ok) {
             throw new Error('Network responseThirdApi was not ok ' + responseThirdApi.statusText);
@@ -123,7 +122,7 @@ async function fetchData(searchValue, selectedValue = "", dates = "", guest = 0,
                     const fromSlide = document.getElementById('fromSlider');
                     const toSlide = document.getElementById('toSlider');
                     document.getElementById('price-high').value = 2501;
-                    document.getElementById('price-low').value = 9;
+                    document.getElementById('price-low').value = 13;
                     fromSlide.value = 0;
                     toSlide.value = 100;
                     const minPrice = Math.round(Math.min(...propertyData.map(item => Number(item.Property.Price))));
@@ -147,24 +146,25 @@ async function fetchData(searchValue, selectedValue = "", dates = "", guest = 0,
                     
                     console.log('price', fromSlider.value)
                     toSlide.value = num2;
-                    fromSlide.min = 9;
+                    fromSlide.min = 13;
                     fromSlide.max = 2501;
                     fromSlide.value = num1;
                     console.log('price', fromSlider.value)
-                    toSlide.min = 9;
+                    toSlide.min = 13;
                     toSlide.max = 2501;
                     toSlide.value = num2;
                     
                     document.getElementById('price-high').value = num2;
                     document.getElementById('price-low').value = num1;
                     initialMaxPrice = 2501
-                    initialMinPrice = 9
+                    initialMinPrice = 13
                 }
             } else {
                 const fromSlide = document.getElementById('fromSlider');
                 const toSlide = document.getElementById('toSlider');
                 const minPrice = Math.round(Math.min(...propertyData.map(item => Number(item.Property.Price))));
                 const maxPrice = Math.round(Math.max(...propertyData.map(item => Number(item.Property.Price))));
+                console.log(minPrice, maxPrice)
                 fromSlide.min = minPrice - 1;
                 fromSlide.max = maxPrice + 1;
                 fromSlide.value = minPrice - 1;
