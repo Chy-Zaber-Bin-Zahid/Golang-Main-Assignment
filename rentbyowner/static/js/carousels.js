@@ -146,13 +146,18 @@ export class CarouselController {
                 button.disabled = true;
                 button.style.pointerEvents = 'none';
                 const parentDiv = event.target.parentElement;
-                document.getElementById(`loader-${parentDiv.id}`).style.visibility = 'visible';
                 if (!parentDiv || !parentDiv.id) {
                     console.warn("Parent element does not have an ID.");
                     return;
                 }
                 const carouselId = parentDiv.id;
                 try {
+                    const loader = document.getElementById(`loader-${parentDiv.id}`);
+                    if (loader.style.visibility === 'visible') {
+                        throw new Error(`No internet connection or API error.`);
+                    } else {
+                        loader.style.visibility = 'visible';
+                    }
                     if (!this.nextSlide.includes(carouselId)) {
                         this.nextSlide.push(carouselId);
                         console.log("Fetching images for:", carouselId);
@@ -212,7 +217,7 @@ export class CarouselController {
                     this.updateCarousel(carouselId);
                 } catch (error) {
                     console.error("Error fetching images:", error);
-                    document.getElementById(`loader-${parentDiv.id}`).style.visibility = 'hidden';
+                    document.getElementById(`loader-${parentDiv.id}`).style.visibility = 'visible';
                 } finally {
                     button.disabled = false;
                     button.style.pointerEvents = 'auto';
