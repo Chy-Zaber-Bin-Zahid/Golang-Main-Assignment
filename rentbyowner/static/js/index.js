@@ -477,15 +477,19 @@ document.getElementById('search').addEventListener('click', () => {
             document.getElementById('guest-text').textContent = `${guestNumber > 1 ? `${guestNumber} Guests` : `${guestNumber} Guest`}`
             document.getElementById('guest-cross').classList.remove('hidden')
     }
-    const priceRangeLow = priceRangeSlider.getPriceRangeLow()
-    const priceRangeHigh = priceRangeSlider.getPriceRangeHigh()
+    let priceRangeLow = priceRangeSlider.getPriceRangeLow()
+    let priceRangeHigh = priceRangeSlider.getPriceRangeHigh()
     console.log('This is price: ', priceRangeLow)
     if (priceRangeLow > document.getElementById('price-low').min || priceRangeHigh < document.getElementById('price-high').max) {
         if (Number(priceRangeLow) === 13 && Number(priceRangeHigh) === 2501) {
             document.getElementById('price-p').textContent = `Price`
             document.getElementById('price-cross').classList.add('hidden')
         } else {
-            document.getElementById('price-p').textContent = `৳${priceRangeLow} - ৳${priceRangeHigh}`
+            if (Number(priceRangeLow) <= Number(priceRangeHigh)) {
+                document.getElementById('price-p').textContent = `৳${priceRangeLow} - ৳${priceRangeHigh}`
+            } else {
+                document.getElementById('price-p').textContent = `৳${priceRangeHigh} - ৳${priceRangeLow}`
+            }
             document.getElementById('price-cross').classList.remove('hidden')
         }
     }
@@ -533,6 +537,14 @@ document.getElementById('search').addEventListener('click', () => {
         localStorage.setItem('more-filter', filterNumber)
     }
     localStorage.setItem('check', check)
+    console.log(priceRangeLow, priceRangeHigh)
+    if (Number(priceRangeLow) > Number(priceRangeHigh)) {
+        console.log("hi")
+        let temp = priceRangeLow;
+        priceRangeLow = priceRangeHigh
+        priceRangeHigh = temp 
+    }
+    console.log(priceRangeLow, priceRangeHigh)
     fetchData(searchValue, "", date, guestNumber, priceRangeLow, priceRangeHigh)
 })
 

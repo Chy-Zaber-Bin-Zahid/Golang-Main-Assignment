@@ -39,7 +39,8 @@ export class PriceRangeSlider {
     // Handle input event for the "from" slider
     handleFromSliderInput() {
         let fromValue = Number(this.fromSlider.value);
-        const toValue = Number(this.toSlider.value);
+        let toValue = Number(this.toSlider.value);
+        console.log(fromValue)
     
         // Ensure fromValue does not exceed 2500
         if (fromValue > 2500 && toValue === 2501) {
@@ -73,7 +74,7 @@ export class PriceRangeSlider {
 
     // Handle input event for the "to" slider
     handleToSliderInput() {
-        const fromValue = Number(this.fromSlider.value);
+        let fromValue = Number(this.fromSlider.value);
         let toValue = Number(this.toSlider.value); // Use `let` to allow reassignment
     
         // Ensure toValue is not smaller than 14
@@ -108,6 +109,8 @@ export class PriceRangeSlider {
 
     // Handle input event for the "price low" input field
     handlePriceLowInput() {
+        let fromValue = Number(this.fromSlider.value);
+        let toValue = Number(this.toSlider.value);
         const priceLowValue = Number(this.priceLow.value);
         if (priceLowValue < 13) {
             console.log("Price is too low!");
@@ -119,30 +122,41 @@ export class PriceRangeSlider {
             console.log("Price is too high!");
             this.priceLow.value = 2500; // Set it to 2500 if higher
         }
-
-        this.fromSlider.value = this.priceLow.value;
-        this.priceRangeLow = this.priceLow.value;
-        this.priceRangeHigh = this.toSlider.value;
+        if (fromValue >= toValue) {
+            this.toSlider.value = this.priceLow.value;
+            this.priceRangeLow = this.priceLow.value;
+            this.priceRangeHigh = this.fromSlider.value;
+        } else {
+            this.fromSlider.value = this.priceLow.value;
+            this.priceRangeLow = this.priceLow.value;
+            this.priceRangeHigh = this.toSlider.value;
+        }
     }
 
     // Handle input event for the "price high" input field
     handlePriceHighInput() {
+        let fromValue = Number(this.fromSlider.value);
+        let toValue = Number(this.toSlider.value);
         const priceHighValue = Number(this.priceHigh.value);
-
         if (priceHighValue >= 2501) {
             document.getElementById('max-p').textContent = 'Max price(+)'
-            this.priceHigh.value = priceHighValue; // Set it to 2501 if higher
+            this.priceHigh.value = priceHighValue;
         } else {
             document.getElementById('max-p').textContent = 'Max price'
-            this.priceHigh.value = priceHighValue; // Set it to 2501 if higher
+            this.priceHigh.value = priceHighValue;
         }
         if (priceHighValue < 14) {
             console.log("Price is too low!");
             this.priceHigh.value = 14; // Set it to 14 if lower
         }
-
-        this.toSlider.value = this.priceHigh.value;
-        this.priceRangeHigh = this.priceHigh.value;
-        this.priceRangeLow = this.fromSlider.value;
+        if (fromValue >= toValue) {
+            this.fromSlider.value = this.priceHigh.value;
+            this.priceRangeLow = this.priceHigh.value;
+            this.priceRangeHigh = this.toSlider.value;
+        } else {
+            this.toSlider.value = this.priceHigh.value;
+            this.priceRangeHigh = this.priceHigh.value;
+            this.priceRangeLow = this.fromSlider.value;
+        }
     }
 }

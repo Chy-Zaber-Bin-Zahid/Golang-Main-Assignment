@@ -113,9 +113,6 @@ async function fetchData(searchValue, selectedValue = "", dates = "", guest = 0,
                 if (numbers && numbers.length >= 2) {
                     num1 = parseInt(numbers[0], 10);
                     num2 = parseInt(numbers[1], 10);
-        
-                    console.log("First Number:", num1);
-                    console.log("Second Number:", num2);
                 }
                 
                 if (price === '৳0 - ৳0') {
@@ -164,7 +161,6 @@ async function fetchData(searchValue, selectedValue = "", dates = "", guest = 0,
                 const toSlide = document.getElementById('toSlider');
                 const minPrice = Math.round(Math.min(...propertyData.map(item => Number(item.Property.Price))));
                 const maxPrice = Math.round(Math.max(...propertyData.map(item => Number(item.Property.Price))));
-                console.log(minPrice, maxPrice)
                 fromSlide.min = minPrice - 1;
                 fromSlide.max = maxPrice + 1;
                 fromSlide.value = minPrice - 1;
