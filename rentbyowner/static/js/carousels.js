@@ -133,7 +133,6 @@ export class CarouselController {
         carouselTrack.addEventListener('touchstart', (e) => this.touchStart(carouselId, e));
         carouselTrack.addEventListener('touchend', () => this.touchEnd(carouselId));
         carouselTrack.addEventListener('touchmove', (e) => this.touchMove(carouselId, e));
-        carouselTrack.addEventListener('contextmenu', (e) => e.preventDefault());
         
         this.currentTranslate[carouselId] = 0;
         this.prevTranslate[carouselId] = 0;
