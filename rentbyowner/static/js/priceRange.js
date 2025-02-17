@@ -40,7 +40,6 @@ export class PriceRangeSlider {
     handleFromSliderInput() {
         let fromValue = Number(this.fromSlider.value);
         let toValue = Number(this.toSlider.value);
-    
         // Ensure fromValue does not exceed 2500
         if (fromValue > 2500 && toValue === 2501) {
             this.fromSlider.value = 2500; // Reset the slider value to 2500
@@ -49,7 +48,7 @@ export class PriceRangeSlider {
         }
     
         // Update the "Max price(+)" label
-        if (fromValue === 2501) {
+        if (fromValue === 2501 || toValue === 2501) {
             document.getElementById('max-p').textContent = 'Max price(+)';
             this.priceHigh.value = fromValue;
         } else {
@@ -90,7 +89,7 @@ export class PriceRangeSlider {
         }
     
         // Update the "Max price(+)" label
-        if (toValue === 2501) {
+        if (fromValue === 2501 || toValue === 2501) {
             document.getElementById('max-p').textContent = 'Max price(+)';
             this.priceHigh.value = toValue;
         } else {
@@ -133,11 +132,14 @@ export class PriceRangeSlider {
             console.log("Price is too high!");
             this.priceLow.value = 2500; // Set it to 2500 if higher
         }
-        
-        if (fromValue >= toValue) {
-            this.toSlider.value = this.priceLow.value;
-            this.priceRangeLow = this.priceLow.value;
-            this.priceRangeHigh = this.fromSlider.value;
+        if (fromValue > toValue && Number(this.priceRangeHigh) !== fromValue) {
+            this.toSlider.value = priceLowValue;
+            this.priceRangeLow = priceLowValue;
+            this.priceHigh.value = priceLowValue + 1;
+            this.priceRangeHigh = priceLowValue + 1;
+        } else if (fromValue > toValue && Number(this.priceRangeHigh) === fromValue) {
+            this.toSlider.value = priceLowValue;
+            this.priceRangeLow = priceLowValue;
         } else {
             this.fromSlider.value = this.priceLow.value;
             this.priceRangeLow = this.priceLow.value;
@@ -161,10 +163,14 @@ export class PriceRangeSlider {
             console.log("Price is too low!");
             this.priceHigh.value = 14; // Set it to 14 if lower
         }
-        if (fromValue >= toValue) {
-            this.fromSlider.value = this.priceHigh.value;
-            this.priceRangeLow = this.priceHigh.value;
-            this.priceRangeHigh = this.toSlider.value;
+        if (fromValue > toValue && Number(this.priceRangeLow) !== toValue) {
+            this.fromSlider.value = priceHighValue;
+            this.priceRangeHigh = priceHighValue;
+            this.priceLow.value = priceHighValue - 1;
+            this.priceRangeLow = priceHighValue - 1;
+        } else if (fromValue > toValue && Number(this.priceRangeHigh) === fromValue) {
+            this.fromSlider.value = priceHighValue;
+            this.priceRangeHigh = priceHighValue;
         } else {
             this.toSlider.value = this.priceHigh.value;
             this.priceRangeHigh = this.priceHigh.value;
