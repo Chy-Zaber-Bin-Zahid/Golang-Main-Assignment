@@ -40,7 +40,6 @@ export class PriceRangeSlider {
     handleFromSliderInput() {
         let fromValue = Number(this.fromSlider.value);
         let toValue = Number(this.toSlider.value);
-        console.log(fromValue)
     
         // Ensure fromValue does not exceed 2500
         if (fromValue > 2500 && toValue === 2501) {
@@ -58,6 +57,12 @@ export class PriceRangeSlider {
             this.priceHigh.value = fromValue;
         }
     
+        if (toValue === 13 && fromValue === 13) {
+            this.toSlider.value = 14; // Reset the slider value to 14
+            this.priceHigh.value = 14; // Update the high price input field
+            toValue = 14; // Update the toValue variable
+        }
+
         // Ensure fromValue does not exceed toValue
         if (fromValue >= toValue) {
             this.priceLow.value = this.toSlider.value;
@@ -93,6 +98,12 @@ export class PriceRangeSlider {
             this.priceHigh.value = toValue;
         }
     
+        if (toValue === 2501 && fromValue === 2501) {
+            this.fromSlider.value = 2500; // Reset the slider value to 14
+            this.priceLow.value = 2500; // Update the high price input field
+            fromValue = 2500; // Update the toValue variable
+        }
+
         // Ensure toValue does not go below fromValue
         if (toValue <= fromValue) {
             this.priceLow.value = this.toSlider.value;
@@ -122,6 +133,7 @@ export class PriceRangeSlider {
             console.log("Price is too high!");
             this.priceLow.value = 2500; // Set it to 2500 if higher
         }
+        
         if (fromValue >= toValue) {
             this.toSlider.value = this.priceLow.value;
             this.priceRangeLow = this.priceLow.value;
