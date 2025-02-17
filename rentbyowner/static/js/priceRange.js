@@ -163,12 +163,13 @@ export class PriceRangeSlider {
             console.log("Price is too low!");
             this.priceHigh.value = 14; // Set it to 14 if lower
         }
+        console.log(fromValue, toValue, this.priceRangeHigh, this.priceRangeLow)
         if (fromValue > toValue && Number(this.priceRangeLow) !== toValue) {
             this.fromSlider.value = priceHighValue;
             this.priceRangeHigh = priceHighValue;
             this.priceLow.value = priceHighValue - 1;
             this.priceRangeLow = priceHighValue - 1;
-        } else if (fromValue > toValue && Number(this.priceRangeHigh) === fromValue) {
+        } else if (fromValue > toValue && Number(this.priceRangeHigh) >= fromValue) {
             this.fromSlider.value = priceHighValue;
             this.priceRangeHigh = priceHighValue;
         } else {
