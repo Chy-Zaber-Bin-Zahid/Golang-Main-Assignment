@@ -61,17 +61,13 @@ export class PriceRangeSlider {
             this.priceHigh.value = 14; // Update the high price input field
             toValue = 14; // Update the toValue variable
         }
-
-        console.log(this.fromSlider.max, this.toSlider.max)
         // Ensure fromValue does not exceed toValue
         if (fromValue >= toValue) {
-            console.log('hello')
             this.priceLow.value = this.toSlider.value;
             this.priceHigh.value = this.fromSlider.value;
             this.priceRangeLow = this.toSlider.value;
             this.priceRangeHigh = this.fromSlider.value;
         } else {
-            console.log('kello')
             this.priceLow.value = this.fromSlider.value;
             this.priceHigh.value = this.toSlider.value;
             this.priceRangeLow = this.fromSlider.value;
@@ -159,7 +155,6 @@ export class PriceRangeSlider {
             document.getElementById('max-p').textContent = 'Max price(+)'
             this.priceHigh.value = priceHighValue;
             this.toSlider.max = priceHighValue;
-            this.toSlider.value = priceHighValue;
             this.fromSlider.max = priceHighValue;
         } else {
             document.getElementById('max-p').textContent = 'Max price'

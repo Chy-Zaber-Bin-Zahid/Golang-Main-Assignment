@@ -32,7 +32,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
     if (localStorage.getItem('guests')) {
         const guestLocalNum = localStorage.getItem('guests');
         if (Number(guestLocalNum) === 0) {
-            console.log('ss',guestLocalNum)
             document.getElementById('guest-text').textContent = 'Guests'  
             document.getElementById('guest-cross').classList.add('hidden')
         } else {
