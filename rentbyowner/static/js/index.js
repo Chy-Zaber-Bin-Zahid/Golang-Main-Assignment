@@ -45,7 +45,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
     }
     if (localStorage.getItem('price')) {
         const price = localStorage.getItem('price');
-        if (price === '৳0 - ৳0' || price === '৳13 - ৳2501') {
+        const lastNumb = price.match(/\d+/g);
+        console.log("lastNumb", lastNumb)
+        if (price === '৳0 - ৳0' || price === '৳13 - ৳2501' || lastNumb[lastNumb.length - 1] > 2501) {
             document.getElementById('price-p').textContent = `Price`  
             document.getElementById('price-cross').classList.add('hidden')
         } else {
@@ -481,7 +483,7 @@ document.getElementById('search').addEventListener('click', () => {
     let priceRangeHigh = priceRangeSlider.getPriceRangeHigh()
     console.log('This is price: ', priceRangeLow)
     if (priceRangeLow > document.getElementById('price-low').min || priceRangeHigh < document.getElementById('price-high').max) {
-        if (Number(priceRangeLow) === 13 && Number(priceRangeHigh) === 2501) {
+        if (Number(priceRangeLow) === 13 && Number(priceRangeHigh) === Number(document.getElementById('toSlider').max)) {
             document.getElementById('price-p').textContent = `Price`
             document.getElementById('price-cross').classList.add('hidden')
         } else {
@@ -495,20 +497,20 @@ document.getElementById('search').addEventListener('click', () => {
     }
     const searchValue = getQueryParamByName('search');
     localStorage.setItem('guests', guestNumber)
-    if (Number(priceRangeHigh) === 2501 && Number(priceRangeLow) === 13) {
+    if (Number(priceRangeHigh) === Number(document.getElementById('toSlider').max) && Number(priceRangeLow) === 13) {
         localStorage.setItem('price', `৳0 - ৳0`)
     } else {
         localStorage.setItem('price', `৳${priceRangeLow} - ৳${priceRangeHigh}`)
     }
     if (guestNumber !== 0 || 
         (Number(priceRangeLow) !== 13 && Number(priceRangeLow) !== 0) || 
-        (Number(priceRangeHigh) !== 2501 && Number(priceRangeHigh) !== 0) || check.length >= 0) {
+        (Number(priceRangeHigh) !== Number(document.getElementById('toSlider').max) && Number(priceRangeHigh) !== 0) || check.length >= 0) {
         if (guestNumber !== 0 && filterGuest !== true) {
             filterGuest = true
             filterNumber += 1
         }
         if (((Number(priceRangeLow) !== 13 && Number(priceRangeLow) !== 0) || 
-        (Number(priceRangeHigh) !== 2501 && Number(priceRangeHigh) !== 0)) && filterPrice !== true) {
+        (Number(priceRangeHigh) !== Number(document.getElementById('toSlider').max) && Number(priceRangeHigh) !== 0)) && filterPrice !== true) {
             filterPrice = true;
             filterNumber += 1;
         }
@@ -575,9 +577,9 @@ document.getElementById('price-cross').addEventListener('click', () => {
     const searchValue = getQueryParamByName('search');
     localStorage.removeItem('price')
     document.getElementById('fromSlider').value = 13;
-    document.getElementById('toSlider').value = 2501;
+    document.getElementById('toSlider').value = document.getElementById('toSlider').max;
     document.getElementById('price-low').value = 13;
-    document.getElementById('price-high').value = 2501;
+    document.getElementById('price-high').value = document.getElementById('toSlider').max;
     filterPrice = false
     filterNumber -= 1
     if (filterNumber <= 0) {
@@ -647,9 +649,9 @@ document.getElementById('clear').addEventListener('click', () => {
     document.getElementById('calendar-right').textContent = ''
     document.getElementById('guest-number').textContent = '0'
     document.getElementById('fromSlider').value = 13;
-    document.getElementById('toSlider').value = 2501;
+    document.getElementById('toSlider').value = document.getElementById('toSlider').max;
     document.getElementById('price-low').value = 13;
-    document.getElementById('price-high').value = 2501;
+    document.getElementById('price-high').value = document.getElementById('toSlider').max;
     check = [];
     console.log(check)
     localStorage.removeItem('guests')
