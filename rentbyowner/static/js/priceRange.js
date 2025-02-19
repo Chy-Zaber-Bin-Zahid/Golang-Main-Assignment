@@ -122,7 +122,7 @@ export class PriceRangeSlider {
 
     handleSliderTrackClick(event) {
         // Skip if clicking on a thumb
-        if (event.target === this.fromSlider || event.target === this.toSlider) {
+        if (event.target === this.fromSlider) {
             return;
         }
         
