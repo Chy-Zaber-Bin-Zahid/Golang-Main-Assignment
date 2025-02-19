@@ -18,8 +18,8 @@ export class PriceRangeSlider {
         this.isDownArrowPressed = false;
         this.isUpArrowPressed = false;
 
-         // Bind event listeners
-         this.fromSlider.addEventListener('input', () => {
+        // Bind event listeners
+        this.fromSlider.addEventListener('input', () => {
             this.handleFromSliderInput();
             this.updateSliderProgress();
         });
@@ -35,6 +35,15 @@ export class PriceRangeSlider {
             this.handlePriceHighInput();
             this.updateSliderProgress();
         });
+
+        // Add mouse/touch event listeners for real-time updates during dragging
+        this.fromSlider.addEventListener('mousedown', this.startDragging.bind(this, 'from'));
+        this.toSlider.addEventListener('mousedown', this.startDragging.bind(this, 'to'));
+        this.fromSlider.addEventListener('touchstart', this.startTouchDragging.bind(this, 'from'));
+        this.toSlider.addEventListener('touchstart', this.startTouchDragging.bind(this, 'to'));
+
+        // Add click handler for the slider track
+        this.slidersControl.addEventListener('click', this.handleSliderTrackClick.bind(this));
 
         this.setupEventListeners();
         this.updateSliderProgress();
@@ -75,6 +84,69 @@ export class PriceRangeSlider {
         // Apply styles to the progress element
         this.sliderProgress.style.left = `${leftPercent}%`;
         this.sliderProgress.style.width = `${widthPercent}%`;
+    }
+
+    startDragging(slider, event) {
+        const handleMouseMove = (moveEvent) => {
+            // Update the progress bar in real-time during the drag
+            this.updateSliderProgress();
+        };
+        
+        const handleMouseUp = () => {
+            // Clean up event listeners when drag ends
+            document.removeEventListener('mousemove', handleMouseMove);
+            document.removeEventListener('mouseup', handleMouseUp);
+        };
+        
+        // Add document-level event listeners to track movement even outside the slider
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+    }
+
+    startTouchDragging(slider, event) {
+        const handleTouchMove = (moveEvent) => {
+            // Update the progress bar in real-time during touch drag
+            this.updateSliderProgress();
+        };
+        
+        const handleTouchEnd = () => {
+            // Clean up event listeners when drag ends
+            document.removeEventListener('touchmove', handleTouchMove);
+            document.removeEventListener('touchend', handleTouchEnd);
+        };
+        
+        // Add document-level event listeners to track movement
+        document.addEventListener('touchmove', handleTouchMove);
+        document.addEventListener('touchend', handleTouchEnd);
+    }
+
+    handleSliderTrackClick(event) {
+        // Skip if clicking on a thumb
+        if (event.target === this.fromSlider || event.target === this.toSlider) {
+            return;
+        }
+        
+        // Calculate relative click position
+        const rect = this.slidersControl.getBoundingClientRect();
+        const clickPosition = event.clientX - rect.left;
+        const trackWidth = rect.width;
+        
+        // Calculate percentage of the click position
+        const percentage = clickPosition / trackWidth;
+        
+        // Convert to slider value
+        const max = Number(this.toSlider.max);
+        const newValue = Math.round(percentage * max);
+        
+        // Update toSlider to clicked position
+        this.toSlider.value = newValue;
+        this.priceHigh.value = newValue;
+        
+        // Handle edge cases and validation
+        this.handleToSliderInput();
+        
+        // Update the visual progress bar
+        this.updateSliderProgress();
     }
 
     setupEventListeners() {
@@ -228,17 +300,17 @@ export class PriceRangeSlider {
         const priceHighValue = Number(this.priceHigh.value);
         const priceLowValue = Number(this.priceLow.value);
         if (priceHighValue >= Number(this.toSlider.max)) {
-            document.getElementById('max-p').textContent = 'Max price(+)'
+            document.getElementById('max-p').textContent = 'Max price(+)';
             this.priceHigh.value = priceHighValue;
             this.toSlider.max = priceHighValue;
             this.fromSlider.max = priceHighValue;
         } else {
-            document.getElementById('max-p').textContent = 'Max price'
+            document.getElementById('max-p').textContent = 'Max price';
             this.priceHigh.value = priceHighValue;
         }
         if (priceHighValue < 1) {
             console.log("Price is too low!");
-            this.priceHigh.value = 1
+            this.priceHigh.value = 1;
         }
         if (fromValue > toValue && Number(this.priceRangeLow) !== toValue) {
             this.fromSlider.value = priceHighValue;
