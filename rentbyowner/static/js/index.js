@@ -651,6 +651,19 @@ document.getElementById('clear').addEventListener('click', () => {
     document.getElementById('toSlider').value = document.getElementById('toSlider').max;
     document.getElementById('price-low').value = 0;
     document.getElementById('price-high').value = document.getElementById('toSlider').max;
+    // Reset the slider values
+    const fromSlider = document.getElementById('fromSlider');
+    const toSlider = document.getElementById('toSlider');
+    const priceLow = document.getElementById('price-low');
+    const priceHigh = document.getElementById('price-high');
+    
+    fromSlider.value = 0;
+    toSlider.value = toSlider.max;
+    priceLow.value = 0;
+    priceHigh.value = toSlider.max;
+    
+    // Update the slider progress to reflect reset values
+    priceRangeSlider.updateSliderProgress();
     check = [];
     console.log(check)
     localStorage.removeItem('guests')

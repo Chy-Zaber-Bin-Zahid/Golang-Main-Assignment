@@ -5,6 +5,12 @@ export class PriceRangeSlider {
         this.toSlider = document.getElementById(toSliderId);
         this.priceLow = document.getElementById(priceLowId);
         this.priceHigh = document.getElementById(priceHighId);
+        this.slidersControl = this.fromSlider.parentElement;
+
+        // Create progress element for the colored portion
+        this.sliderProgress = document.createElement('div');
+        this.sliderProgress.className = 'slider-progress';
+        this.slidersControl.appendChild(this.sliderProgress);
 
         // Initialize price range values
         this.priceRangeLow = 0;
@@ -12,13 +18,26 @@ export class PriceRangeSlider {
         this.isDownArrowPressed = false;
         this.isUpArrowPressed = false;
 
-        // Bind event listeners
-        this.fromSlider.addEventListener('input', () => this.handleFromSliderInput());
-        this.toSlider.addEventListener('input', () => this.handleToSliderInput());
-        this.priceLow.addEventListener('input', () => this.handlePriceLowInput());
-        this.priceHigh.addEventListener('input', () => this.handlePriceHighInput());
+         // Bind event listeners
+         this.fromSlider.addEventListener('input', () => {
+            this.handleFromSliderInput();
+            this.updateSliderProgress();
+        });
+        this.toSlider.addEventListener('input', () => {
+            this.handleToSliderInput();
+            this.updateSliderProgress();
+        });
+        this.priceLow.addEventListener('input', () => {
+            this.handlePriceLowInput();
+            this.updateSliderProgress();
+        });
+        this.priceHigh.addEventListener('input', () => {
+            this.handlePriceHighInput();
+            this.updateSliderProgress();
+        });
 
         this.setupEventListeners();
+        this.updateSliderProgress();
     }
 
     getPriceRangeLow() {
@@ -37,6 +56,25 @@ export class PriceRangeSlider {
     // Setter for priceRangeLow
     setPriceRangeHigh(value) {
         this.priceRangeHigh = value;
+    }
+
+    updateSliderProgress() {
+        const fromValue = Number(this.fromSlider.value);
+        const toValue = Number(this.toSlider.value);
+        const max = Number(this.toSlider.max);
+        
+        // Determine the smaller and larger values regardless of which slider they come from
+        const lowerValue = Math.min(fromValue, toValue);
+        const higherValue = Math.max(fromValue, toValue);
+        
+        // Calculate left and width of the colored portion
+        const leftPercent = (lowerValue / max) * 100;
+        const rightValue = higherValue;
+        const widthPercent = ((rightValue - lowerValue) / max) * 100;
+        
+        // Apply styles to the progress element
+        this.sliderProgress.style.left = `${leftPercent}%`;
+        this.sliderProgress.style.width = `${widthPercent}%`;
     }
 
     setupEventListeners() {
@@ -168,14 +206,14 @@ export class PriceRangeSlider {
             this.priceRangeLow = priceLowValue;
             this.priceHigh.value = priceLowValue + 1;
             this.priceRangeHigh = priceLowValue + 1;
-        } else if (fromValue > toValue && Number(this.priceRangeHigh) === fromValue) {
-            this.toSlider.value = priceLowValue;
-            this.priceRangeLow = priceLowValue;
         } else if (priceLowValue >= priceHighValue && !this.isUpArrowPressed) {
             this.toSlider.value = Number(this.priceHigh.value);
             this.fromSlider.value = Number(this.priceHigh.value) - 1;
             this.priceRangeLow = Number(this.priceHigh.value) - 1;
             this.priceLow.value = Number(this.priceHigh.value) - 1;
+        } else if (fromValue > toValue && Number(this.priceRangeHigh) === fromValue) {
+            this.toSlider.value = priceLowValue;
+            this.priceRangeLow = priceLowValue;
         } else {
             this.fromSlider.value = this.priceLow.value;
             this.priceRangeLow = this.priceLow.value;
@@ -207,14 +245,14 @@ export class PriceRangeSlider {
             this.priceRangeHigh = priceHighValue;
             this.priceLow.value = priceHighValue - 1;
             this.priceRangeLow = priceHighValue - 1;
-        } else if (fromValue > toValue && Number(this.priceRangeHigh) >= fromValue) {
-            this.fromSlider.value = priceHighValue;
-            this.priceRangeHigh = priceHighValue;
         } else if (priceHighValue <= priceLowValue && !this.isDownArrowPressed) {
             this.toSlider.value = Number(this.priceLow.value) + 1;
             this.fromSlider.value = Number(this.priceLow.value);
             this.priceRangeHigh = Number(this.priceLow.value) + 1;
             this.priceHigh.value = Number(this.priceLow.value) + 1;
+        } else if (fromValue > toValue && Number(this.priceRangeHigh) >= fromValue) {
+            this.fromSlider.value = priceHighValue;
+            this.priceRangeHigh = priceHighValue;
         } else {
             this.toSlider.value = this.priceHigh.value;
             this.priceRangeHigh = this.priceHigh.value;
