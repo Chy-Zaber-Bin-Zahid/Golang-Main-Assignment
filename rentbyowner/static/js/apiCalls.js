@@ -119,60 +119,57 @@ async function fetchData(searchValue, selectedValue = "", dates = "", guest = 0,
                     const fromSlide = document.getElementById('fromSlider');
                     const toSlide = document.getElementById('toSlider');
                     document.getElementById('price-high').value = 2501;
-                    document.getElementById('price-low').value = 13;
+                    document.getElementById('price-low').value = 0;
                     fromSlide.value = 0;
                     toSlide.value = 100;
                     const minPrice = Math.round(Math.min(...propertyData.map(item => Number(item.Property.Price))));
                     const maxPrice = Math.round(Math.max(...propertyData.map(item => Number(item.Property.Price))));
-                    fromSlide.min = minPrice - 1;
+                    fromSlide.min = 0;
                     fromSlide.max = maxPrice + 1;
-                    fromSlide.value = minPrice - 1;
+                    fromSlide.value = 0;
                     
-                    toSlide.min = minPrice - 1;
+                    toSlide.min = 0;
                     toSlide.max = maxPrice + 1;
                     toSlide.value = maxPrice + 1;
                     
                     document.getElementById('price-high').value = maxPrice + 1;
-                    document.getElementById('price-low').value = minPrice - 1;
+                    document.getElementById('price-low').value = 0;
                     initialMaxPrice = maxPrice + 1
-                    initialMinPrice = minPrice - 1
+                    initialMinPrice = 0
                 } else {
                     console.log('price', num1)
                     const fromSlide = document.getElementById('fromSlider');
                     const toSlide = document.getElementById('toSlider');
-                    
-                    console.log('price', fromSlider.value)
                     toSlide.value = num2;
-                    fromSlide.min = 13;
+                    fromSlide.min = 0;
                     fromSlide.max = 2501;
                     fromSlide.value = num1;
-                    console.log('price', fromSlider.value)
-                    toSlide.min = 13;
+                    toSlide.min = 0;
                     toSlide.max = 2501;
                     toSlide.value = num2;
                     
                     document.getElementById('price-high').value = num2;
                     document.getElementById('price-low').value = num1;
                     initialMaxPrice = 2501
-                    initialMinPrice = 13
+                    initialMinPrice = 0
                 }
             } else {
                 const fromSlide = document.getElementById('fromSlider');
                 const toSlide = document.getElementById('toSlider');
                 const minPrice = Math.round(Math.min(...propertyData.map(item => Number(item.Property.Price))));
                 const maxPrice = Math.round(Math.max(...propertyData.map(item => Number(item.Property.Price))));
-                fromSlide.min = minPrice - 1;
+                fromSlide.min = 0;
                 fromSlide.max = maxPrice + 1;
-                fromSlide.value = minPrice - 1;
+                fromSlide.value = 0;
                 
-                toSlide.min = minPrice - 1;
+                toSlide.min = 0;
                 toSlide.max = maxPrice + 1;
                 toSlide.value = maxPrice + 1;
                 
                 document.getElementById('price-high').value = maxPrice + 1;
-                document.getElementById('price-low').value = minPrice - 1;
+                document.getElementById('price-low').value = 0;
                 initialMaxPrice = maxPrice + 1
-                initialMinPrice = minPrice - 1
+                initialMinPrice = 0
             }
         }
         if (selectedValue === "Lowest Price") {

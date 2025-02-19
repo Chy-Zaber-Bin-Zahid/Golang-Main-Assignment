@@ -56,10 +56,10 @@ export class PriceRangeSlider {
             this.priceHigh.value = fromValue;
         }
     
-        if (toValue === 13 && fromValue === 13) {
-            this.toSlider.value = 14; // Reset the slider value to 14
-            this.priceHigh.value = 14; // Update the high price input field
-            toValue = 14; // Update the toValue variable
+        if (toValue === 0 && fromValue === 0) {
+            this.toSlider.value = 1; // Reset the slider value to 1
+            this.priceHigh.value = 1; // Update the high price input field
+            toValue = 1; // Update the toValue variable
         }
         // Ensure fromValue does not exceed toValue
         if (fromValue >= toValue) {
@@ -80,11 +80,11 @@ export class PriceRangeSlider {
         let fromValue = Number(this.fromSlider.value);
         let toValue = Number(this.toSlider.value); // Use `let` to allow reassignment
     
-        // Ensure toValue is not smaller than 14
-        if (toValue < 14 && fromValue === 13) {
-            this.toSlider.value = 14; // Reset the slider value to 14
-            this.priceHigh.value = 14; // Update the high price input field
-            toValue = 14; // Update the toValue variable
+        // Ensure toValue is not smaller than 1
+        if (toValue < 1 && fromValue === 0) {
+            this.toSlider.value = 1; // Reset the slider value to 1
+            this.priceHigh.value = 1; // Update the high price input field
+            toValue = 1; // Update the toValue variable
         }
     
         // Update the "Max price(+)" label
@@ -97,7 +97,7 @@ export class PriceRangeSlider {
         }
     
         if (toValue === Number(this.toSlider.max) && fromValue === Number(this.toSlider.max)) {
-            this.fromSlider.value = Number(this.toSlider.max) - 1; // Reset the slider value to 14
+            this.fromSlider.value = Number(this.toSlider.max) - 1; // Reset the slider value to 1
             this.priceLow.value = Number(this.toSlider.max) - 1; // Update the high price input field
             fromValue = Number(this.toSlider.max) - 1; // Update the toValue variable
         }
@@ -121,9 +121,9 @@ export class PriceRangeSlider {
         let fromValue = Number(this.fromSlider.value);
         let toValue = Number(this.toSlider.value);
         const priceLowValue = Number(this.priceLow.value);
-        if (priceLowValue < 13) {
+        if (priceLowValue < 0) {
             console.log("Price is too low!");
-            this.priceLow.value = 13; // Set it to 13 if lower
+            this.priceLow.value = 0; // Set it to 0 if lower
         } else {
             this.priceLow.value = priceLowValue;
         }
@@ -160,9 +160,9 @@ export class PriceRangeSlider {
             document.getElementById('max-p').textContent = 'Max price'
             this.priceHigh.value = priceHighValue;
         }
-        if (priceHighValue < 14) {
+        if (priceHighValue < 1) {
             console.log("Price is too low!");
-            this.priceHigh.value = 14; // Set it to 14 if lower
+            this.priceHigh.value = 1; // Set it to 1 if lower
         }
         if (fromValue > toValue && Number(this.priceRangeLow) !== toValue) {
             this.fromSlider.value = priceHighValue;

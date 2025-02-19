@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         const price = localStorage.getItem('price');
         const lastNumb = price.match(/\d+/g);
         console.log("lastNumb", lastNumb)
-        if (price === '৳0 - ৳0' || price === '৳13 - ৳2501' || lastNumb[lastNumb.length - 1] > 2501) {
+        if (price === '৳0 - ৳0' || price === '৳0 - ৳2501' || lastNumb[lastNumb.length - 1] > 2501) {
             document.getElementById('price-p').textContent = `Price`  
             document.getElementById('price-cross').classList.add('hidden')
         } else {
@@ -482,7 +482,7 @@ document.getElementById('search').addEventListener('click', () => {
     let priceRangeHigh = priceRangeSlider.getPriceRangeHigh()
     console.log('This is price: ', priceRangeLow)
     if (priceRangeLow > document.getElementById('price-low').min || priceRangeHigh < document.getElementById('price-high').max) {
-        if (Number(priceRangeLow) === 13 && Number(priceRangeHigh) === Number(document.getElementById('toSlider').max)) {
+        if (Number(priceRangeLow) === 0 && Number(priceRangeHigh) === Number(document.getElementById('toSlider').max)) {
             document.getElementById('price-p').textContent = `Price`
             document.getElementById('price-cross').classList.add('hidden')
         } else {
@@ -496,19 +496,19 @@ document.getElementById('search').addEventListener('click', () => {
     }
     const searchValue = getQueryParamByName('search');
     localStorage.setItem('guests', guestNumber)
-    if (Number(priceRangeHigh) === Number(document.getElementById('toSlider').max) && Number(priceRangeLow) === 13) {
+    if (Number(priceRangeHigh) === Number(document.getElementById('toSlider').max) && Number(priceRangeLow) === 0) {
         localStorage.setItem('price', `৳0 - ৳0`)
     } else {
         localStorage.setItem('price', `৳${priceRangeLow} - ৳${priceRangeHigh}`)
     }
     if (guestNumber !== 0 || 
-        (Number(priceRangeLow) !== 13 && Number(priceRangeLow) !== 0) || 
+        (Number(priceRangeLow) !== 0 && Number(priceRangeLow) !== 0) || 
         (Number(priceRangeHigh) !== Number(document.getElementById('toSlider').max) && Number(priceRangeHigh) !== 0) || check.length >= 0) {
         if (guestNumber !== 0 && filterGuest !== true) {
             filterGuest = true
             filterNumber += 1
         }
-        if (((Number(priceRangeLow) !== 13 && Number(priceRangeLow) !== 0) || 
+        if (((Number(priceRangeLow) !== 0 && Number(priceRangeLow) !== 0) || 
         (Number(priceRangeHigh) !== Number(document.getElementById('toSlider').max) && Number(priceRangeHigh) !== 0)) && filterPrice !== true) {
             filterPrice = true;
             filterNumber += 1;
@@ -575,9 +575,9 @@ document.getElementById('price-cross').addEventListener('click', () => {
     document.getElementById('price-cross').classList.add('hidden')
     const searchValue = getQueryParamByName('search');
     localStorage.removeItem('price')
-    document.getElementById('fromSlider').value = 13;
+    document.getElementById('fromSlider').value = 0;
     document.getElementById('toSlider').value = document.getElementById('toSlider').max;
-    document.getElementById('price-low').value = 13;
+    document.getElementById('price-low').value = 0;
     document.getElementById('price-high').value = document.getElementById('toSlider').max;
     filterPrice = false
     filterNumber -= 1
@@ -647,9 +647,9 @@ document.getElementById('clear').addEventListener('click', () => {
     document.getElementById('calendar-left').textContent = ''
     document.getElementById('calendar-right').textContent = ''
     document.getElementById('guest-number').textContent = '0'
-    document.getElementById('fromSlider').value = 13;
+    document.getElementById('fromSlider').value = 0;
     document.getElementById('toSlider').value = document.getElementById('toSlider').max;
-    document.getElementById('price-low').value = 13;
+    document.getElementById('price-low').value = 0;
     document.getElementById('price-high').value = document.getElementById('toSlider').max;
     check = [];
     console.log(check)
