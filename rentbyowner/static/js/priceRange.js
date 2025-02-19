@@ -10,6 +10,7 @@ export class PriceRangeSlider {
         this.priceRangeLow = 0;
         this.priceRangeHigh = 0;
         this.isDownArrowPressed = false;
+        this.isUpArrowPressed = false;
 
         // Bind event listeners
         this.fromSlider.addEventListener('input', () => this.handleFromSliderInput());
@@ -39,21 +40,30 @@ export class PriceRangeSlider {
     }
 
     setupEventListeners() {
-        // Handle general input changes
-        this.priceHigh.addEventListener('input', () => this.handlePriceHighInput());
-
-        // Check for the down arrow key
+        // Handle down arrow key for priceHigh
         this.priceHigh.addEventListener('keydown', (event) => {
             if (event.key === 'ArrowDown') {
                 this.isDownArrowPressed = true; // Set flag to true
-            } else {
-                this.isDownArrowPressed = false; // Reset flag for other keys
             }
         });
 
-        // Reset flag on keyup
-        this.priceHigh.addEventListener('keyup', () => {
-            this.isDownArrowPressed = false;
+        this.priceHigh.addEventListener('keyup', (event) => {
+            if (event.key === 'ArrowDown') {
+                this.isDownArrowPressed = false; // Reset flag on keyup
+            }
+        });
+
+        // Handle up arrow key for priceLow
+        this.priceLow.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowUp') {
+                this.isUpArrowPressed = true; // Set flag to true
+            }
+        });
+
+        this.priceLow.addEventListener('keyup', (event) => {
+            if (event.key === 'ArrowUp') {
+                this.isUpArrowPressed = false; // Reset flag on keyup
+            }
         });
     }
 
@@ -142,6 +152,7 @@ export class PriceRangeSlider {
         let fromValue = Number(this.fromSlider.value);
         let toValue = Number(this.toSlider.value);
         const priceLowValue = Number(this.priceLow.value);
+        const priceHighValue = Number(this.priceHigh.value);
         if (priceLowValue < 0) {
             console.log("Price is too low!");
             this.priceLow.value = 0; // Set it to 0 if lower
@@ -160,6 +171,11 @@ export class PriceRangeSlider {
         } else if (fromValue > toValue && Number(this.priceRangeHigh) === fromValue) {
             this.toSlider.value = priceLowValue;
             this.priceRangeLow = priceLowValue;
+        } else if (priceLowValue >= priceHighValue && !this.isUpArrowPressed) {
+            this.toSlider.value = Number(this.priceHigh.value);
+            this.fromSlider.value = Number(this.priceHigh.value) - 1;
+            this.priceRangeLow = Number(this.priceHigh.value) - 1;
+            this.priceLow.value = Number(this.priceHigh.value) - 1;
         } else {
             this.fromSlider.value = this.priceLow.value;
             this.priceRangeLow = this.priceLow.value;
@@ -184,25 +200,22 @@ export class PriceRangeSlider {
         }
         if (priceHighValue < 1) {
             console.log("Price is too low!");
-            this.priceHigh.value = 1; // Set it to 1 if lower
+            this.priceHigh.value = 1
         }
         if (fromValue > toValue && Number(this.priceRangeLow) !== toValue) {
-            console.log('1')
             this.fromSlider.value = priceHighValue;
             this.priceRangeHigh = priceHighValue;
             this.priceLow.value = priceHighValue - 1;
             this.priceRangeLow = priceHighValue - 1;
         } else if (fromValue > toValue && Number(this.priceRangeHigh) >= fromValue) {
-            console.log('2')
             this.fromSlider.value = priceHighValue;
             this.priceRangeHigh = priceHighValue;
         } else if (priceHighValue <= priceLowValue && !this.isDownArrowPressed) {
-            console.log('4')
             this.toSlider.value = Number(this.priceLow.value) + 1;
+            this.fromSlider.value = Number(this.priceLow.value);
             this.priceRangeHigh = Number(this.priceLow.value) + 1;
             this.priceHigh.value = Number(this.priceLow.value) + 1;
         } else {
-            console.log('3')
             this.toSlider.value = this.priceHigh.value;
             this.priceRangeHigh = this.priceHigh.value;
             this.priceRangeLow = this.fromSlider.value;
