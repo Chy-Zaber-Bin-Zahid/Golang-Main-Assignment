@@ -17,6 +17,7 @@ export class PriceRangeSlider {
         this.priceRangeHigh = 0;
         this.isDownArrowPressed = false;
         this.isUpArrowPressed = false;
+        this.isDragging = false;
 
         // Bind event listeners
         this.fromSlider.addEventListener('input', () => {
@@ -43,7 +44,12 @@ export class PriceRangeSlider {
         this.toSlider.addEventListener('touchstart', this.startTouchDragging.bind(this, 'to'));
 
         // Add click handler for the slider track
-        this.slidersControl.addEventListener('click', this.handleSliderTrackClick.bind(this));
+        this.slidersControl.addEventListener('mousedown', this.handleSliderTrackClick.bind(this));
+        this.slidersControl.addEventListener('touchstart', this.handleSliderTrackTouchStart.bind(this));
+
+        // Add mouse move event to entire document for dragging functionality
+        document.addEventListener('mousemove', this.handleMouseMove.bind(this));
+        document.addEventListener('mouseup', this.handleMouseUp.bind(this));
 
         this.setupEventListeners();
         this.updateSliderProgress();
@@ -53,7 +59,6 @@ export class PriceRangeSlider {
         return this.priceRangeLow;
     }
 
-    // Setter for priceRangeLow
     setPriceRangeLow(value) {
         this.priceRangeLow = value;
     }
@@ -62,7 +67,6 @@ export class PriceRangeSlider {
         return this.priceRangeHigh;
     }
 
-    // Setter for priceRangeLow
     setPriceRangeHigh(value) {
         this.priceRangeHigh = value;
     }
@@ -121,12 +125,12 @@ export class PriceRangeSlider {
     }
 
     handleSliderTrackClick(event) {
-        // Skip if clicking on a thumb
-        if (event.target === this.fromSlider) {
+        // Prevent handling if click is on a thumb
+        if (event.target === this.fromSlider || event.target === this.toSlider) {
             return;
         }
         
-        // Calculate relative click position
+        // Calculate click position relative to the sliders
         const rect = this.slidersControl.getBoundingClientRect();
         const clickPosition = event.clientX - rect.left;
         const trackWidth = rect.width;
@@ -142,11 +146,63 @@ export class PriceRangeSlider {
         this.toSlider.value = newValue;
         this.priceHigh.value = newValue;
         
+        // Set dragging state to true
+        this.isDragging = true;
+        
         // Handle edge cases and validation
         this.handleToSliderInput();
         
         // Update the visual progress bar
         this.updateSliderProgress();
+    }
+
+    handleSliderTrackTouchStart(event) {
+        // Similar to handleSliderTrackClick but for touch events
+        if (event.targetTouches[0].target === this.fromSlider || event.targetTouches[0].target === this.toSlider) {
+            return;
+        }
+        
+        const rect = this.slidersControl.getBoundingClientRect();
+        const clickPosition = event.targetTouches[0].clientX - rect.left;
+        const trackWidth = rect.width;
+        
+        const percentage = clickPosition / trackWidth;
+        const max = Number(this.toSlider.max);
+        const newValue = Math.round(percentage * max);
+        
+        this.toSlider.value = newValue;
+        this.priceHigh.value = newValue;
+        
+        this.isDragging = true;
+        this.handleToSliderInput();
+        this.updateSliderProgress();
+    }
+
+    handleMouseMove(event) {
+        if (this.isDragging) {
+            const rect = this.slidersControl.getBoundingClientRect();
+            const mouseX = event.clientX - rect.left;
+            const trackWidth = rect.width;
+            
+            // Ensure mouseX is within slider bounds
+            const percentage = Math.min(Math.max(mouseX / trackWidth, 0), 1);
+            
+            // Convert to slider value
+            const max = Number(this.toSlider.max);
+            const newValue = Math.round(percentage * max);
+            
+            // Update toSlider value and corresponding display
+            this.toSlider.value = newValue;
+            this.priceHigh.value = newValue;
+            
+            this.handleToSliderInput();
+            this.updateSliderProgress();
+        }
+    }
+
+    handleMouseUp() {
+        // Reset dragging state
+        this.isDragging = false;
     }
 
     setupEventListeners() {
@@ -177,7 +233,6 @@ export class PriceRangeSlider {
         });
     }
 
-    // Handle input event for the "from" slider
     handleFromSliderInput() {
         let fromValue = Number(this.fromSlider.value);
         let toValue = Number(this.toSlider.value);
@@ -216,7 +271,6 @@ export class PriceRangeSlider {
         }
     }
 
-    // Handle input event for the "to" slider
     handleToSliderInput() {
         let fromValue = Number(this.fromSlider.value);
         let toValue = Number(this.toSlider.value); // Use `let` to allow reassignment
@@ -257,7 +311,6 @@ export class PriceRangeSlider {
         }
     }
 
-    // Handle input event for the "price low" input field
     handlePriceLowInput() {
         let fromValue = Number(this.fromSlider.value);
         let toValue = Number(this.toSlider.value);
@@ -293,7 +346,6 @@ export class PriceRangeSlider {
         }
     }
 
-    // Handle input event for the "price high" input field
     handlePriceHighInput() {
         let fromValue = Number(this.fromSlider.value);
         let toValue = Number(this.toSlider.value);
