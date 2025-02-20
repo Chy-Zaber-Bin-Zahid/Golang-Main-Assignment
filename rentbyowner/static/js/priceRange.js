@@ -18,6 +18,7 @@ export class PriceRangeSlider {
         this.isDownArrowPressed = false;
         this.isUpArrowPressed = false;
         this.isDragging = false;
+        this.draggingSlider = null; // 'from' or 'to' when dragging thumb
 
         // Bind event listeners
         this.fromSlider.addEventListener('input', () => {
@@ -37,19 +38,17 @@ export class PriceRangeSlider {
             this.updateSliderProgress();
         });
 
-        // Add mouse/touch event listeners for real-time updates during dragging
+        // Mouse event listeners for dragging
         this.fromSlider.addEventListener('mousedown', this.startDragging.bind(this, 'from'));
         this.toSlider.addEventListener('mousedown', this.startDragging.bind(this, 'to'));
-        this.fromSlider.addEventListener('touchstart', this.startTouchDragging.bind(this, 'from'));
-        this.toSlider.addEventListener('touchstart', this.startTouchDragging.bind(this, 'to'));
-
-        // Add click handler for the slider track
         this.slidersControl.addEventListener('mousedown', this.handleSliderTrackClick.bind(this));
-        this.slidersControl.addEventListener('touchstart', this.handleSliderTrackTouchStart.bind(this));
-
-        // Add mouse move event to entire document for dragging functionality
         document.addEventListener('mousemove', this.handleMouseMove.bind(this));
         document.addEventListener('mouseup', this.handleMouseUp.bind(this));
+
+        // Touch event listeners for dragging
+        this.fromSlider.addEventListener('touchstart', this.startTouchDragging.bind(this, 'from'));
+        this.toSlider.addEventListener('touchstart', this.startTouchDragging.bind(this, 'to'));
+        this.slidersControl.addEventListener('touchstart', this.handleSliderTrackTouchStart.bind(this));
 
         this.setupEventListeners();
         this.updateSliderProgress();
@@ -76,159 +75,187 @@ export class PriceRangeSlider {
         const toValue = Number(this.toSlider.value);
         const max = Number(this.toSlider.max);
         
-        // Determine the smaller and larger values regardless of which slider they come from
         const lowerValue = Math.min(fromValue, toValue);
         const higherValue = Math.max(fromValue, toValue);
         
-        // Calculate left and width of the colored portion
         const leftPercent = (lowerValue / max) * 100;
-        const rightValue = higherValue;
-        const widthPercent = ((rightValue - lowerValue) / max) * 100;
+        const widthPercent = ((higherValue - lowerValue) / max) * 100;
         
-        // Apply styles to the progress element
         this.sliderProgress.style.left = `${leftPercent}%`;
         this.sliderProgress.style.width = `${widthPercent}%`;
     }
 
     startDragging(slider, event) {
-        const handleMouseMove = (moveEvent) => {
-            // Update the progress bar in real-time during the drag
+        this.isDragging = true;
+        this.draggingSlider = slider;
+        
+        const handleMouseMove = () => {
             this.updateSliderProgress();
         };
         
         const handleMouseUp = () => {
-            // Clean up event listeners when drag ends
+            this.isDragging = false;
+            this.draggingSlider = null;
             document.removeEventListener('mousemove', handleMouseMove);
             document.removeEventListener('mouseup', handleMouseUp);
         };
         
-        // Add document-level event listeners to track movement even outside the slider
         document.addEventListener('mousemove', handleMouseMove);
         document.addEventListener('mouseup', handleMouseUp);
     }
 
     startTouchDragging(slider, event) {
+        event.preventDefault(); // Prevent default touch behavior
+        this.isDragging = true;
+        this.draggingSlider = slider;
+
+        const rect = this.slidersControl.getBoundingClientRect();
+        const trackWidth = rect.width;
+        const max = Number(this.toSlider.max);
+
         const handleTouchMove = (moveEvent) => {
-            // Update the progress bar in real-time during touch drag
+            moveEvent.preventDefault();
+            const touchX = moveEvent.targetTouches[0].clientX - rect.left;
+            const percentage = Math.min(Math.max(touchX / trackWidth, 0), 1);
+            const newValue = Math.round(percentage * max);
+
+            if (this.draggingSlider === 'from') {
+                this.fromSlider.value = newValue;
+                this.priceLow.value = newValue;
+                this.handleFromSliderInput();
+            } else if (this.draggingSlider === 'to') {
+                this.toSlider.value = newValue;
+                this.priceHigh.value = newValue;
+                this.handleToSliderInput();
+            }
             this.updateSliderProgress();
         };
         
         const handleTouchEnd = () => {
-            // Clean up event listeners when drag ends
+            this.isDragging = false;
+            this.draggingSlider = null;
             document.removeEventListener('touchmove', handleTouchMove);
             document.removeEventListener('touchend', handleTouchEnd);
         };
         
-        // Add document-level event listeners to track movement
-        document.addEventListener('touchmove', handleTouchMove);
+        document.addEventListener('touchmove', handleTouchMove, { passive: false });
         document.addEventListener('touchend', handleTouchEnd);
     }
 
     handleSliderTrackClick(event) {
-        // Prevent handling if click is on a thumb
         if (event.target === this.fromSlider || event.target === this.toSlider) {
             return;
         }
         
-        // Calculate click position relative to the sliders
         const rect = this.slidersControl.getBoundingClientRect();
         const clickPosition = event.clientX - rect.left;
         const trackWidth = rect.width;
-        
-        // Calculate percentage of the click position
         const percentage = clickPosition / trackWidth;
-        
-        // Convert to slider value
         const max = Number(this.toSlider.max);
         const newValue = Math.round(percentage * max);
         
-        // Update toSlider to clicked position
+        // Always move toSlider when clicking the track
+        this.isDragging = true;
+        this.draggingSlider = 'to';
         this.toSlider.value = newValue;
         this.priceHigh.value = newValue;
-        
-        // Set dragging state to true
-        this.isDragging = true;
-        
-        // Handle edge cases and validation
         this.handleToSliderInput();
-        
-        // Update the visual progress bar
         this.updateSliderProgress();
     }
 
     handleSliderTrackTouchStart(event) {
-        // Similar to handleSliderTrackClick but for touch events
+        event.preventDefault(); // Prevent scrolling on touch devices
+        
         if (event.targetTouches[0].target === this.fromSlider || event.targetTouches[0].target === this.toSlider) {
             return;
         }
         
         const rect = this.slidersControl.getBoundingClientRect();
-        const clickPosition = event.targetTouches[0].clientX - rect.left;
+        const touchPosition = event.targetTouches[0].clientX - rect.left;
         const trackWidth = rect.width;
-        
-        const percentage = clickPosition / trackWidth;
+        const percentage = Math.min(Math.max(touchPosition / trackWidth, 0), 1);
         const max = Number(this.toSlider.max);
         const newValue = Math.round(percentage * max);
         
+        // Always move toSlider when touching the track
+        this.isDragging = true;
+        this.draggingSlider = 'to';
         this.toSlider.value = newValue;
         this.priceHigh.value = newValue;
-        
-        this.isDragging = true;
         this.handleToSliderInput();
         this.updateSliderProgress();
+
+        // Add touchmove and touchend listeners
+        const handleTouchMove = (moveEvent) => {
+            moveEvent.preventDefault();
+            const touchX = moveEvent.targetTouches[0].clientX - rect.left;
+            const newPercentage = Math.min(Math.max(touchX / trackWidth, 0), 1);
+            const updatedValue = Math.round(newPercentage * max);
+            
+            // Only move toSlider when dragging on the track
+            this.toSlider.value = updatedValue;
+            this.priceHigh.value = updatedValue;
+            this.handleToSliderInput();
+            this.updateSliderProgress();
+        };
+
+        const handleTouchEnd = () => {
+            this.isDragging = false;
+            this.draggingSlider = null;
+            document.removeEventListener('touchmove', handleTouchMove);
+            document.removeEventListener('touchend', handleTouchEnd);
+        };
+
+        document.addEventListener('touchmove', handleTouchMove, { passive: false });
+        document.addEventListener('touchend', handleTouchEnd);
     }
 
     handleMouseMove(event) {
-        if (this.isDragging) {
+        if (this.isDragging && this.draggingSlider) {
             const rect = this.slidersControl.getBoundingClientRect();
             const mouseX = event.clientX - rect.left;
             const trackWidth = rect.width;
-            
-            // Ensure mouseX is within slider bounds
             const percentage = Math.min(Math.max(mouseX / trackWidth, 0), 1);
-            
-            // Convert to slider value
             const max = Number(this.toSlider.max);
             const newValue = Math.round(percentage * max);
             
-            // Update toSlider value and corresponding display
-            this.toSlider.value = newValue;
-            this.priceHigh.value = newValue;
-            
-            this.handleToSliderInput();
+            if (this.draggingSlider === 'from') {
+                this.fromSlider.value = newValue;
+                this.priceLow.value = newValue;
+                this.handleFromSliderInput();
+            } else if (this.draggingSlider === 'to') {
+                this.toSlider.value = newValue;
+                this.priceHigh.value = newValue;
+                this.handleToSliderInput();
+            }
             this.updateSliderProgress();
         }
     }
 
     handleMouseUp() {
-        // Reset dragging state
         this.isDragging = false;
+        this.draggingSlider = null;
     }
 
     setupEventListeners() {
-        // Handle down arrow key for priceHigh
         this.priceHigh.addEventListener('keydown', (event) => {
             if (event.key === 'ArrowDown') {
-                this.isDownArrowPressed = true; // Set flag to true
+                this.isDownArrowPressed = true;
             }
         });
-
         this.priceHigh.addEventListener('keyup', (event) => {
             if (event.key === 'ArrowDown') {
-                this.isDownArrowPressed = false; // Reset flag on keyup
+                this.isDownArrowPressed = false;
             }
         });
-
-        // Handle up arrow key for priceLow
         this.priceLow.addEventListener('keydown', (event) => {
             if (event.key === 'ArrowUp') {
-                this.isUpArrowPressed = true; // Set flag to true
+                this.isUpArrowPressed = true;
             }
         });
-
         this.priceLow.addEventListener('keyup', (event) => {
             if (event.key === 'ArrowUp') {
-                this.isUpArrowPressed = false; // Reset flag on keyup
+                this.isUpArrowPressed = false;
             }
         });
     }
@@ -236,14 +263,12 @@ export class PriceRangeSlider {
     handleFromSliderInput() {
         let fromValue = Number(this.fromSlider.value);
         let toValue = Number(this.toSlider.value);
-        // Ensure fromValue does not exceed 2500
-        if (fromValue > (Number(this.toSlider.max) -1) && toValue === Number(this.toSlider.max)) {
-            this.fromSlider.value = Number(this.toSlider.max) -1;
-            this.priceLow.value = Number(this.toSlider.max) -1;   // Update the low price input field
-            fromValue = Number(this.toSlider.max) -1;            // Update the fromValue variable
+        if (fromValue > (Number(this.toSlider.max) - 1) && toValue === Number(this.toSlider.max)) {
+            this.fromSlider.value = Number(this.toSlider.max) - 1;
+            this.priceLow.value = Number(this.toSlider.max) - 1;
+            fromValue = Number(this.toSlider.max) - 1;
         }
     
-        // Update the "Max price(+)" label
         if (fromValue === Number(this.toSlider.max) || toValue === Number(this.toSlider.max)) {
             document.getElementById('max-p').textContent = 'Max price(+)';
             this.priceHigh.value = fromValue;
@@ -253,11 +278,10 @@ export class PriceRangeSlider {
         }
     
         if (toValue === 0 && fromValue === 0) {
-            this.toSlider.value = 1; // Reset the slider value to 1
-            this.priceHigh.value = 1; // Update the high price input field
-            toValue = 1; // Update the toValue variable
+            this.toSlider.value = 1;
+            this.priceHigh.value = 1;
+            toValue = 1;
         }
-        // Ensure fromValue does not exceed toValue
         if (fromValue >= toValue) {
             this.priceLow.value = this.toSlider.value;
             this.priceHigh.value = this.fromSlider.value;
@@ -273,16 +297,14 @@ export class PriceRangeSlider {
 
     handleToSliderInput() {
         let fromValue = Number(this.fromSlider.value);
-        let toValue = Number(this.toSlider.value); // Use `let` to allow reassignment
+        let toValue = Number(this.toSlider.value);
     
-        // Ensure toValue is not smaller than 1
         if (toValue < 1 && fromValue === 0) {
-            this.toSlider.value = 1; // Reset the slider value to 1
-            this.priceHigh.value = 1; // Update the high price input field
-            toValue = 1; // Update the toValue variable
+            this.toSlider.value = 1;
+            this.priceHigh.value = 1;
+            toValue = 1;
         }
     
-        // Update the "Max price(+)" label
         if (fromValue === Number(this.toSlider.max) || toValue === Number(this.toSlider.max)) {
             document.getElementById('max-p').textContent = 'Max price(+)';
             this.priceHigh.value = toValue;
@@ -292,12 +314,11 @@ export class PriceRangeSlider {
         }
     
         if (toValue === Number(this.toSlider.max) && fromValue === Number(this.toSlider.max)) {
-            this.fromSlider.value = Number(this.toSlider.max) - 1; // Reset the slider value to 1
-            this.priceLow.value = Number(this.toSlider.max) - 1; // Update the high price input field
-            fromValue = Number(this.toSlider.max) - 1; // Update the toValue variable
+            this.fromSlider.value = Number(this.toSlider.max) - 1;
+            this.priceLow.value = Number(this.toSlider.max) - 1;
+            fromValue = Number(this.toSlider.max) - 1;
         }
 
-        // Ensure toValue does not go below fromValue
         if (toValue <= fromValue) {
             this.priceLow.value = this.toSlider.value;
             this.priceHigh.value = this.fromSlider.value;
@@ -318,13 +339,13 @@ export class PriceRangeSlider {
         const priceHighValue = Number(this.priceHigh.value);
         if (priceLowValue < 0) {
             console.log("Price is too low!");
-            this.priceLow.value = 0; // Set it to 0 if lower
+            this.priceLow.value = 0;
         } else {
             this.priceLow.value = priceLowValue;
         }
         if (priceLowValue >= Number(this.toSlider.max)) {
             console.log("Price is too high!");
-            this.priceLow.value = Number(this.toSlider.max)-1; // Set it to 2500 if higher
+            this.priceLow.value = Number(this.toSlider.max) - 1;
         }
         if (fromValue > toValue && Number(this.priceRangeHigh) !== fromValue) {
             this.toSlider.value = priceLowValue;
